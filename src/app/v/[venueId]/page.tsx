@@ -76,6 +76,14 @@ export default async function VenuePage({
             </Link>
           </div>
         </>
+<div style={{ marginTop: 12 }}>
+  <a
+    href={`/claim/${venue.id}`}
+    style={{ opacity: 0.85, textDecoration: "underline", fontWeight: 700 }}
+  >
+    Claim & manage this venue →
+  </a>
+</div>
       )}
     </main>
   );
