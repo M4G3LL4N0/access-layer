@@ -1,3 +1,7 @@
+<a href="/venues" style={{ display: "inline-block", marginBottom: 12, opacity: 0.8 }}>
+  Browse Public Directory →
+</a>
+
 import Link from "next/link";
 import { supabaseServer } from "@/lib/supabaseServer";
 
