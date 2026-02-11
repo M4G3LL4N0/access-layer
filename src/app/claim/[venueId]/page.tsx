@@ -26,7 +26,16 @@ export default async function ClaimPage({
       </p>
 
       {ok && (
-        <div style={{ marginTop: 12, padding: 12, borderRadius: 10, background: "#f0fff4", border: "1px solid #c9f2d3", fontWeight: 800 }}>
+        <div
+          style={{
+            marginTop: 12,
+            padding: 12,
+            borderRadius: 10,
+            background: "#f0fff4",
+            border: "1px solid #c9f2d3",
+            fontWeight: 800,
+          }}
+        >
           Submitted — we’ll reach out shortly.
         </div>
       )}
@@ -34,23 +43,42 @@ export default async function ClaimPage({
       <form action="/api/claim" method="post" style={{ marginTop: 16, maxWidth: 520 }}>
         <input type="hidden" name="venueId" value={venueId} />
 
-        <label style={{ display: "block", fontWeight: 800, marginBottom: 6 }}>Email</label>
+        <label style={{ display: "block", fontWeight: 800, marginBottom: 6 }}>
+          Email
+        </label>
         <input
           name="email"
           type="email"
           required
           placeholder="owner@venue.com"
-          style={{ width: "100%", padding: "10px 12px", borderRadius: 10, border: "1px solid #ddd" }}
+          style={{
+            width: "100%",
+            padding: "10px 12px",
+            borderRadius: 10,
+            border: "1px solid #ddd",
+          }}
         />
 
-        <label style={{ display: "block", fontWeight: 800, marginTop: 12, marginBottom: 6 }}>
+        <label
+          style={{
+            display: "block",
+            fontWeight: 800,
+            marginTop: 12,
+            marginBottom: 6,
+          }}
+        >
           Note (optional)
         </label>
         <textarea
           name="note"
           rows={4}
           placeholder="I manage this location and want to set up access rules…"
-          style={{ width: "100%", padding: "10px 12px", borderRadius: 10, border: "1px solid #ddd" }}
+          style={{
+            width: "100%",
+            padding: "10px 12px",
+            borderRadius: 10,
+            border: "1px solid #ddd",
+          }}
         />
 
         <button
@@ -71,4 +99,3 @@ export default async function ClaimPage({
     </main>
   );
 }
-
