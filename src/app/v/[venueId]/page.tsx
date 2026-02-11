@@ -58,7 +58,6 @@ export default async function VenuePage({
           ) : (
             <p style={{ opacity: 0.8 }}>No active rules set.</p>
           )}
-
           <div style={{ marginTop: 18 }}>
             <Link
               href={`/request/${venue.id}`}
@@ -75,15 +74,20 @@ export default async function VenuePage({
               Request Access
             </Link>
           </div>
+
+          <div style={{ marginTop: 12 }}>
+            <a
+              href={`/claim/${venue.id}`}
+              style={{
+                opacity: 0.85,
+                textDecoration: "underline",
+                fontWeight: 700,
+              }}
+            >
+              Claim & manage this venue →
+            </a>
+          </div>
         </>
-<div style={{ marginTop: 12 }}>
-  <a
-    href={`/claim/${venue.id}`}
-    style={{ opacity: 0.85, textDecoration: "underline", fontWeight: 700 }}
-  >
-    Claim & manage this venue →
-  </a>
-</div>
       )}
     </main>
   );
