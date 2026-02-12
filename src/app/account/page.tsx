@@ -1,67 +1,117 @@
-export const dynamic = "force-dynamic";
+"use client";
 
-import Link from "next/link";
-import { supabaseServerAuth } from "@/lib/supabaseServerAuth";
+import { useEffect, useState } from "react";
+import { supabaseBrowser } from "@/lib/supabaseBrowser";
 
-export default async function AccountPage() {
-  const supabase = await supabaseServerAuth();
-  const { data } = await supabase.auth.getUser();
-  const user = data.user;
+export default function AccountPage() {
+  const [loading, setLoading] = useState(true);
+  const [email, setEmail] = useState<string | null>(null);
+  const [inviteToken, setInviteToken] = useState("");
+  const [msg, setMsg] = useState<string>("");
 
-  if (!user) {
+  useEffect(() => {
+    const load = async () => {
+      const { data } = await supabaseBrowser.auth.getUser();
+      setEmail(data.user?.email ?? null);
+      setLoading(false);
+    };
+    load();
+  }, []);
+
+  async function signOut() {
+    await supabaseBrowser.auth.signOut();
+    window.location.href = "/login";
+  }
+
+  async function redeem(e: React.FormEvent) {
+    e.preventDefault();
+    setMsg("");
+
+    const fd = new FormData();
+    fd.append("token", inviteToken);
+
+    const res = await fetch("/api/owner/redeem-invite", { method: "POST", body: fd });
+    const j = await res.json().catch(() => ({}));
+
+    if (!res.ok) {
+      setMsg(j?.error || "Failed to redeem invite.");
+      return;
+    }
+
+    // The API should return venueId; if it doesn't, we still show success.
+    const venueId = j?.venueId;
+    setMsg("Invite redeemed. Redirecting to manage…");
+
+    if (venueId) {
+      window.location.href = `/manage/${venueId}`;
+    } else {
+      window.location.href = "/venues";
+    }
+  }
+
+  if (loading) {
     return (
-      <main style={{ padding: 24, fontFamily: "system-ui", maxWidth: 900, margin: "0 auto" }}>
+      <main style={{ padding: 24, fontFamily: "system-ui" }}>
         <h1 style={{ fontSize: 28, fontWeight: 950 }}>Account</h1>
-        <p style={{ opacity: 0.85 }}>You’re not signed in.</p>
-        <Link href="/login" style={{ fontWeight: 950 }}>
-          Go to login →
-        </Link>
+        <p style={{ opacity: 0.85 }}>Loading…</p>
       </main>
     );
   }
 
-  const { data: invites } = await supabase
-    .from("venue_owner_invites")
-    .select("id,venue_id,expires_at,created_at")
-    .eq("email", user.email!)
-    .order("created_at", { ascending: false })
-    .limit(20);
-
-  const { data: memberships } = await supabase
-    .from("venue_members")
-    .select("venue_id,role,created_at,venues(id,name,city,region,status)")
-    .order("created_at", { ascending: false })
-    .limit(50);
+  if (!email) {
+    return (
+      <main style={{ padding: 24, fontFamily: "system-ui", maxWidth: 560, margin: "0 auto" }}>
+        <h1 style={{ fontSize: 28, fontWeight: 950 }}>Account</h1>
+        <p style={{ opacity: 0.85 }}>You’re not signed in.</p>
+        <a href="/login" style={{ fontWeight: 950 }}>
+          Go to login →
+        </a>
+      </main>
+    );
+  }
 
   return (
-    <main style={{ padding: 24, fontFamily: "system-ui", maxWidth: 1000, margin: "0 auto" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
-        <Link href="/owners" style={{ opacity: 0.8 }}>
-          ← Owners
-        </Link>
-        <Link href="/venues" style={{ opacity: 0.8 }}>
-          Directory
-        </Link>
+    <main style={{ padding: 24, fontFamily: "system-ui", maxWidth: 720, margin: "0 auto" }}>
+      <h1 style={{ fontSize: 32, fontWeight: 950 }}>Account</h1>
+      <div style={{ marginTop: 8, opacity: 0.85 }}>
+        Signed in as <b>{email}</b>
       </div>
 
-      <h1 style={{ marginTop: 14, fontSize: 32, fontWeight: 950 }}>Account</h1>
-      <div style={{ marginTop: 6, opacity: 0.85 }}>
-        Signed in as <b>{user.email}</b>
-      </div>
+      <button
+        onClick={signOut}
+        style={{
+          marginTop: 12,
+          padding: "8px 12px",
+          borderRadius: 10,
+          border: "1px solid #ddd",
+          background: "white",
+          cursor: "pointer",
+          fontWeight: 900,
+        }}
+      >
+        Sign out
+      </button>
 
       <section style={{ marginTop: 18, padding: 16, border: "1px solid #eee", borderRadius: 16 }}>
-        <div style={{ fontWeight: 950, fontSize: 18 }}>Redeem invite</div>
-        <p style={{ marginTop: 8, opacity: 0.85, lineHeight: 1.6 }}>
-          If an admin sent you an invite token, paste it here to claim management access.
+        <div style={{ fontWeight: 950, fontSize: 18 }}>Redeem owner invite</div>
+        <p style={{ marginTop: 6, opacity: 0.8 }}>
+          Paste the invite token you received.
         </p>
 
-        <form action="/api/owner/redeem-invite" method="post" style={{ marginTop: 10, maxWidth: 560 }}>
-          <label style={{ display: "block", fontWeight: 900, marginBottom: 6 }}>Invite token</label>
+        {msg && (
+          <div style={{ marginTop: 10, padding: 12, borderRadius: 12, background: "#f7f7ff", border: "1px solid #e6e6ff", fontWeight: 900 }}>
+            {msg}
+          </div>
+        )}
+
+        <form onSubmit={redeem} style={{ marginTop: 10 }}>
+          <label style={{ display: "block", fontWeight: 950, marginBottom: 6 }}>Invite token</label>
           <input
-            name="token"
+            value={inviteToken}
+            onChange={(e) => setInviteToken(e.target.value)}
             required
-            placeholder="paste token"
-            style={{ width: "100%", padding: 12, borderRadius: 12, border: "1px solid #ddd" }}
+            placeholder="paste token here"
+            style={{ width: "100%", padding: 12, borderRadius: 12, border: "1px solid #ddd", fontFamily: "ui-monospace" }}
           />
           <button
             style={{
@@ -75,47 +125,9 @@ export default async function AccountPage() {
               cursor: "pointer",
             }}
           >
-            Redeem
+            Redeem invite
           </button>
         </form>
-
-        {invites && invites.length > 0 && (
-          <div style={{ marginTop: 14, opacity: 0.85, fontSize: 12 }}>
-            Recent invites found for your email (tokens hidden).
-          </div>
-        )}
-      </section>
-
-      <section style={{ marginTop: 18, padding: 16, border: "1px solid #eee", borderRadius: 16 }}>
-        <div style={{ fontWeight: 950, fontSize: 18 }}>Your venues</div>
-
-        <div style={{ marginTop: 10, display: "grid", gap: 10 }}>
-          {(memberships || []).length === 0 && (
-            <div style={{ opacity: 0.85 }}>
-              No venues linked yet. Redeem an invite token or request onboarding from the Owners page.
-            </div>
-          )}
-
-          {(memberships || []).map((m: any) => (
-            <div key={m.venue_id} style={{ padding: 12, borderRadius: 14, border: "1px solid #eee" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
-                <div style={{ fontWeight: 950 }}>{m.venues?.name || m.venue_id}</div>
-                <div style={{ fontSize: 12, opacity: 0.7 }}>
-                  role: {m.role} · status: {m.venues?.status}
-                </div>
-              </div>
-
-              <div style={{ marginTop: 8, display: "flex", gap: 12, flexWrap: "wrap" }}>
-                <Link href={`/v/${m.venue_id}`} style={{ opacity: 0.85 }}>
-                  View
-                </Link>
-                <Link href={`/manage/${m.venue_id}`} style={{ fontWeight: 950 }}>
-                  Manage →
-                </Link>
-              </div>
-            </div>
-          ))}
-        </div>
       </section>
     </main>
   );
