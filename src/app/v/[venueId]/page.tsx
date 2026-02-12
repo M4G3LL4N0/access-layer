@@ -87,6 +87,14 @@ export default async function VenuePage({
               Claim & manage this venue →
             </a>
           </div>
+<div style={{ marginTop: 12 }}>
+  <a
+    href={`/manage/${venue.id}`}
+    style={{ opacity: 0.85, textDecoration: "underline", fontWeight: 700 }}
+  >
+    Manage venue (stub) →
+  </a>
+</div>
         </>
       )}
     </main>
