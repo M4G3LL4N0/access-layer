@@ -84,7 +84,38 @@ export default async function AdminVenueEdit({
           Rule error: {rErr.message}
         </pre>
       )}
+<section style={{ marginTop: 22, padding: 16, border: "1px solid #eee", borderRadius: 16 }}>
+  <div style={{ fontWeight: 950, fontSize: 18 }}>Invite an owner</div>
+  <p style={{ marginTop: 8, opacity: 0.85, lineHeight: 1.6 }}>
+    Enter an email. You’ll get a one-time token you can send them. They log in and redeem it.
+  </p>
 
+  <form
+    action={`/api/admin/create-invite?token=${encodeURIComponent(token)}`}
+    method="post"
+    style={{ marginTop: 10, maxWidth: 520 }}
+    onSubmit={(e) => {
+      // leave as normal submit; token will appear as JSON response in browser
+    }}
+  >
+    <input type="hidden" name="venueId" value={venueId} />
+    <label style={{ display: "block", fontWeight: 900, marginBottom: 6 }}>Owner email</label>
+    <input
+      name="email"
+      type="email"
+      required
+      placeholder="owner@venue.com"
+      style={{ width: "100%", padding: 10, borderRadius: 10, border: "1px solid #ddd" }}
+    />
+    <button style={{ marginTop: 12, padding: "10px 14px", borderRadius: 10, background: "black", color: "white", border: "none", fontWeight: 950 }}>
+      Create invite
+    </button>
+  </form>
+
+  <div style={{ marginTop: 10, fontSize: 12, opacity: 0.7 }}>
+    After submit, your browser will show JSON containing the invite token. Copy it into an email.
+  </div>
+</section>
       <form action={`/api/admin/rule-update?token=${encodeURIComponent(token)}`} method="post" style={{ marginTop: 10, maxWidth: 520 }}>
         <input type="hidden" name="venueId" value={venueId} />
 
