@@ -4,7 +4,7 @@ import Link from "next/link";
 import { supabaseServerAuth } from "@/lib/supabaseServerAuth";
 
 export default async function AccountPage() {
-  const supabase = supabaseServerAuth();
+  const supabase = await supabaseServerAuth();
   const { data } = await supabase.auth.getUser();
   const user = data.user;
 
@@ -13,20 +13,20 @@ export default async function AccountPage() {
       <main style={{ padding: 24, fontFamily: "system-ui", maxWidth: 900, margin: "0 auto" }}>
         <h1 style={{ fontSize: 28, fontWeight: 950 }}>Account</h1>
         <p style={{ opacity: 0.85 }}>You’re not signed in.</p>
-        <Link href="/login" style={{ fontWeight: 950 }}>Go to login →</Link>
+        <Link href="/login" style={{ fontWeight: 950 }}>
+          Go to login →
+        </Link>
       </main>
     );
   }
 
-  // Invites for this email
   const { data: invites } = await supabase
     .from("venue_owner_invites")
-    .select("id,venue_id,token,expires_at,created_at")
+    .select("id,venue_id,expires_at,created_at")
     .eq("email", user.email!)
     .order("created_at", { ascending: false })
     .limit(20);
 
-  // Venues this user owns/manages
   const { data: memberships } = await supabase
     .from("venue_members")
     .select("venue_id,role,created_at,venues(id,name,city,region,status)")
@@ -36,8 +36,12 @@ export default async function AccountPage() {
   return (
     <main style={{ padding: 24, fontFamily: "system-ui", maxWidth: 1000, margin: "0 auto" }}>
       <div style={{ display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
-        <Link href="/owners" style={{ opacity: 0.8 }}>← Owners</Link>
-        <Link href="/venues" style={{ opacity: 0.8 }}>Directory</Link>
+        <Link href="/owners" style={{ opacity: 0.8 }}>
+          ← Owners
+        </Link>
+        <Link href="/venues" style={{ opacity: 0.8 }}>
+          Directory
+        </Link>
       </div>
 
       <h1 style={{ marginTop: 14, fontSize: 32, fontWeight: 950 }}>Account</h1>
@@ -50,6 +54,7 @@ export default async function AccountPage() {
         <p style={{ marginTop: 8, opacity: 0.85, lineHeight: 1.6 }}>
           If an admin sent you an invite token, paste it here to claim management access.
         </p>
+
         <form action="/api/owner/redeem-invite" method="post" style={{ marginTop: 10, maxWidth: 560 }}>
           <label style={{ display: "block", fontWeight: 900, marginBottom: 6 }}>Invite token</label>
           <input
@@ -58,14 +63,25 @@ export default async function AccountPage() {
             placeholder="paste token"
             style={{ width: "100%", padding: 12, borderRadius: 12, border: "1px solid #ddd" }}
           />
-          <button style={{ marginTop: 12, padding: "10px 14px", borderRadius: 10, background: "black", color: "white", border: "none", fontWeight: 950 }}>
+          <button
+            style={{
+              marginTop: 12,
+              padding: "10px 14px",
+              borderRadius: 10,
+              background: "black",
+              color: "white",
+              border: "none",
+              fontWeight: 950,
+              cursor: "pointer",
+            }}
+          >
             Redeem
           </button>
         </form>
 
         {invites && invites.length > 0 && (
           <div style={{ marginTop: 14, opacity: 0.85, fontSize: 12 }}>
-            Recent invites found for your email (tokens hidden on purpose).
+            Recent invites found for your email (tokens hidden).
           </div>
         )}
       </section>
@@ -88,9 +104,14 @@ export default async function AccountPage() {
                   role: {m.role} · status: {m.venues?.status}
                 </div>
               </div>
+
               <div style={{ marginTop: 8, display: "flex", gap: 12, flexWrap: "wrap" }}>
-                <Link href={`/v/${m.venue_id}`} style={{ opacity: 0.85 }}>View</Link>
-                <Link href={`/manage/${m.venue_id}`} style={{ fontWeight: 950 }}>Manage →</Link>
+                <Link href={`/v/${m.venue_id}`} style={{ opacity: 0.85 }}>
+                  View
+                </Link>
+                <Link href={`/manage/${m.venue_id}`} style={{ fontWeight: 950 }}>
+                  Manage →
+                </Link>
               </div>
             </div>
           ))}

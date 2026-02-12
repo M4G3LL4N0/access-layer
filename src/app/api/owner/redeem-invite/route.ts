@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
 import { supabaseServerAuth } from "@/lib/supabaseServerAuth";
-import { supabaseServer } from "@/lib/supabaseServer"; // service role (for controlled writes)
+import { supabaseServer } from "@/lib/supabaseServer";
 
 export async function POST(req: Request) {
   const form = await req.formData();
   const token = String(form.get("token") || "").trim();
 
-  const supaAuth = supabaseServerAuth();
+  const supaAuth = await supabaseServerAuth();
   const { data } = await supaAuth.auth.getUser();
   const user = data.user;
 
@@ -14,7 +14,6 @@ export async function POST(req: Request) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
 
-  // Lookup invite (service role ok)
   const { data: invite, error: invErr } = await supabaseServer
     .from("venue_owner_invites")
     .select("id,venue_id,email,expires_at")
@@ -33,18 +32,15 @@ export async function POST(req: Request) {
     return NextResponse.redirect(new URL("/account?error=expired", req.url));
   }
 
-  // Create membership
-  const { error: memErr } = await supabaseServer.from("venue_members").insert({
-    venue_id: invite.venue_id,
-    user_id: user.id,
-    role: "owner",
-  });
+  await supabaseServer.from("venue_members").upsert(
+    {
+      venue_id: invite.venue_id,
+      user_id: user.id,
+      role: "owner",
+    },
+    { onConflict: "venue_id,user_id" }
+  );
 
-  if (memErr) {
-    // Already exists is fine
-  }
-
-  // Consume invite (delete)
   await supabaseServer.from("venue_owner_invites").delete().eq("id", invite.id);
 
   return NextResponse.redirect(new URL(`/manage/${invite.venue_id}`, req.url));
