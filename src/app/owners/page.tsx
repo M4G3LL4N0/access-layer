@@ -1,4 +1,4 @@
-kimport Link from "next/link";
+import Link from "next/link";
 
 export default function OwnersPage() {
   return (
@@ -7,7 +7,6 @@ export default function OwnersPage() {
         <h1 style={{ fontSize: 34, fontWeight: 950 }}>Access ↔ Space</h1>
         <div style={{ display: "flex", gap: 14, flexWrap: "wrap" }}>
           <Link href="/venues" style={{ opacity: 0.85 }}>Directory</Link>
-          <a href="mailto:hello@access-layer-five.vercel.app" style={{ opacity: 0.85 }}>Contact</a>
         </div>
       </div>
 
@@ -43,26 +42,11 @@ export default function OwnersPage() {
           >
             View pilot directory
           </Link>
-          <a
-            href="mailto:hello@access-layer-five.vercel.app?subject=SF%20Pilot%20Onboarding"
-            style={{ padding: "10px 14px", borderRadius: 12, border: "1px solid #ddd", fontWeight: 950, textDecoration: "none" }}
-          >
-            Get onboarded
-          </a>
         </div>
 
         <div style={{ marginTop: 12, fontSize: 12, opacity: 0.7 }}>
-          Built for public-facing spaces. Built to expand into broader access + scheduling + utilization.
+          Built to expand into broader access + scheduling + utilization.
         </div>
-      </div>
-
-      <div style={{ marginTop: 18, padding: 16, borderRadius: 16, border: "1px solid #eee" }}>
-        <div style={{ fontWeight: 950 }}>Growth loop</div>
-        <ol style={{ marginTop: 8, opacity: 0.85, lineHeight: 1.8 }}>
-          <li>Guest requests a pass → sees “want this at your venue?”</li>
-          <li>Owner claims venue → manages rules + sees analytics</li>
-          <li>City density → directory becomes default discovery layer</li>
-        </ol>
       </div>
     </main>
   );
