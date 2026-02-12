@@ -16,6 +16,51 @@ export default async function VenuePage({
     .eq("id", venueId)
     .single();
 
+// ----- Pilot Analytics -----
+
+const now = new Date();
+
+const startOfDay = new Date(now);
+startOfDay.setHours(0, 0, 0, 0);
+const dayISO = startOfDay.toISOString();
+
+const start7 = new Date(now);
+start7.setDate(start7.getDate() - 7);
+start7.setHours(0, 0, 0, 0);
+const weekISO = start7.toISOString();
+
+// Requests
+const requestsToday = await supabaseServer
+  .from("access_requests")
+  .select("id", { count: "exact", head: true })
+  .eq("venue_id", venueId)
+  .gte("requested_at", dayISO);
+
+const requests7d = await supabaseServer
+  .from("access_requests")
+  .select("id", { count: "exact", head: true })
+  .eq("venue_id", venueId)
+  .gte("requested_at", weekISO);
+
+// Tokens issued
+const tokensToday = await supabaseServer
+  .from("access_tokens")
+  .select("id", { count: "exact", head: true })
+  .eq("venue_id", venueId)
+  .gte("issued_at", dayISO);
+
+const tokens7d = await supabaseServer
+  .from("access_tokens")
+  .select("id", { count: "exact", head: true })
+  .eq("venue_id", venueId)
+  .gte("issued_at", weekISO);
+
+// Owner leads
+const leadsTotal = await supabaseServer
+  .from("owner_leads")
+  .select("id", { count: "exact", head: true })
+  .eq("venue_id", venueId);
+
   const { data: rules, error: rErr } = await supabaseServer
     .from("access_rules")
     .select("*")
@@ -60,6 +105,45 @@ export default async function VenuePage({
           ) : (
             <p style={{ opacity: 0.8 }}>No active rules set.</p>
           )}
+<div style={{ marginTop: 18, padding: 14, border: "1px solid #eee", borderRadius: 14 }}>
+  <div style={{ fontWeight: 950, fontSize: 16 }}>Pilot Analytics</div>
+
+  <div style={{ marginTop: 12, display: "flex", gap: 14, flexWrap: "wrap" }}>
+
+    <div style={{ padding: 10, border: "1px solid #eee", borderRadius: 12 }}>
+      <div style={{ fontSize: 12, opacity: 0.7 }}>Requests today</div>
+      <div style={{ fontSize: 20, fontWeight: 950 }}>
+        {requestsToday.count ?? 0}
+      </div>
+    </div>
+
+    <div style={{ padding: 10, border: "1px solid #eee", borderRadius: 12 }}>
+      <div style={{ fontSize: 12, opacity: 0.7 }}>Requests (7d)</div>
+      <div style={{ fontSize: 20, fontWeight: 950 }}>
+        {requests7d.count ?? 0}
+      </div>
+    </div>
+
+    <div style={{ padding: 10, border: "1px solid #eee", borderRadius: 12 }}>
+      <div style={{ fontSize: 12, opacity: 0.7 }}>Tokens issued (7d)</div>
+      <div style={{ fontSize: 20, fontWeight: 950 }}>
+        {tokens7d.count ?? 0}
+      </div>
+    </div>
+
+    <div style={{ padding: 10, border: "1px solid #eee", borderRadius: 12 }}>
+      <div style={{ fontSize: 12, opacity: 0.7 }}>Owner leads</div>
+      <div style={{ fontSize: 20, fontWeight: 950 }}>
+        {leadsTotal.count ?? 0}
+      </div>
+    </div>
+
+  </div>
+
+  <div style={{ marginTop: 8, fontSize: 12, opacity: 0.65 }}>
+    Rule-based access layer · no codes published.
+  </div>
+</div>
           <div style={{ marginTop: 18 }}>
             <Link
               href={`/request/${venue.id}`}
