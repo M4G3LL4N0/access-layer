@@ -70,14 +70,18 @@ export default async function AdminLeadsPage() {
 
   // Inline client script (simple + fast) to avoid adding a client component right now
   const script = `
-  (function(){
-    async function post(url, body){
-      const res = await fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
-      return res.json();
-    }
-    document.addEventListener('click', async (e) => {
-      const btn = e.target && e.target.closest && e.target.closest('button[data-onclick]');
-      if(!btn) return;
+(function(){
+  async function post(url, body){
+    const res = await fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
+    return res.json();
+  }
+
+  document.addEventListener('click', async (e) => {
+    const t = e.target;
+
+    // Status buttons
+    const btn = t && t.closest && t.closest('button[data-onclick]');
+    if(btn){
       const payload = JSON.parse(btn.getAttribute('data-onclick'));
       btn.disabled = true;
       const out = await post('/api/admin/lead-status', payload);
@@ -87,16 +91,49 @@ export default async function AdminLeadsPage() {
         alert((out && out.error) || 'Error');
         btn.disabled = false;
       }
-    });
-  })();
+      return;
+    }
+
+    // Convert button
+    const c = t && t.closest && t.closest('button[data-convert]');
+    if(c){
+      const leadId = c.getAttribute('data-convert');
+      c.disabled = true;
+      c.textContent = 'Converting…';
+      const out = await post('/api/admin/convert-lead', { leadId });
+      if(out && out.ok){
+        const links = out.links || {};
+        const msg =
+          'Converted!\\n\\n' +
+          'Venue: ' + (links.venue || '') + '\\n' +
+          'Signage: ' + (links.signage || '') + '\\n' +
+          'Verify: ' + (links.verify || '') + '\\n' +
+          'Manage: ' + (links.manage || '');
+        alert(msg);
+        location.reload();
+      } else {
+        alert((out && out.error) || 'Error');
+        c.disabled = false;
+        c.textContent = 'Convert → Links';
+      }
+    }
+  });
+})();
   `;
 
   return (
-    <main style={{ padding: 30, fontFamily: "system-ui", background: "#f6f7fb", minHeight: "100vh" }}>
+    <main
+      style={{
+        padding: 30,
+        fontFamily: "system-ui",
+        background: "#f6f7fb",
+        minHeight: "100vh",
+      }}
+    >
       <div style={{ maxWidth: 1100, margin: "0 auto" }}>
         <h1 style={{ fontSize: 34, fontWeight: 900 }}>Admin — Leads</h1>
         <p style={{ opacity: 0.75 }}>
-          Incoming venue onboarding requests. Update status and send a Pilot Pack link.
+          Incoming venue onboarding requests. Update status and convert leads into venues instantly.
         </p>
 
         <div style={{ marginTop: 14 }}>
@@ -123,7 +160,14 @@ export default async function AdminLeadsPage() {
                 boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
               }}
             >
-              <div style={{ display: "flex", justifyContent: "space-between", gap: 10, flexWrap: "wrap" }}>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  gap: 10,
+                  flexWrap: "wrap",
+                }}
+              >
                 <div style={{ fontWeight: 900, fontSize: 16 }}>
                   {l.company || "(no company)"}{" "}
                   <span style={{ marginLeft: 8 }}>
@@ -166,8 +210,9 @@ export default async function AdminLeadsPage() {
                   onClick={JSON.stringify({ id: l.id, status: "closed_lost" })}
                 />
 
-                <a
-                  href={`/admin/pilot-pack?leadId=${l.id}`}
+                <button
+                  type="button"
+                  data-convert={l.id}
                   style={{
                     marginLeft: "auto",
                     padding: "8px 10px",
@@ -175,6 +220,21 @@ export default async function AdminLeadsPage() {
                     border: "1px solid #111",
                     background: "#111",
                     color: "white",
+                    fontWeight: 900,
+                    cursor: "pointer",
+                  }}
+                >
+                  Convert → Links
+                </button>
+
+                <a
+                  href={`/admin/pilot-pack?leadId=${l.id}`}
+                  style={{
+                    padding: "8px 10px",
+                    borderRadius: 10,
+                    border: "1px solid #ddd",
+                    background: "white",
+                    color: "#111",
                     fontWeight: 900,
                     textDecoration: "none",
                   }}
