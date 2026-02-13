@@ -4,9 +4,18 @@ import { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { supabaseBrowser } from "@/lib/supabaseBrowser";
 
+function humanizeError(e: string | null) {
+  if (!e) return "";
+  if (e === "missing_code") return "Auth callback missing code. Try signing in again.";
+  if (e === "oauth_exchange_failed") return "OAuth exchange failed. Check Supabase redirect URLs + provider config.";
+  return e;
+}
+
 export default function LoginClient() {
   const sp = useSearchParams();
   const next = sp.get("next") || "/account";
+  const error = sp.get("error");
+  const errorMsg = humanizeError(error);
 
   const [email, setEmail] = useState("");
   const [sent, setSent] = useState(false);
@@ -51,7 +60,7 @@ export default function LoginClient() {
         Sign in via Google (recommended) or email magic link. Once verified, you can manage venues you’ve been invited to.
       </p>
 
-      {err && (
+      {(errorMsg || err) && (
         <div
           style={{
             marginTop: 12,
@@ -62,7 +71,8 @@ export default function LoginClient() {
             fontWeight: 900,
           }}
         >
-          {err}
+          {errorMsg ? <div>{errorMsg}</div> : null}
+          {err ? <div style={{ marginTop: errorMsg ? 8 : 0 }}>{err}</div> : null}
         </div>
       )}
 
