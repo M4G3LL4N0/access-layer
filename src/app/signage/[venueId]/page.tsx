@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 
 import Link from "next/link";
-import { supabaseServer } from "@/lib/supabaseServer";
+import { supabaseAdmin } from "@/lib/supabaseAdmin";
 
 export default async function SignagePage({
   params,
@@ -10,10 +10,9 @@ export default async function SignagePage({
 }) {
   const { venueId } = await params;
 
-  // IMPORTANT: supabaseServer is a client export, not a function.
-  const supabase = supabaseServer;
+  const supabase = supabaseAdmin();
 
-  const { data: venue } = await supabase
+  const { data: venue, error } = await supabase
     .from("venues")
     .select("id,name,neighborhood,city,state,kind,status")
     .eq("id", venueId)
@@ -23,13 +22,17 @@ export default async function SignagePage({
     return (
       <main style={{ padding: 24, fontFamily: "system-ui" }}>
         <h1 style={{ fontSize: 26, fontWeight: 950 }}>Signage</h1>
-        <p style={{ opacity: 0.8 }}>Venue not found.</p>
+        <p style={{ opacity: 0.8 }}>
+          Venue not found.
+          {error ? <span style={{ display: "block", marginTop: 8 }}>Debug: {error.message}</span> : null}
+        </p>
         <Link href="/venues">Back to directory →</Link>
       </main>
     );
   }
 
-  const base = process.env.NEXT_PUBLIC_APP_URL || "https://access-layer-five.vercel.app";
+  const base =
+    process.env.NEXT_PUBLIC_APP_URL || "https://access-layer-five.vercel.app";
   const requestUrl = `${base}/request/${venue.id}`;
 
   return (
@@ -53,7 +56,7 @@ export default async function SignagePage({
           border: "2px solid #111",
           borderRadius: 18,
           padding: 22,
-          background: "var(--card-bg)",
+          background: "white",
         }}
       >
         <div style={{ fontSize: 12, letterSpacing: 1.2, fontWeight: 950, opacity: 0.7 }}>
@@ -66,7 +69,7 @@ export default async function SignagePage({
         </div>
 
         <div style={{ marginTop: 16, display: "grid", gridTemplateColumns: "1fr", gap: 12 }}>
-          <div style={{ padding: 16, borderRadius: 16, border: "1px solid var(--card-border)" }}>
+          <div style={{ padding: 16, borderRadius: 16, border: "1px solid #eee" }}>
             <div style={{ fontWeight: 950, fontSize: 18 }}>Need access?</div>
             <div style={{ marginTop: 6, opacity: 0.85, lineHeight: 1.6 }}>
               Visit the link to request a time-limited access pass.
@@ -97,7 +100,7 @@ export default async function SignagePage({
             </div>
           </div>
 
-          <div style={{ padding: 16, borderRadius: 16, border: "1px solid var(--card-border)" }}>
+          <div style={{ padding: 16, borderRadius: 16, border: "1px solid #eee" }}>
             <div style={{ fontWeight: 950, fontSize: 18 }}>Venue staff</div>
             <div style={{ marginTop: 6, opacity: 0.85, lineHeight: 1.6 }}>
               This pilot reduces friction when staff are busy. The pass confirms a visitor
