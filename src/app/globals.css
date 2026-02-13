@@ -1,44 +1,42 @@
-/* Global, consistent theme that never becomes unreadable */
 :root {
-  color-scheme: light; /* force light defaults */
-  --bg: #fafafa;
-  --fg: #111111;
+  --bg: #f6f7fb;
+  --fg: #0b0f19;
+  --muted: rgba(11, 15, 25, 0.72);
   --card: #ffffff;
-  --muted: rgba(0,0,0,0.72);
-  --border: #e6e6e6;
-  --link: #111111;
+  --border: #e5e7eb;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0b0f19;
+    --fg: #f3f4f6;
+    --muted: rgba(243, 244, 246, 0.72);
+    --card: #111827;
+    --border: rgba(243, 244, 246, 0.12);
+  }
 }
 
 html, body {
-  height: 100%;
-}
-
-body {
-  margin: 0;
   background: var(--bg);
   color: var(--fg);
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
 }
 
-/* Links */
-a {
-  color: var(--link);
+a { color: inherit; }
+
+.muted { color: var(--muted); }
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
 }
 
-/* Common readability helpers */
-* {
-  box-sizing: border-box;
+input, textarea, select {
+  background: var(--card);
+  color: var(--fg);
+  border: 1px solid var(--border);
 }
 
-/* If any component uses "dark:" classes, keep it readable anyway */
-@media (prefers-color-scheme: dark) {
-  :root {
-    color-scheme: light;
-    --bg: #fafafa;
-    --fg: #111111;
-    --card: #ffffff;
-    --muted: rgba(0,0,0,0.72);
-    --border: #e6e6e6;
-    --link: #111111;
-  }
+button {
+  color: var(--fg);
 }

@@ -4,6 +4,7 @@ import { supabaseServer } from "@/lib/supabaseServer";
 
 const Schema = z.object({
   leadId: z.string().uuid(),
+  redirect: z.string().optional(), // "1" to redirect to pilot pack
 });
 
 function guessCategory(venue_type?: string | null) {
@@ -18,16 +19,13 @@ function guessCategory(venue_type?: string | null) {
 async function readBody(req: Request) {
   const ct = req.headers.get("content-type") || "";
   if (ct.includes("application/json")) {
-    const json = await req.json().catch(() => ({}));
-    return json;
+    return await req.json().catch(() => ({}));
   }
   if (ct.includes("application/x-www-form-urlencoded") || ct.includes("multipart/form-data")) {
     const form = await req.formData();
     return Object.fromEntries(form.entries());
   }
-  // fallback: try json
-  const json = await req.json().catch(() => ({}));
-  return json;
+  return await req.json().catch(() => ({}));
 }
 
 export async function POST(req: Request) {
@@ -102,6 +100,13 @@ export async function POST(req: Request) {
     await supabase.from("leads").update({ status: "converted" }).eq("id", lead.id);
 
     const origin = "https://access-layer-five.vercel.app";
+
+    // If asked, redirect straight to Pilot Pack for the new venue
+    const wantsRedirect = String(parsed.data.redirect || "") === "1";
+    if (wantsRedirect) {
+      return NextResponse.redirect(`${origin}/pilot-pack/${venueId}`, { status: 303 });
+    }
+
     return NextResponse.json({
       ok: true,
       venueId,

@@ -1,9 +1,8 @@
-import "leaflet/dist/leaflet.css";
-import type { Metadata } from "next";
+import "./globals.css";
 
-export const metadata: Metadata = {
+export const metadata = {
   title: "Access ↔ Space (MVP)",
-  description: "Rule-based access, no codes published.",
+  description: "Rule-based access passes. No codes published.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

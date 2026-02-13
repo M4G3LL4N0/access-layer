@@ -35,35 +35,6 @@ function pill(status?: string | null) {
   );
 }
 
-function onboardingMessage(args: {
-  venueName: string;
-  city: string;
-  region: string;
-  venueId: string;
-}) {
-  const origin = "https://access-layer-five.vercel.app";
-  const pack = `${origin}/pilot-pack/${args.venueId}`;
-  const signage = `${origin}/signage/${args.venueId}`;
-  const request = `${origin}/request/${args.venueId}`;
-  const verify = `${origin}/verify`;
-
-  return `Pilot links for ${args.venueName} (${args.city} ${args.region}):
-
-Pilot Pack (all links + 60-sec demo):
-${pack}
-
-Printable Signage (QR):
-${signage}
-
-Request page (patrons):
-${request}
-
-Staff verify page:
-${verify}
-
-If you want, reply with preferred hours + daily limit and we’ll tune the rule.`;
-}
-
 export default async function AdminLeadsPage() {
   const supabase = supabaseServer;
 
@@ -80,18 +51,18 @@ export default async function AdminLeadsPage() {
           <div>
             <h1 style={{ margin: 0, fontSize: 34, fontWeight: 1000 }}>Admin — Leads</h1>
             <p style={{ marginTop: 6, opacity: 0.75 }}>
-              Incoming venue onboarding requests (demo admin view).
+              Convert leads into venues and instantly open the Pilot Pack.
             </p>
           </div>
-          <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+          <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
             <Link href="/admin" style={{ textDecoration: "underline", fontWeight: 900 }}>
               ← Back to Admin
             </Link>
             <Link href="/admin/metrics" style={{ textDecoration: "underline", fontWeight: 900 }}>
               Metrics →
             </Link>
-            <Link href="/contact" style={{ textDecoration: "underline", fontWeight: 900 }}>
-              Contact Form →
+            <Link href="/outreach" style={{ textDecoration: "underline", fontWeight: 900 }}>
+              Outreach →
             </Link>
           </div>
         </div>
@@ -131,9 +102,8 @@ export default async function AdminLeadsPage() {
                   <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
                     <form action="/api/admin/convert-lead" method="post">
                       <input type="hidden" name="leadId" value={l.id} />
+                      <input type="hidden" name="redirect" value="1" />
                       <button
-                        formAction="/api/admin/convert-lead"
-                        formMethod="post"
                         style={{
                           padding: "10px 12px",
                           borderRadius: 12,
@@ -144,37 +114,29 @@ export default async function AdminLeadsPage() {
                           cursor: "pointer",
                         }}
                       >
-                        Convert → Venue
+                        Convert & Open Pilot Pack →
                       </button>
                     </form>
 
-                    <button
-                      onClick={() => {
-                        const msg = onboardingMessage({
-                          venueName,
-                          city,
-                          region,
-                          venueId: "REPLACE_AFTER_CONVERT",
-                        });
-                        navigator.clipboard.writeText(msg);
-                        alert("Copied template. After converting, paste the real venueId into the Pilot Pack URL.");
-                      }}
+                    <a
+                      href="/outreach"
                       style={{
                         padding: "10px 12px",
                         borderRadius: 12,
                         border: "1px solid #e5e7eb",
                         background: "white",
                         fontWeight: 900,
-                        cursor: "pointer",
+                        textDecoration: "none",
+                        color: "black",
                       }}
                     >
-                      Copy onboarding msg
-                    </button>
+                      Open Outreach →
+                    </a>
                   </div>
                 </div>
 
                 <div style={{ marginTop: 12, opacity: 0.7, fontSize: 13 }}>
-                  Tip: Click <b>Convert → Venue</b>, then open the returned Pilot Pack link and send it to the lead.
+                  Workflow: <b>Convert & Open Pilot Pack</b> → copy the “Core links” block → send to venue owner.
                 </div>
               </div>
             );
