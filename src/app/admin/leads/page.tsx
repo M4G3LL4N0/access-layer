@@ -4,7 +4,8 @@ import Link from "next/link";
 import { supabaseServer } from "@/lib/supabaseServer";
 
 export default async function AdminLeadsPage() {
-  const supabase = supabaseServer();
+  // NOTE: In this codebase supabaseServer is a client instance (NOT a function).
+  const supabase = supabaseServer;
 
   const { data: leads, error } = await supabase
     .from("leads")
@@ -17,7 +18,7 @@ export default async function AdminLeadsPage() {
       <div style={{ maxWidth: 1100, margin: "0 auto" }}>
         <h1 style={{ fontSize: 34, fontWeight: 900 }}>Admin — Leads</h1>
         <p style={{ opacity: 0.75 }}>
-          View incoming venue onboarding requests.
+          Incoming venue onboarding requests (demo admin view).
         </p>
 
         <div style={{ marginTop: 14 }}>
@@ -27,7 +28,9 @@ export default async function AdminLeadsPage() {
         </div>
 
         {error ? (
-          <pre style={{ marginTop: 16, color: "crimson" }}>{error.message}</pre>
+          <pre style={{ marginTop: 16, color: "crimson", whiteSpace: "pre-wrap" }}>
+            {error.message}
+          </pre>
         ) : null}
 
         <div style={{ marginTop: 18, display: "grid", gap: 12 }}>
@@ -48,7 +51,8 @@ export default async function AdminLeadsPage() {
                 {l.name || "(no name)"} · {l.email}
               </div>
               <div style={{ opacity: 0.7, marginTop: 6 }}>
-                {l.city || ""} {l.region ? `— ${l.region}` : ""} · {l.venue_type || "unknown"}
+                {(l.city || "") + (l.region ? ` — ${l.region}` : "")} ·{" "}
+                {l.venue_type || "unknown"}
               </div>
               {l.message ? (
                 <div style={{ marginTop: 10, opacity: 0.9 }}>{l.message}</div>
@@ -58,6 +62,9 @@ export default async function AdminLeadsPage() {
               </div>
             </div>
           ))}
+          {!error && (!leads || leads.length === 0) ? (
+            <div style={{ opacity: 0.75 }}>No leads yet. Submit one via /contact.</div>
+          ) : null}
         </div>
       </div>
     </main>

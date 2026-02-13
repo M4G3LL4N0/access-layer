@@ -43,11 +43,15 @@ export async function POST(req: Request) {
       );
     }
 
-    // basic anti-spam soft check (rate limiting later)
-    const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "0.0.0.0";
-    const ip_hash = hashIp(ip); // not stored yet, but kept for future use
+    // basic anti-spam hook (not stored yet)
+    const ip =
+      req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "0.0.0.0";
+    const ip_hash = hashIp(ip);
+    void ip_hash;
 
-    const supabase = supabaseServer();
+    // NOTE: In this codebase supabaseServer is a client instance (NOT a function).
+    const supabase = supabaseServer;
+
     const { data, error } = await supabase
       .from("leads")
       .insert([
