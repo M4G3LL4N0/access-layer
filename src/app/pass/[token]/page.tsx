@@ -12,11 +12,13 @@ export default async function PassPage({
 
   const supabase = supabaseAdmin();
 
-  const { data: pass, error } = await supabase
+  // Never use single() here — if duplicates exist for any reason, it will throw.
+  const { data: rows, error } = await supabase
     .from("access_passes")
-    .select("id,venue_id,status,issued_at,expires_at,token")
+    .select("id,venue_id,status,issued_at,expires_at,token,created_at")
     .eq("token", token)
-    .maybeSingle();
+    .order("created_at", { ascending: false })
+    .limit(2);
 
   const shell: React.CSSProperties = {
     padding: 24,
@@ -28,17 +30,31 @@ export default async function PassPage({
     color: "#111",
   };
 
+  if (error) {
+    return (
+      <main style={shell}>
+        <h1 style={{ margin: 0, fontSize: 28, fontWeight: 950 }}>Access Pass</h1>
+        <p style={{ marginTop: 10, opacity: 0.9 }}>
+          Error loading pass.
+          <span style={{ display: "block", marginTop: 8 }}>
+            Debug: {error.message}
+          </span>
+        </p>
+        <Link href="/venues" style={{ fontWeight: 950 }}>
+          Back to directory →
+        </Link>
+      </main>
+    );
+  }
+
+  const pass = rows?.[0] || null;
+
   if (!pass) {
     return (
       <main style={shell}>
         <h1 style={{ margin: 0, fontSize: 28, fontWeight: 950 }}>Access Pass</h1>
         <p style={{ marginTop: 10, opacity: 0.9 }}>
           Pass not found or expired.
-          {error ? (
-            <span style={{ display: "block", marginTop: 8 }}>
-              Debug: {error.message}
-            </span>
-          ) : null}
         </p>
         <Link href="/venues" style={{ fontWeight: 950 }}>
           Back to directory →
@@ -50,10 +66,12 @@ export default async function PassPage({
   const issued = pass.issued_at ? new Date(pass.issued_at) : null;
   const expires = pass.expires_at ? new Date(pass.expires_at) : null;
 
+  const hasDuplicate = (rows?.length || 0) > 1;
+
   return (
     <main style={shell}>
       <div style={{ display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
-        <h1 style={{ margin: 0, fontSize: 28, fontWeight: 950 }}>Access Pass (Active)</h1>
+        <h1 style={{ margin: 0, fontSize: 28, fontWeight: 950 }}>Access Pass</h1>
         <div style={{ display: "flex", gap: 10 }}>
           <Link href={`/v/${pass.venue_id}`} style={{ fontWeight: 950 }}>
             Venue →
@@ -93,7 +111,15 @@ export default async function PassPage({
           }}
         >
           <div style={{ fontWeight: 950 }}>Token:</div>
-          <div style={{ marginTop: 6, fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace", fontSize: 16, wordBreak: "break-all" }}>
+          <div
+            style={{
+              marginTop: 6,
+              fontFamily:
+                "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
+              fontSize: 16,
+              wordBreak: "break-all",
+            }}
+          >
             {pass.token}
           </div>
         </div>
@@ -102,6 +128,22 @@ export default async function PassPage({
           Show this pass to confirm you were granted access during the active window.{" "}
           <b>(No codes displayed.)</b>
         </div>
+
+        {hasDuplicate ? (
+          <div
+            style={{
+              marginTop: 14,
+              padding: 12,
+              borderRadius: 12,
+              border: "1px solid #f0c",
+              background: "#fff5fb",
+              color: "#111",
+              fontWeight: 900,
+            }}
+          >
+            Debug: Multiple rows found for this token. Keeping the newest.
+          </div>
+        ) : null}
       </div>
     </main>
   );
