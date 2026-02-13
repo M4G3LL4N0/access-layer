@@ -6,14 +6,13 @@ export const dynamic = "force-dynamic";
 async function getColumns(table: string) {
   const supabase = supabaseAdmin();
 
-  // Query Postgres catalog through RPC-like SQL via Supabase is not exposed,
-  // so we use a simple "select * limit 1" and read keys.
-  // This is robust for development and avoids schema guessing.
-  const { data, error } = await supabase.from(table).select("*").limit(1);
+  const { data, error } = await supabase.rpc("columns_for_table", { p_table: table });
 
-  if (error) return { table, ok: false, error: error.message, columns: [] as string[] };
-  const row = (data && data[0]) || null;
-  const columns = row ? Object.keys(row).sort() : [];
+  if (error) {
+    return { table, ok: false, error: error.message, columns: [] as string[] };
+  }
+
+  const columns = (data || []).map((r: any) => r.column_name).filter(Boolean);
   return { table, ok: true, error: null as string | null, columns };
 }
 
