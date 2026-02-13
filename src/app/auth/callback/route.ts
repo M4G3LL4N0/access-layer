@@ -8,12 +8,11 @@ export async function GET(req: Request) {
   const code = url.searchParams.get("code");
   const next = url.searchParams.get("next") || "/account";
 
-  // If no code, send them back to login with a useful error
   if (!code) {
     return NextResponse.redirect(new URL(`/login?error=missing_code`, url.origin));
   }
 
-  const supabase = supabaseServerAuth();
+  const supabase = await supabaseServerAuth();
   const { error } = await supabase.auth.exchangeCodeForSession(code);
 
   if (error) {
