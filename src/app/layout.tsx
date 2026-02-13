@@ -1,10 +1,9 @@
-import type { Metadata } from "next";
 import "./globals.css";
-import "leaflet/dist/leaflet.css";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Access ↔ Space (MVP)",
-  description: "Rule-based access layer (no codes published).",
+  title: "Access ↔ Space",
+  description: "Rule-based access, no codes published.",
 };
 
 export default function RootLayout({
@@ -14,15 +13,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body
-        style={{
-          margin: 0,
-          background: "#0b0b0d",
-          color: "#ffffff",
-          fontFamily: "system-ui",
-        }}
-      >
-        {children}
+      <body>
+        <div className="min-h-screen bg-white text-zinc-900">
+          {children}
+        </div>
       </body>
     </html>
   );

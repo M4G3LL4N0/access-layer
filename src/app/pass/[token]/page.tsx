@@ -1,7 +1,9 @@
-export const dynamic = "force-dynamic";
-
 import Link from "next/link";
-import { headers } from "next/headers";
+import { supabaseServer } from "@/lib/supabaseServer";
+
+function isExpired(expiresAt: string) {
+  return new Date(expiresAt).getTime() <= Date.now();
+}
 
 export default async function PassPage({
   params,
@@ -10,121 +12,81 @@ export default async function PassPage({
 }) {
   const { token } = await params;
 
-  // Build the correct base URL for whatever domain you’re on (works on Vercel + localhost)
-  const h = await headers();
-  const proto = h.get("x-forwarded-proto") || "https";
-  const host =
-    h.get("x-forwarded-host") ||
-    h.get("host") ||
-    "access-layer-five.vercel.app";
+  const supabase = supabaseServer();
 
-  const base = `${proto}://${host}`;
+  // Avoid .single() "coerce" errors by selecting + ordering + limiting.
+  const { data, error } = await supabase
+    .from("access_passes")
+    .select("token,status,issued_at,expires_at,venue_id,created_at")
+    .eq("token", token)
+    .order("created_at", { ascending: false })
+    .limit(1);
 
-  const res = await fetch(`${base}/api/pass/${encodeURIComponent(token)}`, {
-    cache: "no-store",
-  });
+  const pass = data?.[0];
 
-  const shell: React.CSSProperties = {
-    padding: 24,
-    fontFamily: "system-ui",
-    maxWidth: 900,
-    margin: "0 auto",
-    background: "#fafafa",
-    minHeight: "100vh",
-    color: "#111",
-  };
-
-  if (!res.ok) {
-    let msg = "Pass not found or expired.";
-    try {
-      const j = await res.json();
-      if (j?.error) msg = `Pass not available: ${j.error}`;
-    } catch {}
+  if (error || !pass) {
     return (
-      <main style={shell}>
-        <h1 style={{ margin: 0, fontSize: 28, fontWeight: 950 }}>Access Pass</h1>
-        <p style={{ marginTop: 10, opacity: 0.9 }}>{msg}</p>
-        <Link href="/venues" style={{ fontWeight: 950 }}>
+      <main className="mx-auto max-w-xl p-6">
+        <h1 className="text-2xl font-black">Access Pass</h1>
+        <p className="mt-2 text-zinc-700">
+          Pass not found or expired.
+        </p>
+        <Link className="mt-4 inline-block underline" href="/venues">
           Back to directory →
         </Link>
+
+        {error && (
+          <pre className="mt-6 rounded-xl bg-zinc-50 p-4 text-xs overflow-auto">
+            {JSON.stringify({ error: error.message }, null, 2)}
+          </pre>
+        )}
       </main>
     );
   }
 
-  const json = (await res.json()) as any;
-  const pass = json?.pass;
-
-  const issued = pass?.issued_at ? new Date(pass.issued_at) : null;
-  const expires = pass?.expires_at ? new Date(pass.expires_at) : null;
+  const expired = isExpired(pass.expires_at);
+  const active = pass.status === "active" && !expired;
 
   return (
-    <main style={shell}>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          gap: 12,
-          flexWrap: "wrap",
-        }}
-      >
-        <h1 style={{ margin: 0, fontSize: 28, fontWeight: 950 }}>Access Pass</h1>
-        <div style={{ display: "flex", gap: 10 }}>
-          <Link href={`/v/${pass.venue_id}`} style={{ fontWeight: 950 }}>
-            Venue →
-          </Link>
-          <Link href="/venues" style={{ fontWeight: 950 }}>
-            Directory →
-          </Link>
-        </div>
+    <main className="mx-auto max-w-xl p-6">
+      <div className="flex items-center justify-between gap-3">
+        <h1 className="text-2xl font-black">Access Pass</h1>
+        <Link className="underline" href={`/v/${pass.venue_id}`}>
+          Venue →
+        </Link>
       </div>
 
       <div
-        style={{
-          marginTop: 14,
-          padding: 18,
-          borderRadius: 16,
-          border: "1px solid #e6e6e6",
-          background: "white",
-          color: "#111",
-        }}
+        className={[
+          "mt-4 rounded-2xl border p-5",
+          active ? "border-emerald-200 bg-emerald-50" : "border-zinc-200 bg-zinc-50",
+        ].join(" ")}
       >
-        <div style={{ fontWeight: 950, fontSize: 16 }}>Status: {pass.status}</div>
-        <div style={{ marginTop: 8, opacity: 0.9 }}>
-          Issued: {issued ? issued.toLocaleString() : "—"}
-        </div>
-        <div style={{ marginTop: 4, opacity: 0.9 }}>
-          Expires: {expires ? expires.toLocaleString() : "—"}
+        <div className="text-lg font-extrabold">
+          {active ? "Status: active" : "Status: inactive"}
         </div>
 
-        <div
-          style={{
-            marginTop: 14,
-            padding: 14,
-            borderRadius: 14,
-            border: "1px solid #efefef",
-            background: "#f7f7f7",
-            color: "#111",
-          }}
-        >
-          <div style={{ fontWeight: 950 }}>Token:</div>
-          <div
-            style={{
-              marginTop: 6,
-              fontFamily:
-                "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
-              fontSize: 16,
-              wordBreak: "break-all",
-            }}
-          >
+        <div className="mt-2 text-sm text-zinc-700">
+          <div><span className="font-bold">Issued:</span> {new Date(pass.issued_at).toLocaleString()}</div>
+          <div><span className="font-bold">Expires:</span> {new Date(pass.expires_at).toLocaleString()}</div>
+        </div>
+
+        <div className="mt-4">
+          <div className="text-xs font-bold text-zinc-600">Token</div>
+          <div className="mt-1 rounded-xl border bg-white p-3 font-mono text-sm break-all">
             {pass.token}
           </div>
         </div>
 
-        <div style={{ marginTop: 12, opacity: 0.9, lineHeight: 1.6 }}>
-          Show this pass to confirm you were granted access during the active window.{" "}
-          <b>(No codes displayed.)</b>
-        </div>
+        <p className="mt-4 text-sm text-zinc-800">
+          Show this pass to confirm you were granted access during the active window.
+          <span className="font-bold"> (No codes displayed.)</span>
+        </p>
       </div>
+
+      <Link className="mt-5 inline-block underline" href="/venues">
+        Back to directory →
+      </Link>
     </main>
   );
 }
