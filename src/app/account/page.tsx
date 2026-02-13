@@ -6,16 +6,20 @@ import { supabaseBrowser } from "@/lib/supabaseBrowser";
 export default function AccountPage() {
   const [loading, setLoading] = useState(true);
   const [email, setEmail] = useState<string | null>(null);
+
   const [inviteToken, setInviteToken] = useState("");
   const [msg, setMsg] = useState<string>("");
 
+  async function refreshUser() {
+    const { data } = await supabaseBrowser.auth.getUser();
+    setEmail(data.user?.email ?? null);
+    setLoading(false);
+  }
+
   useEffect(() => {
-    const load = async () => {
-      const { data } = await supabaseBrowser.auth.getUser();
-      setEmail(data.user?.email ?? null);
-      setLoading(false);
-    };
-    load();
+    refreshUser();
+    const { data } = supabaseBrowser.auth.onAuthStateChange(() => refreshUser());
+    return () => data.subscription.unsubscribe();
   }, []);
 
   async function signOut() {
@@ -41,11 +45,8 @@ export default function AccountPage() {
     const venueId = j?.venueId || j?.venue_id || j?.venue?.id || null;
     setMsg("Invite redeemed. Redirecting…");
 
-    if (venueId) {
-      window.location.href = `/manage/${venueId}`;
-    } else {
-      window.location.href = "/venues";
-    }
+    if (venueId) window.location.href = `/manage/${venueId}`;
+    else window.location.href = "/venues";
   }
 
   if (loading) {
@@ -98,16 +99,7 @@ export default function AccountPage() {
         </p>
 
         {msg && (
-          <div
-            style={{
-              marginTop: 10,
-              padding: 12,
-              borderRadius: 12,
-              background: "#f7f7ff",
-              border: "1px solid #e6e6ff",
-              fontWeight: 900,
-            }}
-          >
+          <div style={{ marginTop: 10, padding: 12, borderRadius: 12, background: "#f7f7ff", border: "1px solid #e6e6ff", fontWeight: 900 }}>
             {msg}
           </div>
         )}
@@ -119,25 +111,10 @@ export default function AccountPage() {
             onChange={(e) => setInviteToken(e.target.value)}
             required
             placeholder="paste token here"
-            style={{
-              width: "100%",
-              padding: 12,
-              borderRadius: 12,
-              border: "1px solid #ddd",
-              fontFamily: "ui-monospace",
-            }}
+            style={{ width: "100%", padding: 12, borderRadius: 12, border: "1px solid #ddd", fontFamily: "ui-monospace" }}
           />
           <button
-            style={{
-              marginTop: 12,
-              padding: "10px 14px",
-              borderRadius: 10,
-              background: "black",
-              color: "white",
-              border: "none",
-              fontWeight: 950,
-              cursor: "pointer",
-            }}
+            style={{ marginTop: 12, padding: "10px 14px", borderRadius: 10, background: "black", color: "white", border: "none", fontWeight: 950, cursor: "pointer" }}
           >
             Redeem
           </button>
