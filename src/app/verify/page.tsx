@@ -1,34 +1,41 @@
 "use client";
 
-import { useState } from "react";
-import QRCode from "qrcode.react";
+import { useMemo, useState } from "react";
+import { QRCodeCanvas } from "qrcode.react";
 
 export default function VerifyPage() {
   const [token, setToken] = useState("");
   const [result, setResult] = useState<any>(null);
   const [loading, setLoading] = useState(false);
 
+  const origin = useMemo(() => {
+    if (typeof window === "undefined") return "";
+    return window.location.origin;
+  }, []);
+
+  const url = token ? `${origin}/api/pass/${encodeURIComponent(token)}` : "";
+
   async function check() {
     setLoading(true);
     setResult(null);
     try {
-      const res = await fetch(`/api/pass/${encodeURIComponent(token)}`, { cache: "no-store" });
+      const res = await fetch(`/api/pass/${encodeURIComponent(token)}`, {
+        cache: "no-store",
+      });
       const json = await res.json();
-      setResult({ ok: res.ok, ...json });
+      setResult({ httpOk: res.ok, ...json });
     } catch (e: any) {
-      setResult({ ok: false, error: e?.message || "Unknown error" });
+      setResult({ httpOk: false, ok: false, error: e?.message || "Unknown error" });
     } finally {
       setLoading(false);
     }
   }
 
-  const url = token ? `${typeof window !== "undefined" ? window.location.origin : ""}/api/pass/${encodeURIComponent(token)}` : "";
-
   return (
-    <main style={{ padding: 24, fontFamily: "system-ui", maxWidth: 900, margin: "0 auto" }}>
+    <main style={{ padding: 24, fontFamily: "system-ui", maxWidth: 960, margin: "0 auto" }}>
       <h1 style={{ fontSize: 28, fontWeight: 950, margin: 0 }}>Verify Access Pass</h1>
       <p style={{ marginTop: 8, opacity: 0.8 }}>
-        Paste a token to verify it. This is the “staff-facing” verification tool.
+        Staff-facing verifier. Paste a token to confirm if it’s valid (active + not expired).
       </p>
 
       <div style={{ marginTop: 14, display: "flex", gap: 10, flexWrap: "wrap" }}>
@@ -37,7 +44,7 @@ export default function VerifyPage() {
           onChange={(e) => setToken(e.target.value)}
           placeholder="Paste token…"
           style={{
-            flex: "1 1 360px",
+            flex: "1 1 420px",
             padding: "10px 12px",
             borderRadius: 10,
             border: "1px solid #ddd",
@@ -62,11 +69,23 @@ export default function VerifyPage() {
       </div>
 
       {token ? (
-        <div style={{ marginTop: 16, display: "flex", gap: 20, flexWrap: "wrap", alignItems: "center" }}>
-          <div style={{ padding: 14, border: "1px solid #eee", borderRadius: 16, background: "white" }}>
-            <div style={{ fontWeight: 900, marginBottom: 10 }}>QR (API verification)</div>
-            <QRCode value={url} size={180} />
-            <div style={{ marginTop: 10, fontSize: 12, opacity: 0.75, maxWidth: 220, wordBreak: "break-all" }}>
+        <div style={{ marginTop: 18, display: "flex", gap: 18, flexWrap: "wrap", alignItems: "flex-start" }}>
+          <div style={{ padding: 16, border: "1px solid #eee", borderRadius: 16, background: "white" }}>
+            <div style={{ fontWeight: 950, marginBottom: 10 }}>QR (API verification URL)</div>
+            {origin ? (
+              <QRCodeCanvas value={url} size={190} includeMargin />
+            ) : (
+              <div style={{ opacity: 0.7 }}>Loading…</div>
+            )}
+            <div
+              style={{
+                marginTop: 10,
+                fontSize: 12,
+                opacity: 0.75,
+                maxWidth: 260,
+                wordBreak: "break-all",
+              }}
+            >
               {url}
             </div>
           </div>
@@ -74,7 +93,7 @@ export default function VerifyPage() {
           {result ? (
             <div
               style={{
-                flex: "1 1 360px",
+                flex: "1 1 420px",
                 padding: 16,
                 borderRadius: 16,
                 border: "1px solid #eee",
@@ -82,8 +101,9 @@ export default function VerifyPage() {
               }}
             >
               <div style={{ fontWeight: 950, fontSize: 18 }}>
-                {result.ok ? "✅ VALID" : "❌ INVALID"}
+                {result.httpOk && result.ok ? "✅ VALID" : "❌ INVALID"}
               </div>
+
               <pre
                 style={{
                   marginTop: 10,
