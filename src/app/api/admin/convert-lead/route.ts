@@ -84,7 +84,7 @@ export async function POST(req: Request) {
 
     if (ruleErr) return NextResponse.json({ ok: false, error: ruleErr.message }, { status: 500 });
 
-    // Mark lead status
+    // mark lead converted (non-blocking)
     await supabase.from("leads").update({ status: "converted" }).eq("id", lead.id);
 
     const origin = "https://access-layer-five.vercel.app";
