@@ -22,16 +22,15 @@ function getPriceId(plan: "starter" | "pro" | "enterprise") {
 
 export async function POST(req: Request) {
   try {
-    const stripe = new Stripe(mustEnv("STRIPE_SECRET_KEY"), {
-      apiVersion: "2024-06-20",
-    });
+    // IMPORTANT: do NOT hardcode apiVersion; Stripe types differ per installed version.
+    const stripe = new Stripe(mustEnv("STRIPE_SECRET_KEY"));
 
     const json = await req.json().catch(() => ({}));
     const parsed = BodySchema.safeParse(json);
 
     if (!parsed.success) {
       return NextResponse.json(
-        { ok: false, error: "Invalid body. Expected { plan: starter|pro|enterprise }" },
+        { ok: false, error: 'Invalid body. Expected { "plan": "starter"|"pro"|"enterprise" }' },
         { status: 400 }
       );
     }
