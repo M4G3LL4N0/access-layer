@@ -1,103 +1,84 @@
-export const dynamic = "force-dynamic";
-
 import Link from "next/link";
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
 
-function pct(n: number) {
-  return `${Math.round(n * 100)}%`;
-}
+export const dynamic = "force-dynamic";
 
-export default async function SFPilotReportPage() {
-  const supabase = supabaseAdmin();
+export default async function SFReportPage() {
+  const supa = supabaseAdmin();
 
-  const { data: venues } = await supabase
+  const { data: venues } = await supa
     .from("venues")
     .select("id,name,city,region,country,category,status,created_at")
-    .order("created_at", { ascending: false })
-    .limit(500);
+    .eq("status", "active")
+    .order("created_at", { ascending: false });
 
-  // access_passes might be empty early; now it exists, but still handle gracefully
-  const { data: passes, error: passErr } = await supabase
-    .from("access_passes")
-    .select("id,venue_id,status,created_at,issued_at,expires_at")
-    .order("created_at", { ascending: false })
-    .limit(2000);
+  const { count: passes } = await supa.from("access_passes").select("id", { count: "exact", head: true });
+  const { count: invites } = await supa.from("venue_owner_invites").select("id", { count: "exact", head: true });
+  const { count: leads } = await supa.from("owner_leads").select("id", { count: "exact", head: true });
 
-  const v = venues || [];
-  const p = passes || [];
-
-  const totalVenues = v.length;
-  const activeVenues = v.filter((x) => x.status === "active").length;
-
-  const totalPasses = p.length;
-  const activePasses = p.filter((x) => x.status === "active").length;
-  const expiredPasses = p.filter((x) => x.status === "expired").length;
-
-  const denom = totalPasses || 1;
-  const successRate = totalPasses ? activePasses / denom : 0;
-  const expiryRate = totalPasses ? expiredPasses / denom : 0;
-
-  const counts: Record<string, number> = {};
-  for (const row of p) counts[row.venue_id] = (counts[row.venue_id] || 0) + 1;
-
-  const top = [...v]
-    .map((row) => ({ ...row, uses: counts[row.id] || 0 }))
-    .sort((a, b) => b.uses - a.uses)
-    .slice(0, 10);
+  // Simple scaling simulation (illustrative)
+  const v = venues?.length || 0;
+  const avgMonthlySaaS = 99; // blended starter/pro for demo
+  const mrr = v * avgMonthlySaaS;
+  const arr = mrr * 12;
 
   return (
-    <main
-      style={{
-        padding: 24,
-        fontFamily: "system-ui",
-        maxWidth: 1100,
-        margin: "0 auto",
-        color: "#111",
-        background: "#fafafa",
-        minHeight: "100vh",
-      }}
-    >
-      <div style={{ display: "flex", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
+    <main style={{ padding: 28, fontFamily: "system-ui", minHeight: "100vh" }}>
+      <header style={{ display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
         <div>
-          <h1 style={{ margin: 0, fontSize: 34, fontWeight: 950 }}>San Francisco Pilot Report</h1>
-          <div style={{ marginTop: 6, opacity: 0.85, fontWeight: 800 }}>
-            Access ↔ Space — rule-based access, no codes published.
+          <h1 style={{ margin: 0, fontSize: 34, fontWeight: 999 }}>SF Pilot Report</h1>
+          <div style={{ marginTop: 8, opacity: 0.8, lineHeight: 1.6, maxWidth: 920 }}>
+            Proof-of-work report for the SF rollout. This is a live pull from Supabase (venues + passes + invites).
           </div>
-          {passErr ? (
-            <div style={{ marginTop: 8, fontSize: 12, opacity: 0.85 }}>
-              Debug: {passErr.message}
-            </div>
-          ) : null}
         </div>
-        <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-          <Link href="/venues" style={{ fontWeight: 950, color: "#111" }}>Directory →</Link>
-          <Link href="/investors" style={{ fontWeight: 950, color: "#111" }}>Investors →</Link>
-          <Link href="/demo" style={{ fontWeight: 950, color: "#111" }}>Demo →</Link>
+        <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+          <Btn href="/demo">Demo</Btn>
+          <Btn href="/admin/metrics">Metrics</Btn>
+          <Btn href="/venues">Directory</Btn>
         </div>
-      </div>
+      </header>
 
-      <section style={{ marginTop: 18, display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 12 }}>
-        <Card label="Venues onboarded" value={String(totalVenues)} sub={`${activeVenues} active`} />
-        <Card label="Access passes issued" value={String(totalPasses)} sub={`${activePasses} active · ${expiredPasses} expired`} />
-        <Card label="Pass activation rate" value={pct(successRate)} sub="active / total" />
-        <Card label="Expiry rate" value={pct(expiryRate)} sub="expired / total" />
+      <section style={{ marginTop: 18, display: "flex", gap: 14, flexWrap: "wrap" }}>
+        <Card label="Active Venues" value={v} />
+        <Card label="Passes Issued" value={passes || 0} />
+        <Card label="Owner Invites" value={invites || 0} />
+        <Card label="Owner Leads" value={leads || 0} />
       </section>
 
-      <section style={{ marginTop: 18, padding: 16, borderRadius: 18, border: "1px solid #eaeaea", background: "white" }}>
-        <h2 style={{ margin: 0, fontSize: 20, fontWeight: 950 }}>Top venues by usage</h2>
+      <section style={{ marginTop: 18 }}>
+        <h2 style={{ fontSize: 22, fontWeight: 999, marginBottom: 10 }}>Economics simulation (illustrative)</h2>
+        <div style={{ border: "1px solid #23232a", background: "#111118", borderRadius: 18, padding: 16 }}>
+          <div style={{ opacity: 0.9, lineHeight: 1.7 }}>
+            <div>
+              Assumption: <b>${avgMonthlySaaS}/mo</b> blended owner SaaS per active venue (starter+pro mix)
+            </div>
+            <div>
+              Current MRR: <b>${mrr.toLocaleString()}</b>
+            </div>
+            <div>
+              Current ARR: <b>${arr.toLocaleString()}</b>
+            </div>
+            <div style={{ marginTop: 10, opacity: 0.75 }}>
+              Next: add Stripe plans and convert owner claims into paid subscriptions.
+            </div>
+          </div>
+        </div>
+      </section>
 
-        <div style={{ marginTop: 10, display: "grid", gap: 10 }}>
-          {top.map((row) => (
-            <div key={row.id} style={{ padding: 12, border: "1px solid #eee", borderRadius: 14, background: "#fff" }}>
-              <div style={{ fontWeight: 950, fontSize: 16 }}>{row.name}</div>
-              <div style={{ opacity: 0.9, marginTop: 4 }}>
-                {[row.city, row.region, row.country].filter(Boolean).join(" · ")} ·{" "}
-                {[row.category, row.status].filter(Boolean).join(" · ")} · <b>{row.uses}</b> passes
+      <section style={{ marginTop: 18 }}>
+        <h2 style={{ fontSize: 22, fontWeight: 999, marginBottom: 10 }}>Active venues</h2>
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 12 }}>
+          {(venues || []).map((x) => (
+            <div key={x.id} style={{ border: "1px solid #23232a", background: "#111118", borderRadius: 18, padding: 14 }}>
+              <div style={{ fontWeight: 999 }}>{x.name}</div>
+              <div style={{ opacity: 0.75, marginTop: 6 }}>
+                {x.city} {x.region} · {x.category} · {x.status}
               </div>
               <div style={{ marginTop: 10, display: "flex", gap: 10, flexWrap: "wrap" }}>
-                <Link href={`/v/${row.id}`} style={pillStyle}>View venue</Link>
-                <Link href={`/request/${row.id}`} style={pillStyle}>Request access</Link>
-                <Link href={`/signage/${row.id}`} style={pillStyle}>Print signage</Link>
+                <Btn href={`/v/${x.id}`}>Venue</Btn>
+                <Btn href={`/request/${x.id}`}>Request</Btn>
+                <Btn href={`/claim/${x.id}`}>Claim</Btn>
               </div>
             </div>
           ))}
@@ -107,23 +88,31 @@ export default async function SFPilotReportPage() {
   );
 }
 
-function Card({ label, value, sub }: { label: string; value: string; sub: string }) {
+function Card({ label, value }: { label: string; value: number }) {
   return (
-    <div style={{ padding: 16, borderRadius: 18, border: "1px solid #eaeaea", background: "white", color: "#111" }}>
+    <div style={{ width: 240, padding: 16, borderRadius: 18, border: "1px solid #23232a", background: "#111118" }}>
+      <div style={{ fontSize: 38, fontWeight: 999 }}>{value}</div>
       <div style={{ opacity: 0.75, fontWeight: 900 }}>{label}</div>
-      <div style={{ fontSize: 34, fontWeight: 950, marginTop: 6 }}>{value}</div>
-      <div style={{ marginTop: 6, opacity: 0.85, fontWeight: 800 }}>{sub}</div>
     </div>
   );
 }
 
-const pillStyle: React.CSSProperties = {
-  display: "inline-block",
-  padding: "8px 12px",
-  borderRadius: 999,
-  border: "1px solid #ddd",
-  fontWeight: 900,
-  textDecoration: "none",
-  color: "#111",
-  background: "white",
-};
+function Btn({ href, children }: { href: string; children: React.ReactNode }) {
+  return (
+    <Link
+      href={href}
+      style={{
+        display: "inline-block",
+        padding: "10px 12px",
+        borderRadius: 12,
+        background: "black",
+        color: "white",
+        textDecoration: "none",
+        fontWeight: 950,
+        border: "1px solid #23232a",
+      }}
+    >
+      {children}
+    </Link>
+  );
+}
