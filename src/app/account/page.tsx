@@ -38,9 +38,8 @@ export default function AccountPage() {
       return;
     }
 
-    // The API should return venueId; if it doesn't, we still show success.
-    const venueId = j?.venueId;
-    setMsg("Invite redeemed. Redirecting to manage…");
+    const venueId = j?.venueId || j?.venue_id || j?.venue?.id || null;
+    setMsg("Invite redeemed. Redirecting…");
 
     if (venueId) {
       window.location.href = `/manage/${venueId}`;
@@ -71,7 +70,7 @@ export default function AccountPage() {
   }
 
   return (
-    <main style={{ padding: 24, fontFamily: "system-ui", maxWidth: 720, margin: "0 auto" }}>
+    <main style={{ padding: 24, fontFamily: "system-ui", maxWidth: 760, margin: "0 auto" }}>
       <h1 style={{ fontSize: 32, fontWeight: 950 }}>Account</h1>
       <div style={{ marginTop: 8, opacity: 0.85 }}>
         Signed in as <b>{email}</b>
@@ -93,13 +92,22 @@ export default function AccountPage() {
       </button>
 
       <section style={{ marginTop: 18, padding: 16, border: "1px solid #eee", borderRadius: 16 }}>
-        <div style={{ fontWeight: 950, fontSize: 18 }}>Redeem owner invite</div>
+        <div style={{ fontWeight: 950, fontSize: 18 }}>Redeem invite token</div>
         <p style={{ marginTop: 6, opacity: 0.8 }}>
-          Paste the invite token you received.
+          Paste your invite token here to unlock venue management.
         </p>
 
         {msg && (
-          <div style={{ marginTop: 10, padding: 12, borderRadius: 12, background: "#f7f7ff", border: "1px solid #e6e6ff", fontWeight: 900 }}>
+          <div
+            style={{
+              marginTop: 10,
+              padding: 12,
+              borderRadius: 12,
+              background: "#f7f7ff",
+              border: "1px solid #e6e6ff",
+              fontWeight: 900,
+            }}
+          >
             {msg}
           </div>
         )}
@@ -111,7 +119,13 @@ export default function AccountPage() {
             onChange={(e) => setInviteToken(e.target.value)}
             required
             placeholder="paste token here"
-            style={{ width: "100%", padding: 12, borderRadius: 12, border: "1px solid #ddd", fontFamily: "ui-monospace" }}
+            style={{
+              width: "100%",
+              padding: 12,
+              borderRadius: 12,
+              border: "1px solid #ddd",
+              fontFamily: "ui-monospace",
+            }}
           />
           <button
             style={{
@@ -125,7 +139,7 @@ export default function AccountPage() {
               cursor: "pointer",
             }}
           >
-            Redeem invite
+            Redeem
           </button>
         </form>
       </section>

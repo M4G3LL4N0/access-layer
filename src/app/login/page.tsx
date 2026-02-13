@@ -45,14 +45,23 @@ export default function LoginPage() {
   }
 
   return (
-    <main style={{ padding: 24, fontFamily: "system-ui", maxWidth: 520, margin: "0 auto" }}>
-      <h1 style={{ fontSize: 30, fontWeight: 950 }}>Sign in</h1>
+    <main style={{ padding: 24, fontFamily: "system-ui", maxWidth: 560, margin: "0 auto" }}>
+      <h1 style={{ fontSize: 32, fontWeight: 950 }}>Owner login</h1>
       <p style={{ opacity: 0.8, lineHeight: 1.6 }}>
-        Use Google (recommended) or email magic link.
+        Sign in via Google (recommended) or email magic link. Once verified, you can manage venues you’ve been invited to.
       </p>
 
       {err && (
-        <div style={{ marginTop: 12, padding: 12, borderRadius: 12, background: "#fff3f3", border: "1px solid #ffd2d2", fontWeight: 900 }}>
+        <div
+          style={{
+            marginTop: 12,
+            padding: 12,
+            borderRadius: 12,
+            background: "#fff3f3",
+            border: "1px solid #ffd2d2",
+            fontWeight: 900,
+          }}
+        >
           {err}
         </div>
       )}
@@ -76,7 +85,16 @@ export default function LoginPage() {
       <div style={{ marginTop: 14, opacity: 0.6, fontWeight: 900, textAlign: "center" }}>or</div>
 
       {sent ? (
-        <div style={{ marginTop: 14, padding: 12, borderRadius: 12, background: "#f0fff4", border: "1px solid #c9f2d3", fontWeight: 900 }}>
+        <div
+          style={{
+            marginTop: 14,
+            padding: 12,
+            borderRadius: 12,
+            background: "#f0fff4",
+            border: "1px solid #c9f2d3",
+            fontWeight: 900,
+          }}
+        >
           Link sent. Check your email and click the magic link.
         </div>
       ) : (
@@ -87,7 +105,7 @@ export default function LoginPage() {
             onChange={(e) => setEmail(e.target.value)}
             type="email"
             required
-            placeholder="you@domain.com"
+            placeholder="owner@venue.com"
             style={{ width: "100%", padding: 12, borderRadius: 12, border: "1px solid #ddd" }}
           />
           <button
@@ -103,13 +121,13 @@ export default function LoginPage() {
               width: "100%",
             }}
           >
-            Email me a link
+            Send magic link
           </button>
         </form>
       )}
 
       <div style={{ marginTop: 16, fontSize: 12, opacity: 0.7 }}>
-        After auth you’ll go to <b>{next}</b>.
+        After auth you’ll be sent to <b>{next}</b>.
       </div>
     </main>
   );
