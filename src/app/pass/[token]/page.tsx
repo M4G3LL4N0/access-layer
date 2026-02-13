@@ -1,5 +1,7 @@
+export const dynamic = "force-dynamic";
+
 import Link from "next/link";
-import { supabaseServer } from "@/lib/supabaseServer";
+import { supabaseAdmin } from "@/lib/supabaseAdmin";
 
 export default async function PassPage({
   params,
@@ -8,50 +10,99 @@ export default async function PassPage({
 }) {
   const { token } = await params;
 
-  const { data: pass, error } = await supabaseServer
-    .from("access_tokens")
-    .select("token,status,issued_at,expires_at,venue_id")
-    .eq("token", token)
-    .single();
+  const supabase = supabaseAdmin();
 
-  if (error || !pass) {
+  const { data: pass, error } = await supabase
+    .from("access_passes")
+    .select("id,venue_id,status,issued_at,expires_at,token")
+    .eq("token", token)
+    .maybeSingle();
+
+  const shell: React.CSSProperties = {
+    padding: 24,
+    fontFamily: "system-ui",
+    maxWidth: 900,
+    margin: "0 auto",
+    background: "#fafafa",
+    minHeight: "100vh",
+    color: "#111",
+  };
+
+  if (!pass) {
     return (
-      <main style={{ padding: 24, fontFamily: "system-ui" }}>
-        <h1 style={{ fontSize: 24, fontWeight: 800 }}>Pass Not Found</h1>
-        <pre style={{ marginTop: 12, padding: 12, background: "#fee", borderRadius: 8 }}>
-          {error?.message || "Unknown error"}
-        </pre>
-        <Link href="/" style={{ display: "inline-block", marginTop: 16 }}>
-          ← Home
+      <main style={shell}>
+        <h1 style={{ margin: 0, fontSize: 28, fontWeight: 950 }}>Access Pass</h1>
+        <p style={{ marginTop: 10, opacity: 0.9 }}>
+          Pass not found or expired.
+          {error ? (
+            <span style={{ display: "block", marginTop: 8 }}>
+              Debug: {error.message}
+            </span>
+          ) : null}
+        </p>
+        <Link href="/venues" style={{ fontWeight: 950 }}>
+          Back to directory →
         </Link>
       </main>
     );
   }
 
-  const exp = new Date(pass.expires_at).getTime();
-  const isExpired = Date.now() > exp || pass.status !== "active";
+  const issued = pass.issued_at ? new Date(pass.issued_at) : null;
+  const expires = pass.expires_at ? new Date(pass.expires_at) : null;
 
   return (
-    <main style={{ padding: 24, fontFamily: "system-ui" }}>
-      <h1 style={{ fontSize: 26, fontWeight: 900 }}>
-        Access Pass {isExpired ? "(Expired)" : "(Active)"}
-      </h1>
-
-      <div style={{ marginTop: 12, padding: 16, borderRadius: 12, background: isExpired ? "#fff0f0" : "#f0fff4" }}>
-        <div><strong>Status:</strong> {pass.status}</div>
-        <div><strong>Issued:</strong> {new Date(pass.issued_at).toLocaleString()}</div>
-        <div><strong>Expires:</strong> {new Date(pass.expires_at).toLocaleString()}</div>
-        <div style={{ marginTop: 8, fontSize: 12, opacity: 0.7 }}>Token: {pass.token}</div>
+    <main style={shell}>
+      <div style={{ display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+        <h1 style={{ margin: 0, fontSize: 28, fontWeight: 950 }}>Access Pass (Active)</h1>
+        <div style={{ display: "flex", gap: 10 }}>
+          <Link href={`/v/${pass.venue_id}`} style={{ fontWeight: 950 }}>
+            Venue →
+          </Link>
+          <Link href="/venues" style={{ fontWeight: 950 }}>
+            Directory →
+          </Link>
+        </div>
       </div>
 
-      <p style={{ marginTop: 16, opacity: 0.85 }}>
-        Show this pass to confirm you were granted access during the active window. (No codes displayed.)
-      </p>
+      <div
+        style={{
+          marginTop: 14,
+          padding: 18,
+          borderRadius: 16,
+          border: "1px solid #e6e6e6",
+          background: "white",
+          color: "#111",
+        }}
+      >
+        <div style={{ fontWeight: 950, fontSize: 16 }}>Status: {pass.status}</div>
+        <div style={{ marginTop: 8, opacity: 0.9 }}>
+          Issued: {issued ? issued.toLocaleString() : "—"}
+        </div>
+        <div style={{ marginTop: 4, opacity: 0.9 }}>
+          Expires: {expires ? expires.toLocaleString() : "—"}
+        </div>
 
-      <Link href="/" style={{ display: "inline-block", marginTop: 16, opacity: 0.8 }}>
-        ← Home
-      </Link>
+        <div
+          style={{
+            marginTop: 14,
+            padding: 14,
+            borderRadius: 14,
+            border: "1px solid #efefef",
+            background: "#f7f7f7",
+            color: "#111",
+          }}
+        >
+          <div style={{ fontWeight: 950 }}>Token:</div>
+          <div style={{ marginTop: 6, fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace", fontSize: 16, wordBreak: "break-all" }}>
+            {pass.token}
+          </div>
+        </div>
+
+        <div style={{ marginTop: 12, opacity: 0.9, lineHeight: 1.6 }}>
+          Show this pass to confirm you were granted access during the active window.{" "}
+          <b>(No codes displayed.)</b>
+        </div>
+      </div>
     </main>
   );
 }
-

@@ -1,28 +1,44 @@
+/* Global, consistent theme that never becomes unreadable */
 :root {
-  color-scheme: light dark;
-
-  --card-bg: #ffffff;
-  --card-border: #e5e5e5;
+  color-scheme: light; /* force light defaults */
+  --bg: #fafafa;
+  --fg: #111111;
+  --card: #ffffff;
+  --muted: rgba(0,0,0,0.72);
+  --border: #e6e6e6;
+  --link: #111111;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --card-bg: #111111;
-    --card-border: #2a2a2a;
-  }
+html, body {
+  height: 100%;
 }
 
-html,
 body {
   margin: 0;
-  padding: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
 }
 
+/* Links */
 a {
-  color: inherit;
-  text-decoration: none;
+  color: var(--link);
 }
 
+/* Common readability helpers */
 * {
   box-sizing: border-box;
+}
+
+/* If any component uses "dark:" classes, keep it readable anyway */
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: light;
+    --bg: #fafafa;
+    --fg: #111111;
+    --card: #ffffff;
+    --muted: rgba(0,0,0,0.72);
+    --border: #e6e6e6;
+    --link: #111111;
+  }
 }
