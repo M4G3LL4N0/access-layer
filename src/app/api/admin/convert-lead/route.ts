@@ -15,10 +15,26 @@ function guessCategory(venue_type?: string | null) {
   return v || "restroom";
 }
 
+async function readBody(req: Request) {
+  const ct = req.headers.get("content-type") || "";
+  if (ct.includes("application/json")) {
+    const json = await req.json().catch(() => ({}));
+    return json;
+  }
+  if (ct.includes("application/x-www-form-urlencoded") || ct.includes("multipart/form-data")) {
+    const form = await req.formData();
+    return Object.fromEntries(form.entries());
+  }
+  // fallback: try json
+  const json = await req.json().catch(() => ({}));
+  return json;
+}
+
 export async function POST(req: Request) {
   try {
-    const body = await req.json().catch(() => ({}));
+    const body = await readBody(req);
     const parsed = Schema.safeParse(body);
+
     if (!parsed.success) {
       return NextResponse.json({ ok: false, error: "Invalid payload" }, { status: 400 });
     }
@@ -64,7 +80,6 @@ export async function POST(req: Request) {
     const venueId = venueRows?.[0]?.id;
     if (!venueId) return NextResponse.json({ ok: false, error: "Venue create failed" }, { status: 500 });
 
-    // Default access rule
     const { error: ruleErr } = await supabase.from("access_rules").insert([
       {
         venue_id: venueId,
@@ -84,7 +99,6 @@ export async function POST(req: Request) {
 
     if (ruleErr) return NextResponse.json({ ok: false, error: ruleErr.message }, { status: 500 });
 
-    // mark lead converted (non-blocking)
     await supabase.from("leads").update({ status: "converted" }).eq("id", lead.id);
 
     const origin = "https://access-layer-five.vercel.app";
@@ -92,9 +106,11 @@ export async function POST(req: Request) {
       ok: true,
       venueId,
       links: {
+        pilotPack: `${origin}/pilot-pack/${venueId}`,
         venue: `${origin}/v/${venueId}`,
         signage: `${origin}/signage/${venueId}`,
         verify: `${origin}/verify`,
+        request: `${origin}/request/${venueId}`,
         manage: `${origin}/manage/${venueId}`,
       },
     });
