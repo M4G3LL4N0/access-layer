@@ -3,14 +3,6 @@ export const dynamic = "force-dynamic";
 import Link from "next/link";
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
 
-function pickFirst(obj: any, keys: string[]) {
-  for (const k of keys) {
-    const v = obj?.[k];
-    if (typeof v === "string" && v.trim()) return v.trim();
-  }
-  return "";
-}
-
 export default async function SignagePage({
   params,
 }: {
@@ -20,10 +12,9 @@ export default async function SignagePage({
 
   const supabase = supabaseAdmin();
 
-  // IMPORTANT: stop guessing columns — pull the row as-is
   const { data: venue, error } = await supabase
     .from("venues")
-    .select("*")
+    .select("id,name,address,city,region,country,category,status")
     .eq("id", venueId)
     .maybeSingle();
 
@@ -40,13 +31,11 @@ export default async function SignagePage({
   if (!venue) {
     return (
       <main style={shell}>
-        <h1 style={{ margin: 0, fontSize: 26, fontWeight: 950, color: "#111" }}>
-          Signage
-        </h1>
-        <p style={{ marginTop: 10, opacity: 0.9, color: "#111" }}>
+        <h1 style={{ margin: 0, fontSize: 26, fontWeight: 950 }}>Signage</h1>
+        <p style={{ marginTop: 10, opacity: 0.9 }}>
           Venue not found.
           {error ? (
-            <span style={{ display: "block", marginTop: 8, color: "#111" }}>
+            <span style={{ display: "block", marginTop: 8 }}>
               Debug: {error.message}
             </span>
           ) : null}
@@ -58,36 +47,26 @@ export default async function SignagePage({
     );
   }
 
-  const name = pickFirst(venue, ["name", "title", "venue_name"]) || "Venue";
-  const city = pickFirst(venue, ["city", "locality", "town"]);
-  const area = pickFirst(venue, ["neighborhood", "district", "area"]);
-  const status = pickFirst(venue, ["status", "venue_status"]);
-  const kind = pickFirst(venue, ["kind", "type", "category"]);
-
-  const meta = [area || city, kind, status].filter(Boolean).join(" · ");
-
   const base =
     process.env.NEXT_PUBLIC_APP_URL || "https://access-layer-five.vercel.app";
   const requestUrl = `${base}/request/${venue.id}`;
+
+  const line1 = [venue.address].filter(Boolean).join("");
+  const line2 = [venue.city, venue.region, venue.country].filter(Boolean).join(" · ");
+  const meta = [venue.category, venue.status].filter(Boolean).join(" · ");
 
   return (
     <main style={shell}>
       <div style={{ display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
         <div>
-          <h1 style={{ margin: 0, fontSize: 30, fontWeight: 950, color: "#111" }}>
-            Printable Signage
-          </h1>
-          <div style={{ marginTop: 6, opacity: 0.85, fontWeight: 800, color: "#111" }}>
+          <h1 style={{ margin: 0, fontSize: 30, fontWeight: 950 }}>Printable Signage</h1>
+          <div style={{ marginTop: 6, opacity: 0.85, fontWeight: 800 }}>
             Print and place near the entrance / access point
           </div>
         </div>
         <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-          <Link href={`/v/${venue.id}`} style={{ fontWeight: 950, color: "#111" }}>
-            Venue →
-          </Link>
-          <Link href="/venues" style={{ fontWeight: 950, color: "#111" }}>
-            Directory →
-          </Link>
+          <Link href={`/v/${venue.id}`} style={{ fontWeight: 950, color: "#111" }}>Venue →</Link>
+          <Link href="/venues" style={{ fontWeight: 950, color: "#111" }}>Directory →</Link>
         </div>
       </div>
 
@@ -98,25 +77,24 @@ export default async function SignagePage({
           borderRadius: 18,
           padding: 22,
           background: "white",
-          color: "#111",
         }}
       >
-        <div style={{ fontSize: 12, letterSpacing: 1.2, fontWeight: 950, opacity: 0.75, color: "#111" }}>
+        <div style={{ fontSize: 12, letterSpacing: 1.2, fontWeight: 950, opacity: 0.75 }}>
           ACCESS ↔ SPACE · NO CODES PUBLISHED
         </div>
 
-        <div style={{ marginTop: 10, fontSize: 32, fontWeight: 950, color: "#111" }}>
-          {name}
+        <div style={{ marginTop: 10, fontSize: 32, fontWeight: 950 }}>
+          {venue.name}
         </div>
 
-        <div style={{ marginTop: 4, opacity: 0.9, fontWeight: 800, color: "#111" }}>
-          {meta || "San Francisco pilot · active"}
-        </div>
+        {line1 ? <div style={{ marginTop: 4, opacity: 0.9, fontWeight: 800 }}>{line1}</div> : null}
+        {line2 ? <div style={{ marginTop: 4, opacity: 0.85, fontWeight: 800 }}>{line2}</div> : null}
+        {meta ? <div style={{ marginTop: 6, opacity: 0.85, fontWeight: 800 }}>{meta}</div> : null}
 
         <div style={{ marginTop: 16, display: "grid", gap: 12 }}>
-          <div style={{ padding: 16, borderRadius: 16, border: "1px solid #eee", background: "#fff" }}>
-            <div style={{ fontWeight: 950, fontSize: 18, color: "#111" }}>Need access?</div>
-            <div style={{ marginTop: 6, opacity: 0.95, lineHeight: 1.6, color: "#111" }}>
+          <div style={{ padding: 16, borderRadius: 16, border: "1px solid #eee" }}>
+            <div style={{ fontWeight: 950, fontSize: 18 }}>Need access?</div>
+            <div style={{ marginTop: 6, opacity: 0.95, lineHeight: 1.6 }}>
               Visit the link to request a time-limited access pass.
               <br />
               <b>No keypad codes displayed.</b>
@@ -140,14 +118,14 @@ export default async function SignagePage({
               </a>
             </div>
 
-            <div style={{ marginTop: 10, opacity: 0.8, fontSize: 12, color: "#111" }}>
+            <div style={{ marginTop: 10, opacity: 0.8, fontSize: 12 }}>
               Print tip: browser print → disable headers/footers.
             </div>
           </div>
 
-          <div style={{ padding: 16, borderRadius: 16, border: "1px solid #eee", background: "#fff" }}>
-            <div style={{ fontWeight: 950, fontSize: 18, color: "#111" }}>Venue staff</div>
-            <div style={{ marginTop: 6, opacity: 0.95, lineHeight: 1.6, color: "#111" }}>
+          <div style={{ padding: 16, borderRadius: 16, border: "1px solid #eee" }}>
+            <div style={{ fontWeight: 950, fontSize: 18 }}>Venue staff</div>
+            <div style={{ marginTop: 6, opacity: 0.95, lineHeight: 1.6 }}>
               This pilot reduces friction when staff are busy. The pass confirms a visitor
               was granted access during a time window.
             </div>
