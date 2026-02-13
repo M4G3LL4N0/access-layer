@@ -10,7 +10,9 @@ export default async function SignagePage({
 }) {
   const { venueId } = await params;
 
-  const supabase = supabaseServer();
+  // IMPORTANT: supabaseServer is a client export, not a function.
+  const supabase = supabaseServer;
+
   const { data: venue } = await supabase
     .from("venues")
     .select("id,name,neighborhood,city,state,kind,status")
@@ -27,8 +29,7 @@ export default async function SignagePage({
     );
   }
 
-  const base =
-    process.env.NEXT_PUBLIC_APP_URL || "https://access-layer-five.vercel.app";
+  const base = process.env.NEXT_PUBLIC_APP_URL || "https://access-layer-five.vercel.app";
   const requestUrl = `${base}/request/${venue.id}`;
 
   return (
@@ -59,9 +60,7 @@ export default async function SignagePage({
           ACCESS ↔ SPACE · NO CODES PUBLISHED
         </div>
 
-        <div style={{ marginTop: 10, fontSize: 32, fontWeight: 950 }}>
-          {venue.name}
-        </div>
+        <div style={{ marginTop: 10, fontSize: 32, fontWeight: 950 }}>{venue.name}</div>
         <div style={{ marginTop: 4, opacity: 0.8, fontWeight: 800 }}>
           {venue.neighborhood} — {venue.city} {venue.state} · {venue.kind} · {venue.status}
         </div>
@@ -70,7 +69,7 @@ export default async function SignagePage({
           <div style={{ padding: 16, borderRadius: 16, border: "1px solid #eee" }}>
             <div style={{ fontWeight: 950, fontSize: 18 }}>Need access?</div>
             <div style={{ marginTop: 6, opacity: 0.85, lineHeight: 1.6 }}>
-              Scan the QR or visit the link to request a time-limited access pass.
+              Visit the link to request a time-limited access pass.
               <br />
               <b>No keypad codes displayed.</b>
             </div>
@@ -86,6 +85,7 @@ export default async function SignagePage({
                   color: "white",
                   fontWeight: 950,
                   textDecoration: "none",
+                  wordBreak: "break-all",
                 }}
               >
                 {requestUrl}
@@ -93,22 +93,18 @@ export default async function SignagePage({
             </div>
 
             <div style={{ marginTop: 10, opacity: 0.7, fontSize: 12 }}>
-              Tip: print this page. In the next iteration we’ll add an actual QR image.
+              Print tip: browser print → disable headers/footers.
             </div>
           </div>
 
           <div style={{ padding: 16, borderRadius: 16, border: "1px solid #eee" }}>
             <div style={{ fontWeight: 950, fontSize: 18 }}>Venue staff</div>
             <div style={{ marginTop: 6, opacity: 0.85, lineHeight: 1.6 }}>
-              This pilot is designed to reduce friction when staff are busy. The pass confirms
-              a visitor was granted access during a time window.
+              This pilot reduces friction when staff are busy. The pass confirms a visitor
+              was granted access during a time window.
             </div>
           </div>
         </div>
-      </div>
-
-      <div style={{ marginTop: 14, opacity: 0.7, fontSize: 12 }}>
-        Print tip: use browser print → “More settings” → disable headers/footers.
       </div>
     </main>
   );
