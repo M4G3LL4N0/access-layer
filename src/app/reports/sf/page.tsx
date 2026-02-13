@@ -13,7 +13,7 @@ export default async function SFPilotReportPage() {
   const [{ data: venues }, { data: passes }] = await Promise.all([
     supabase
       .from("venues")
-      .select("id,name,city,state,kind,status,created_at,neighborhood")
+      .select("id,name,city,state,kind,status,created_at")
       .order("created_at", { ascending: false })
       .limit(200),
     supabase
@@ -46,11 +46,21 @@ export default async function SFPilotReportPage() {
     .slice(0, 10);
 
   return (
-    <main style={{ padding: 24, fontFamily: "system-ui", maxWidth: 1100, margin: "0 auto" }}>
+    <main
+      style={{
+        padding: 24,
+        fontFamily: "system-ui",
+        maxWidth: 1100,
+        margin: "0 auto",
+        color: "#111",
+        background: "#fafafa",
+        minHeight: "100vh",
+      }}
+    >
       <div style={{ display: "flex", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
         <div>
           <h1 style={{ margin: 0, fontSize: 34, fontWeight: 950 }}>San Francisco Pilot Report</h1>
-          <div style={{ marginTop: 6, opacity: 0.8, fontWeight: 700 }}>
+          <div style={{ marginTop: 6, opacity: 0.85, fontWeight: 800 }}>
             Access ↔ Space — rule-based access, no codes published.
           </div>
         </div>
@@ -68,14 +78,28 @@ export default async function SFPilotReportPage() {
         <Card label="Expiry rate" value={pct(expiryRate)} sub="expired / total" />
       </section>
 
-      <section style={{ marginTop: 18, padding: 16, borderRadius: 18, border: "1px solid #eee" }}>
-        <h2 style={{ margin: 0, fontSize: 20, fontWeight: 950 }}>Top venues by usage</h2>
+      <section style={{ marginTop: 18, padding: 16, borderRadius: 18, border: "1px solid #eaeaea", background: "white" }}>
+        <h2 style={{ margin: 0, fontSize: 20, fontWeight: 950, color: "#111" }}>
+          What this pilot demonstrates
+        </h2>
+        <ul style={{ marginTop: 10, lineHeight: 1.7, color: "#222" }}>
+          <li><b>Neutral access layer</b>: time-boxed passes, no codes published.</li>
+          <li><b>Rate limits</b>: guards abuse while keeping guest UX fast.</li>
+          <li><b>Venue controls</b>: rules can be tuned per space (hours, caps, cooldown).</li>
+          <li><b>Proof-of-work</b>: onboarding + usage logs create measurable reliability signals.</li>
+        </ul>
+      </section>
+
+      <section style={{ marginTop: 18, padding: 16, borderRadius: 18, border: "1px solid #eaeaea", background: "white" }}>
+        <h2 style={{ margin: 0, fontSize: 20, fontWeight: 950, color: "#111" }}>
+          Top venues by usage
+        </h2>
+
         <div style={{ marginTop: 10, display: "grid", gap: 10 }}>
           {top.map((row) => (
-            <div key={row.id} style={{ padding: 12, border: "1px solid #eee", borderRadius: 14 }}>
-              <div style={{ fontWeight: 950, fontSize: 16 }}>{row.name}</div>
-              <div style={{ opacity: 0.8, marginTop: 4 }}>
-                {(row.neighborhood ? `${row.neighborhood} — ` : "")}
+            <div key={row.id} style={{ padding: 12, border: "1px solid #eee", borderRadius: 14, background: "#fff" }}>
+              <div style={{ fontWeight: 950, fontSize: 16, color: "#111" }}>{row.name}</div>
+              <div style={{ opacity: 0.9, marginTop: 4, color: "#222" }}>
                 {row.city} {row.state} · {row.kind} · {row.status} · <b>{row.uses}</b> passes
               </div>
               <div style={{ marginTop: 10, display: "flex", gap: 10, flexWrap: "wrap" }}>
@@ -93,10 +117,10 @@ export default async function SFPilotReportPage() {
 
 function Card({ label, value, sub }: { label: string; value: string; sub: string }) {
   return (
-    <div style={{ padding: 16, borderRadius: 18, border: "1px solid #eee", background: "white" }}>
-      <div style={{ opacity: 0.7, fontWeight: 900 }}>{label}</div>
+    <div style={{ padding: 16, borderRadius: 18, border: "1px solid #eaeaea", background: "white", color: "#111" }}>
+      <div style={{ opacity: 0.75, fontWeight: 900 }}>{label}</div>
       <div style={{ fontSize: 34, fontWeight: 950, marginTop: 6 }}>{value}</div>
-      <div style={{ marginTop: 6, opacity: 0.75, fontWeight: 800 }}>{sub}</div>
+      <div style={{ marginTop: 6, opacity: 0.85, fontWeight: 800 }}>{sub}</div>
     </div>
   );
 }
@@ -108,4 +132,6 @@ const pillStyle: React.CSSProperties = {
   border: "1px solid #ddd",
   fontWeight: 900,
   textDecoration: "none",
+  color: "#111",
+  background: "white",
 };
