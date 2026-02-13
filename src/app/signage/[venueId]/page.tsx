@@ -10,7 +10,7 @@ export default async function SignagePage({
 }) {
   const { venueId } = await params;
 
-  const supabase = supabaseServer();
+  const supabase = supabaseServer;
 
   const { data: venue, error } = await supabase
     .from("venues")
@@ -28,20 +28,18 @@ export default async function SignagePage({
           Back to directory →
         </Link>
 
-        {(error || !venue) && (
-          <pre className="mt-6 rounded-xl bg-zinc-50 p-4 text-xs overflow-auto">
-            {JSON.stringify(
-              { error: error?.message ?? null, hint: "Check venueId exists in venues" },
-              null,
-              2
-            )}
-          </pre>
-        )}
+        <pre className="mt-6 rounded-xl bg-zinc-50 p-4 text-xs overflow-auto">
+          {JSON.stringify(
+            { error: error?.message ?? null, venueId },
+            null,
+            2
+          )}
+        </pre>
       </main>
     );
   }
 
-  const requestUrlPath = `/request/${venue.id}`;
+  const requestPath = `/request/${venue.id}`;
 
   return (
     <main className="mx-auto max-w-3xl p-6">
@@ -53,7 +51,7 @@ export default async function SignagePage({
       </div>
 
       <p className="mt-2 text-zinc-700">
-        Print this page. Post near the entrance / front desk / restroom corridor.
+        Print this page and post near the entrance / front desk / corridor.
       </p>
 
       <div className="mt-6 rounded-3xl border bg-white p-8">
@@ -61,38 +59,40 @@ export default async function SignagePage({
           ACCESS ↔ SPACE
         </div>
 
-        <div className="mt-2 text-3xl font-black">
-          {venue.name}
-        </div>
+        <div className="mt-2 text-3xl font-black">{venue.name}</div>
 
         <div className="mt-1 text-zinc-700">
           {venue.address ? `${venue.address}, ` : ""}
-          {venue.city} {venue.region ? `— ${venue.region}` : ""} {venue.country ? `— ${venue.country}` : ""}
+          {venue.city} {venue.region ? `— ${venue.region}` : ""}{" "}
+          {venue.country ? `— ${venue.country}` : ""}
         </div>
 
         <div className="mt-5 rounded-2xl border bg-zinc-50 p-5">
           <div className="text-2xl font-black">Request Access Here</div>
-          <div className="mt-2 text-sm text-zinc-700">
-            Scan QR or open:
-          </div>
+          <div className="mt-2 text-sm text-zinc-700">Open:</div>
+
           <div className="mt-2 rounded-xl border bg-white p-3 font-mono text-sm break-all">
-            {requestUrlPath}
+            {requestPath}
           </div>
 
           <div className="mt-3 text-sm text-zinc-800">
-            <span className="font-bold">No codes displayed.</span> You’ll receive a time-limited pass to show staff.
+            <span className="font-bold">No codes displayed.</span> You’ll receive
+            a time-limited pass to show staff.
           </div>
         </div>
 
         <div className="mt-5 text-sm text-zinc-700">
-          Category: <span className="font-bold text-zinc-900">{venue.category}</span>
-          {" · "}
-          Status: <span className="font-bold text-zinc-900">{venue.status}</span>
+          Category:{" "}
+          <span className="font-bold text-zinc-900">{venue.category}</span> ·
+          Status:{" "}
+          <span className="font-bold text-zinc-900">{venue.status}</span>
         </div>
       </div>
 
       <div className="mt-6">
-        <Link className="underline" href="/venues">Back to directory →</Link>
+        <Link className="underline" href="/venues">
+          Back to directory →
+        </Link>
       </div>
     </main>
   );

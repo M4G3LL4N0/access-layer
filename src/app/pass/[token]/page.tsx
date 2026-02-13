@@ -12,7 +12,8 @@ export default async function PassPage({
 }) {
   const { token } = await params;
 
-  const supabase = supabaseServer();
+  // IMPORTANT: In your project supabaseServer is a client object, not a function.
+  const supabase = supabaseServer;
 
   // Avoid .single() "coerce" errors by selecting + ordering + limiting.
   const { data, error } = await supabase
@@ -28,9 +29,8 @@ export default async function PassPage({
     return (
       <main className="mx-auto max-w-xl p-6">
         <h1 className="text-2xl font-black">Access Pass</h1>
-        <p className="mt-2 text-zinc-700">
-          Pass not found or expired.
-        </p>
+        <p className="mt-2 text-zinc-700">Pass not found or expired.</p>
+
         <Link className="mt-4 inline-block underline" href="/venues">
           Back to directory →
         </Link>
@@ -67,8 +67,14 @@ export default async function PassPage({
         </div>
 
         <div className="mt-2 text-sm text-zinc-700">
-          <div><span className="font-bold">Issued:</span> {new Date(pass.issued_at).toLocaleString()}</div>
-          <div><span className="font-bold">Expires:</span> {new Date(pass.expires_at).toLocaleString()}</div>
+          <div>
+            <span className="font-bold">Issued:</span>{" "}
+            {new Date(pass.issued_at).toLocaleString()}
+          </div>
+          <div>
+            <span className="font-bold">Expires:</span>{" "}
+            {new Date(pass.expires_at).toLocaleString()}
+          </div>
         </div>
 
         <div className="mt-4">
@@ -79,8 +85,8 @@ export default async function PassPage({
         </div>
 
         <p className="mt-4 text-sm text-zinc-800">
-          Show this pass to confirm you were granted access during the active window.
-          <span className="font-bold"> (No codes displayed.)</span>
+          Show this pass to confirm you were granted access during the active
+          window. <span className="font-bold">(No codes displayed.)</span>
         </p>
       </div>
 
