@@ -1,6 +1,7 @@
 export const dynamic = "force-dynamic";
 
 import Link from "next/link";
+import { headers } from "next/headers";
 
 export default async function PassPage({
   params,
@@ -9,8 +10,15 @@ export default async function PassPage({
 }) {
   const { token } = await params;
 
-  const base =
-    process.env.NEXT_PUBLIC_APP_URL || "https://access-layer-five.vercel.app";
+  // Build the correct base URL for whatever domain you’re on (works on Vercel + localhost)
+  const h = await headers();
+  const proto = h.get("x-forwarded-proto") || "https";
+  const host =
+    h.get("x-forwarded-host") ||
+    h.get("host") ||
+    "access-layer-five.vercel.app";
+
+  const base = `${proto}://${host}`;
 
   const res = await fetch(`${base}/api/pass/${encodeURIComponent(token)}`, {
     cache: "no-store",
@@ -27,12 +35,15 @@ export default async function PassPage({
   };
 
   if (!res.ok) {
+    let msg = "Pass not found or expired.";
+    try {
+      const j = await res.json();
+      if (j?.error) msg = `Pass not available: ${j.error}`;
+    } catch {}
     return (
       <main style={shell}>
         <h1 style={{ margin: 0, fontSize: 28, fontWeight: 950 }}>Access Pass</h1>
-        <p style={{ marginTop: 10, opacity: 0.9 }}>
-          Pass not found or expired.
-        </p>
+        <p style={{ marginTop: 10, opacity: 0.9 }}>{msg}</p>
         <Link href="/venues" style={{ fontWeight: 950 }}>
           Back to directory →
         </Link>
@@ -56,9 +67,7 @@ export default async function PassPage({
           flexWrap: "wrap",
         }}
       >
-        <h1 style={{ margin: 0, fontSize: 28, fontWeight: 950 }}>
-          Access Pass
-        </h1>
+        <h1 style={{ margin: 0, fontSize: 28, fontWeight: 950 }}>Access Pass</h1>
         <div style={{ display: "flex", gap: 10 }}>
           <Link href={`/v/${pass.venue_id}`} style={{ fontWeight: 950 }}>
             Venue →
@@ -79,9 +88,7 @@ export default async function PassPage({
           color: "#111",
         }}
       >
-        <div style={{ fontWeight: 950, fontSize: 16 }}>
-          Status: {pass.status}
-        </div>
+        <div style={{ fontWeight: 950, fontSize: 16 }}>Status: {pass.status}</div>
         <div style={{ marginTop: 8, opacity: 0.9 }}>
           Issued: {issued ? issued.toLocaleString() : "—"}
         </div>
@@ -114,8 +121,8 @@ export default async function PassPage({
         </div>
 
         <div style={{ marginTop: 12, opacity: 0.9, lineHeight: 1.6 }}>
-          Show this pass to confirm you were granted access during the active
-          window. <b>(No codes displayed.)</b>
+          Show this pass to confirm you were granted access during the active window.{" "}
+          <b>(No codes displayed.)</b>
         </div>
       </div>
     </main>
