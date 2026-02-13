@@ -7,13 +7,12 @@ import { supabaseBrowser } from "@/lib/supabaseBrowser";
 function humanizeError(e: string | null) {
   if (!e) return "";
   if (e === "missing_code") return "Auth callback missing code. Try signing in again.";
-  if (e === "oauth_exchange_failed") return "OAuth exchange failed. Check Supabase redirect URLs + provider config.";
+  if (e === "oauth_exchange_failed") return "OAuth exchange failed (Supabase/Google redirect issue).";
   return e;
 }
 
 export default function LoginClient() {
   const sp = useSearchParams();
-  const next = sp.get("next") || "/account";
   const error = sp.get("error");
   const errorMsg = humanizeError(error);
 
@@ -21,12 +20,11 @@ export default function LoginClient() {
   const [sent, setSent] = useState(false);
   const [err, setErr] = useState<string>("");
 
-  const origin = useMemo(() => {
+  // IMPORTANT: redirectTo MUST be a plain, whitelisted URL with no extra query params.
+  const redirectTo = useMemo(() => {
     if (typeof window === "undefined") return "";
-    return window.location.origin;
+    return `${window.location.origin}/auth/callback`;
   }, []);
-
-  const redirectTo = `${origin}/auth/callback?next=${encodeURIComponent(next)}`;
 
   async function signInGoogle() {
     setErr("");
@@ -137,7 +135,11 @@ export default function LoginClient() {
       )}
 
       <div style={{ marginTop: 16, fontSize: 12, opacity: 0.7 }}>
-        After auth you’ll be sent to <b>{next}</b>.
+        After auth you’ll be sent to <b>/account</b>.
+      </div>
+
+      <div style={{ marginTop: 10, fontSize: 12, opacity: 0.55 }}>
+        OAuth redirect target: <span style={{ fontFamily: "ui-monospace" }}>{redirectTo}</span>
       </div>
     </main>
   );
