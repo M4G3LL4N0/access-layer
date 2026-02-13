@@ -1,137 +1,182 @@
-export const dynamic = "force-dynamic";
+"use client";
 
 import Link from "next/link";
+import { useState } from "react";
 
-function Card({
-  title,
-  price,
-  items,
-  cta,
-  href,
-  note,
-}: {
-  title: string;
-  price: string;
-  items: string[];
-  cta: string;
-  href: string;
-  note?: string;
-}) {
+export default function PricingPage() {
+  const [loading, setLoading] = useState<null | "starter" | "pro" | "enterprise">(null);
+  const [err, setErr] = useState<string>("");
+
+  async function start(plan: "starter" | "pro" | "enterprise") {
+    setErr("");
+    setLoading(plan);
+    try {
+      const r = await fetch("/api/stripe/checkout", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ plan }),
+      });
+      const j = await r.json();
+      if (!j.ok || !j.url) throw new Error(j.error || "Checkout failed");
+      window.location.href = j.url;
+    } catch (e: any) {
+      setErr(e?.message || "Checkout failed");
+      setLoading(null);
+    }
+  }
+
   return (
-    <div
-      style={{
-        padding: 18,
-        border: "1px solid var(--card-border)",
-        borderRadius: 16,
-        background: "var(--card-bg)",
-      }}
-    >
-      <div style={{ fontSize: 14, opacity: 0.75, fontWeight: 900 }}>{title}</div>
-      <div style={{ marginTop: 8, fontSize: 32, fontWeight: 950 }}>{price}</div>
-
-      <ul style={{ marginTop: 12, paddingLeft: 18, lineHeight: 1.8, opacity: 0.9 }}>
-        {items.map((x) => (
-          <li key={x}>{x}</li>
-        ))}
-      </ul>
-
-      {note && (
-        <div style={{ marginTop: 10, fontSize: 12, opacity: 0.7, lineHeight: 1.6 }}>
-          {note}
+    <main style={{ padding: 28, fontFamily: "system-ui", minHeight: "100vh" }}>
+      <header style={{ display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+        <div>
+          <h1 style={{ margin: 0, fontSize: 40, fontWeight: 999 }}>Pricing</h1>
+          <div style={{ marginTop: 8, opacity: 0.8, maxWidth: 920, lineHeight: 1.6 }}>
+            Owner controls + analytics + compliance-grade logs. This is the monetization layer for Access ↔ Space.
+          </div>
         </div>
-      )}
+        <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+          <Nav href="/demo">Demo</Nav>
+          <Nav href="/investors">Investors</Nav>
+          <Nav href="/venues">Directory</Nav>
+        </div>
+      </header>
 
-      <div style={{ marginTop: 14 }}>
-        <Link
-          href={href}
+      {err ? (
+        <div
           style={{
-            display: "inline-block",
-            padding: "10px 14px",
-            borderRadius: 10,
-            background: "black",
-            color: "white",
-            textDecoration: "none",
-            fontWeight: 950,
+            marginTop: 14,
+            padding: 12,
+            borderRadius: 14,
+            border: "1px solid #3a2a2a",
+            background: "#2a0b0b",
+            fontWeight: 900,
           }}
         >
-          {cta}
-        </Link>
-      </div>
+          {err}
+        </div>
+      ) : null}
+
+      <section style={{ marginTop: 18, display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 14 }}>
+        <Plan
+          name="Starter"
+          price="$49/mo"
+          bullets={[
+            "Rules: hours, cooldown, daily limits",
+            "Basic analytics: requests & passes",
+            "Signage QR + staff verify flow",
+            "Single venue",
+          ]}
+          cta="Start Starter"
+          loading={loading === "starter"}
+          onClick={() => start("starter")}
+        />
+        <Plan
+          name="Pro"
+          price="$199/mo"
+          bullets={[
+            "Everything in Starter",
+            "Multi-venue & staff roles",
+            "Audit logs + export",
+            "Owner onboarding & invites",
+          ]}
+          cta="Start Pro"
+          loading={loading === "pro"}
+          onClick={() => start("pro")}
+        />
+        <Plan
+          name="Enterprise"
+          price="Custom"
+          bullets={[
+            "SSO / SAML",
+            "Compliance & SLA",
+            "Custom integrations",
+            "Fleet rollout / chain deployments",
+          ]}
+          cta="Talk to us"
+          loading={loading === "enterprise"}
+          onClick={() => start("enterprise")}
+        />
+      </section>
+
+      <section style={{ marginTop: 18 }}>
+        <div style={{ border: "1px solid #23232a", background: "#111118", borderRadius: 18, padding: 16 }}>
+          <div style={{ fontWeight: 999, fontSize: 18 }}>What you’re buying</div>
+          <div style={{ marginTop: 10, opacity: 0.85, lineHeight: 1.7 }}>
+            A neutral access layer: rule engine + issuance + verification + logs + analytics. Long-term, this becomes
+            infrastructure for multi-category access networks (public + private spaces).
+          </div>
+          <div style={{ marginTop: 12, display: "flex", gap: 10, flexWrap: "wrap" }}>
+            <Nav href="/verify">Verifier</Nav>
+            <Nav href="/admin/metrics">Metrics</Nav>
+            <Nav href="/reports/sf">SF Report</Nav>
+          </div>
+        </div>
+      </section>
+    </main>
+  );
+}
+
+function Plan({
+  name,
+  price,
+  bullets,
+  cta,
+  loading,
+  onClick,
+}: {
+  name: string;
+  price: string;
+  bullets: string[];
+  cta: string;
+  loading: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <div style={{ border: "1px solid #23232a", background: "#111118", borderRadius: 18, padding: 16 }}>
+      <div style={{ fontWeight: 999, fontSize: 20 }}>{name}</div>
+      <div style={{ marginTop: 8, fontSize: 34, fontWeight: 999 }}>{price}</div>
+      <ul style={{ marginTop: 10, marginLeft: 18, opacity: 0.9, lineHeight: 1.7 }}>
+        {bullets.map((b) => (
+          <li key={b}>{b}</li>
+        ))}
+      </ul>
+      <button
+        onClick={onClick}
+        disabled={loading}
+        style={{
+          marginTop: 14,
+          width: "100%",
+          padding: "12px 14px",
+          borderRadius: 14,
+          border: "1px solid #23232a",
+          background: "black",
+          color: "white",
+          fontWeight: 999,
+          cursor: "pointer",
+        }}
+      >
+        {loading ? "Redirecting…" : cta}
+      </button>
     </div>
   );
 }
 
-export default function PricingPage() {
+function Nav({ href, children }: { href: string; children: React.ReactNode }) {
   return (
-    <main style={{ padding: 24, fontFamily: "system-ui", maxWidth: 1040, margin: "0 auto" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
-        <Link href="/venues" style={{ opacity: 0.8 }}>
-          ← Directory
-        </Link>
-        <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-          <Link href="/owners" style={{ opacity: 0.8 }}>
-            Owners
-          </Link>
-          <Link href="/investors" style={{ opacity: 0.8 }}>
-            Investors
-          </Link>
-        </div>
-      </div>
-
-      <h1 style={{ marginTop: 14, fontSize: 34, fontWeight: 950 }}>Pricing</h1>
-      <p style={{ marginTop: 8, opacity: 0.85, lineHeight: 1.6 }}>
-        Access ↔ Space is a programmable access layer. We don’t publish codes. We issue time-limited passes,
-        enforce rules, and provide audit + analytics for venues.
-      </p>
-
-      <div style={{ marginTop: 18, display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 14 }}>
-        <Card
-          title="Pilot (Free)"
-          price="$0"
-          items={[
-            "Directory listing",
-            "Time-limited access passes (no codes)",
-            "Basic rule enforcement",
-            "Basic analytics counters",
-          ]}
-          cta="Join the pilot"
-          href="/owners"
-          note="Great for early partners while we validate workflows."
-        />
-
-        <Card
-          title="Pro (Owner Controls)"
-          price="$49/mo"
-          items={[
-            "Owner verification + dashboard",
-            "Rule editor (hours, limits, cooldowns)",
-            "Advanced analytics + exports",
-            "Incident logging + audit trail",
-          ]}
-          cta="Upgrade to Pro"
-          href="/checkout?plan=pro"
-          note="Checkout is a stub tonight — we wire Stripe next."
-        />
-
-        <Card
-          title="Network (Multi-site)"
-          price="Custom"
-          items={[
-            "Multiple locations + roles",
-            "SLA + priority support",
-            "API access + webhooks",
-            "Enterprise reporting + compliance exports",
-          ]}
-          cta="Talk to us"
-          href="/owners"
-          note="Designed for chains, offices, campuses, and public spaces."
-        />
-      </div>
-
-      <div style={{ marginTop: 18, padding: 14, borderRadius: 14, border: "1px solid var(--card-border)", opacity: 0.85, lineHeight: 1.6 }}>
-        <b>Paid access</b> (future): venues can optionally monetize access for non-patrons via verified passes,
-        with policies, time windows, and abuse prevention.
-      </div>
-    </main>
+    <Link
+      href={href}
+      style={{
+        display: "inline-block",
+        padding: "10px 12px",
+        borderRadius: 12,
+        background: "black",
+        color: "white",
+        textDecoration: "none",
+        fontWeight: 950,
+        border: "1px solid #23232a",
+      }}
+    >
+      {children}
+    </Link>
   );
 }
