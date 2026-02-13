@@ -52,16 +52,7 @@ export default function LoginPage() {
       </p>
 
       {err && (
-        <div
-          style={{
-            marginTop: 12,
-            padding: 12,
-            borderRadius: 12,
-            background: "#fff3f3",
-            border: "1px solid #ffd2d2",
-            fontWeight: 900,
-          }}
-        >
+        <div style={{ marginTop: 12, padding: 12, borderRadius: 12, background: "#fff3f3", border: "1px solid #ffd2d2", fontWeight: 900 }}>
           {err}
         </div>
       )}
@@ -85,16 +76,7 @@ export default function LoginPage() {
       <div style={{ marginTop: 14, opacity: 0.6, fontWeight: 900, textAlign: "center" }}>or</div>
 
       {sent ? (
-        <div
-          style={{
-            marginTop: 14,
-            padding: 12,
-            borderRadius: 12,
-            background: "#f0fff4",
-            border: "1px solid #c9f2d3",
-            fontWeight: 900,
-          }}
-        >
+        <div style={{ marginTop: 14, padding: 12, borderRadius: 12, background: "#f0fff4", border: "1px solid #c9f2d3", fontWeight: 900 }}>
           Link sent. Check your email and click the magic link.
         </div>
       ) : (
