@@ -1,104 +1,137 @@
 export const dynamic = "force-dynamic";
 
-function Box({ title, children }: { title: string; children: any }) {
+import Link from "next/link";
+
+function Block({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div
+    <section
       style={{
-        marginTop: 14,
+        background: "white",
+        border: "1px solid #e5e7eb",
+        borderRadius: 16,
         padding: 16,
-        borderRadius: 14,
-        border: "1px solid rgba(255,255,255,0.12)",
-        background: "rgba(255,255,255,0.06)",
       }}
     >
-      <div style={{ fontWeight: 900, marginBottom: 8 }}>{title}</div>
-      <div style={{ opacity: 0.9, lineHeight: 1.7 }}>{children}</div>
-    </div>
+      <div style={{ fontWeight: 1000, fontSize: 18 }}>{title}</div>
+      <div style={{ marginTop: 10, lineHeight: 1.6, color: "#111" }}>{children}</div>
+    </section>
+  );
+}
+
+function CodeBox({ text }: { text: string }) {
+  return (
+    <pre
+      style={{
+        marginTop: 10,
+        whiteSpace: "pre-wrap",
+        background: "#0b0b0e",
+        color: "#f8fafc",
+        padding: 14,
+        borderRadius: 14,
+        border: "1px solid #111",
+        overflow: "auto",
+        fontSize: 13,
+      }}
+    >
+      {text}
+    </pre>
   );
 }
 
 export default function OutreachPage() {
+  const dm = `Hey — quick note. We’re piloting Access ↔ Space in SF.
+
+If a customer needs access (restroom / workspace / office area) and staff is busy, we issue a time-limited “access pass” (no codes published). Staff can verify in 5 seconds.
+
+Want a free pilot? I can set up your location in <5 minutes and you’ll get:
+• QR signage
+• rate limits / hours / rules
+• staff verifier page
+• basic usage metrics
+
+Reply with the venue name + neighborhood and I’ll send your pilot links.`;
+
+  const email = `Subject: Free SF Pilot — time-limited access passes (no codes)
+
+Hi [Name],
+
+We’re running an SF pilot called Access ↔ Space. When staff is busy, patrons can request a time-limited access pass (no codes published). Staff verifies quickly on a phone.
+
+Pilot includes:
+• QR signage (front desk + door)
+• configurable hours/rules + rate limits
+• staff verify page
+• basic usage metrics
+
+If you’re open, reply with:
+1) venue name
+2) neighborhood
+3) what space (restroom / workspace / office)
+
+I’ll set it up in <5 minutes and send links.
+
+Thanks,
+[Your Name]`;
+
   return (
-    <main
-      style={{
-        minHeight: "100vh",
-        padding: 40,
-        fontFamily: "system-ui",
-        background: "#0b0f17",
-        color: "white",
-      }}
-    >
-      <div style={{ maxWidth: 980, margin: "0 auto" }}>
-        <h1 style={{ fontSize: 42, fontWeight: 900 }}>SF Outreach Kit</h1>
-        <p style={{ marginTop: 10, opacity: 0.85 }}>
-          Copy/paste scripts and templates to onboard venues this week.
-        </p>
-
-        <Box title="30-second owner pitch (in person)">
-          “We don’t publish codes. We issue <b>time-limited access passes</b> with rules you control —
-          hours, cooldown, max/day. It reduces staff interruptions and gives you analytics. We can pilot
-          it here in 10 minutes with a QR sign and a staff verify page.”
-        </Box>
-
-        <Box title="What to ask for (minimum)">
-          <ul style={{ margin: 0, paddingLeft: 18, lineHeight: 1.8 }}>
-            <li>Permission to place a QR sign at the access point</li>
-            <li>Preferred hours and rules (cooldown, max/day)</li>
-            <li>A staff contact for quick verification testing</li>
-          </ul>
-        </Box>
-
-        <Box title="Objection handling">
-          <ul style={{ margin: 0, paddingLeft: 18, lineHeight: 1.8 }}>
-            <li>
-              <b>“Will this bring the wrong people?”</b> → “Rules + throttles + verification + logs.
-              You can disable instantly.”
-            </li>
-            <li>
-              <b>“We already have a system.”</b> → “Great — we layer on top. No hardware changes required.”
-            </li>
-            <li>
-              <b>“We don’t want public codes.”</b> → “Same. No codes. Passes only.”
-            </li>
-            <li>
-              <b>“What’s the cost?”</b> → “Pilot is free. Paid tier is analytics + advanced controls.”
-            </li>
-          </ul>
-        </Box>
-
-        <Box title="Cold email (owner)">
-          <div style={{ opacity: 0.9 }}>
-            <div style={{ fontWeight: 900 }}>Subject:</div>
-            Free SF pilot — controlled access passes (no code publishing)
-            <br />
-            <br />
-            Hi [Name],
-            <br />
-            We’re piloting AccessXWorld in SF — a rule-based access layer that issues time-limited
-            passes instead of publishing codes. You control hours/cooldown/max/day, and staff can
-            verify passes on a simple page. No hardware.
-            <br />
-            <br />
-            If you’re open, we can set this up in ~10 minutes and leave a QR sign for patrons.
-            <br />
-            <br />— AccessXWorld
+    <main style={{ padding: 28, fontFamily: "system-ui", background: "#f6f7fb", minHeight: "100vh" }}>
+      <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+          <div>
+            <h1 style={{ margin: 0, fontSize: 34, fontWeight: 1000 }}>Outreach Engine</h1>
+            <p style={{ marginTop: 6, opacity: 0.75 }}>
+              7-day plan to onboard SF venues fast (Hayes, Mission, SOMA first).
+            </p>
           </div>
-        </Box>
+          <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+            <Link href="/venues" style={{ textDecoration: "underline", fontWeight: 900 }}>
+              Public Directory →
+            </Link>
+            <Link href="/contact" style={{ textDecoration: "underline", fontWeight: 900 }}>
+              Lead Form →
+            </Link>
+            <Link href="/admin/leads" style={{ textDecoration: "underline", fontWeight: 900 }}>
+              Admin Leads →
+            </Link>
+          </div>
+        </div>
 
-        <Box title="Cold DM (short)">
-          “Quick question—do you manage this location? We’re running a free SF pilot for time-limited
-          access passes (no codes), with rules you control. Setup takes 10 minutes. Want details?”
-        </Box>
+        <div style={{ marginTop: 18, display: "grid", gap: 12, gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))" }}>
+          <Block title="Targets (start here)">
+            <ul style={{ margin: 0, paddingLeft: 18 }}>
+              <li>Cafes with restrooms (Hayes Valley)</li>
+              <li>Coworking / study spaces (Mission)</li>
+              <li>Small offices / studios (SOMA)</li>
+              <li>Gyms / boutique fitness</li>
+              <li>Community orgs / galleries</li>
+            </ul>
+            <div style={{ marginTop: 10, opacity: 0.75 }}>
+              Goal: onboard <b>5 venues</b> in week 1 with public pilot pages + signage.
+            </div>
+          </Block>
 
-        <Box title="7-day SF target plan">
-          Day 1–2: Hayes Valley cafés → Day 3: Mission coworking → Day 4: SOMA offices → Day 5: gyms →
-          Day 6–7: event spaces + galleries.
-        </Box>
+          <Block title="Daily cadence (do this every day)">
+            <ol style={{ margin: 0, paddingLeft: 18 }}>
+              <li>Build a list of 25 venues (Google Maps/Yelp)</li>
+              <li>Send 15 DMs + 10 emails</li>
+              <li>Convert 1 lead → venue in admin</li>
+              <li>Generate signage + send pilot pack</li>
+              <li>Ask for 1 intro to another venue</li>
+            </ol>
+          </Block>
 
-        <Box title="Your next ask (close)">
-          “If you’re open to a pilot, I’ll generate a QR sign + staff verify page and we’ll set rules
-          together. If you hate it, you can disable it instantly.”
-        </Box>
+          <Block title="DM script (copy/paste)">
+            <CodeBox text={dm} />
+          </Block>
+
+          <Block title="Email template (copy/paste)">
+            <CodeBox text={email} />
+          </Block>
+        </div>
+
+        <div style={{ marginTop: 14, opacity: 0.75 }}>
+          Next: run outreach → convert leads → send pilot pack → track metrics.
+        </div>
       </div>
     </main>
   );
