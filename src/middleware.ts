@@ -1,48 +1,21 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-const ADMIN_COOKIE = "axw_admin";
+export function middleware(request: NextRequest) {
+  const host = request.headers.get("host") || "";
+  const url = request.nextUrl;
 
-export function middleware(req: NextRequest) {
-  const url = req.nextUrl;
-  const pathname = url.pathname;
-
-  // Only guard /admin routes
-  if (!pathname.startsWith("/admin")) {
-    return NextResponse.next();
+  // If the user is on app.accessxworld.com and they visit the homepage,
+  // send them into the platform at /venues.
+  if (host.startsWith("app.") && url.pathname === "/") {
+    url.pathname = "/venues";
+    return NextResponse.redirect(url);
   }
 
-  const seed = process.env.ADMIN_SEED_TOKEN || "";
-  // If no seed is configured, don't block (dev-friendly)
-  if (!seed) return NextResponse.next();
-
-  const q = url.searchParams.get("admin") || "";
-  const cookieVal = req.cookies.get(ADMIN_COOKIE)?.value || "";
-
-  // If query param matches, set cookie and allow
-  if (q && q === seed) {
-    const res = NextResponse.next();
-    res.cookies.set(ADMIN_COOKIE, "1", {
-      httpOnly: true,
-      secure: true,
-      sameSite: "lax",
-      path: "/",
-      maxAge: 60 * 60 * 24 * 30, // 30 days
-    });
-    return res;
-  }
-
-  // If cookie exists, allow
-  if (cookieVal === "1") return NextResponse.next();
-
-  // Otherwise redirect to /venues with a hint
-  const redirect = req.nextUrl.clone();
-  redirect.pathname = "/venues";
-  redirect.searchParams.set("error", "admin_required");
-  return NextResponse.redirect(redirect);
+  return NextResponse.next();
 }
 
-// Match only /admin routes
+// Only run this middleware on the homepage route.
 export const config = {
-  matcher: ["/admin/:path*"],
+  matcher: ["/"],
 };
