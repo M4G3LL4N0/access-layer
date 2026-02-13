@@ -1,8 +1,8 @@
-import "./globals.css";
+import type { Metadata } from "next";
 
-export const metadata = {
-  title: "Access ↔ Space",
-  description: "Neutral access layer for physical space.",
+export const metadata: Metadata = {
+  title: "Access ↔ Space (MVP)",
+  description: "Rule-based access layer (no codes published).",
 };
 
 export default function RootLayout({
@@ -12,7 +12,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="min-h-screen bg-white text-black dark:bg-zinc-950 dark:text-white antialiased">
+      <body
+        style={{
+          margin: 0,
+          background: "#0b0b0d",
+          color: "#ffffff",
+          fontFamily: "system-ui",
+        }}
+      >
         {children}
       </body>
     </html>
