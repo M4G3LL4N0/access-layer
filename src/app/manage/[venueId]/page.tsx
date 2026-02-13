@@ -31,7 +31,7 @@ function Field({
           width: "100%",
           padding: "10px 12px",
           borderRadius: 10,
-          border: "1px solid #ddd",
+          border: "1px solid var(--card-border)",
           fontFamily: "system-ui",
         }}
       />
@@ -63,9 +63,9 @@ function Select({
           width: "100%",
           padding: "10px 12px",
           borderRadius: 10,
-          border: "1px solid #ddd",
+          border: "1px solid var(--card-border)",
           fontFamily: "system-ui",
-          background: "white",
+          background: "var(--card-bg)",
         }}
       >
         {options.map((o) => (
@@ -217,7 +217,7 @@ export default async function ManageVenuePage({
         </div>
       )}
 
-      <section style={{ marginTop: 18, padding: 16, border: "1px solid #eee", borderRadius: 16 }}>
+      <section style={{ marginTop: 18, padding: 16, border: "1px solid var(--card-border)", borderRadius: 16 }}>
         <div style={{ fontWeight: 950, fontSize: 18 }}>Venue</div>
 
         <form action="/api/owner/update-venue" method="post" style={{ marginTop: 10, maxWidth: 720 }}>
@@ -251,7 +251,7 @@ export default async function ManageVenuePage({
         </form>
       </section>
 
-      <section style={{ marginTop: 18, padding: 16, border: "1px solid #eee", borderRadius: 16 }}>
+      <section style={{ marginTop: 18, padding: 16, border: "1px solid var(--card-border)", borderRadius: 16 }}>
         <div style={{ fontWeight: 950, fontSize: 18 }}>Access rule (default)</div>
 
         {!rule ? (
@@ -328,7 +328,7 @@ export default async function ManageVenuePage({
         )}
       </section>
 
-      <section style={{ marginTop: 18, padding: 16, border: "1px solid #eee", borderRadius: 16, opacity: 0.9 }}>
+      <section style={{ marginTop: 18, padding: 16, border: "1px solid var(--card-border)", borderRadius: 16, opacity: 0.9 }}>
         <div style={{ fontWeight: 950, fontSize: 18 }}>Next upgrades</div>
         <ul style={{ marginTop: 10, lineHeight: 1.9 }}>
           <li>Invite staff roles (staff, manager) + audit log exports</li>

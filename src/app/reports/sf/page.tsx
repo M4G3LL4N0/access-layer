@@ -108,7 +108,7 @@ export default async function SFPilotReportPage() {
           marginTop: 18,
           padding: 16,
           borderRadius: 18,
-          border: "1px solid #eee",
+          border: "1px solid var(--card-border)",
         }}
       >
         <h2 style={{ margin: 0, fontSize: 20, fontWeight: 950 }}>
@@ -137,7 +137,7 @@ export default async function SFPilotReportPage() {
           marginTop: 18,
           padding: 16,
           borderRadius: 18,
-          border: "1px solid #eee",
+          border: "1px solid var(--card-border)",
         }}
       >
         <h2 style={{ margin: 0, fontSize: 20, fontWeight: 950 }}>
@@ -150,7 +150,7 @@ export default async function SFPilotReportPage() {
               key={row.id}
               style={{
                 padding: 12,
-                border: "1px solid #eee",
+                border: "1px solid var(--card-border)",
                 borderRadius: 14,
               }}
             >
@@ -185,8 +185,8 @@ function Card({ label, value, sub }: { label: string; value: string; sub: string
       style={{
         padding: 16,
         borderRadius: 18,
-        border: "1px solid #eee",
-        background: "white",
+        border: "1px solid var(--card-border)",
+        background: "var(--card-bg)",
       }}
     >
       <div style={{ opacity: 0.7, fontWeight: 900 }}>{label}</div>
@@ -200,7 +200,7 @@ const pillStyle: React.CSSProperties = {
   display: "inline-block",
   padding: "8px 12px",
   borderRadius: 999,
-  border: "1px solid #ddd",
+  border: "1px solid var(--card-border)",
   fontWeight: 900,
   textDecoration: "none",
 };

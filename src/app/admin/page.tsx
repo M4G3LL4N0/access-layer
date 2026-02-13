@@ -47,7 +47,7 @@ export default async function AdminHome({
         <Stat label="Tokens (7d)" value={tokens7d.count ?? 0} />
       </div>
 
-      <div style={{ marginTop: 18, padding: 14, border: "1px solid #eee", borderRadius: 14, opacity: 0.85 }}>
+      <div style={{ marginTop: 18, padding: 14, border: "1px solid var(--card-border)", borderRadius: 14, opacity: 0.85 }}>
         This is your “infrastructure” proof-of-work screen for investors.
       </div>
 
@@ -58,7 +58,7 @@ export default async function AdminHome({
             display: "inline-block",
             padding: "10px 14px",
             borderRadius: 10,
-            border: "1px solid #ddd",
+            border: "1px solid var(--card-border)",
             textDecoration: "none",
             fontWeight: 900,
           }}
@@ -72,7 +72,7 @@ export default async function AdminHome({
 
 function Stat({ label, value }: { label: string; value: number }) {
   return (
-    <div style={{ padding: 12, border: "1px solid #eee", borderRadius: 12, minWidth: 170 }}>
+    <div style={{ padding: 12, border: "1px solid var(--card-border)", borderRadius: 12, minWidth: 170 }}>
       <div style={{ fontSize: 12, opacity: 0.7 }}>{label}</div>
       <div style={{ fontSize: 22, fontWeight: 950 }}>{value}</div>
     </div>

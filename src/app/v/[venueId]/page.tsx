@@ -109,7 +109,7 @@ export default async function VenuePage({
       )}
 
       {(vErr || !venue) && (
-        <div style={{ marginTop: 14, padding: 14, borderRadius: 14, border: "1px solid #eee" }}>
+        <div style={{ marginTop: 14, padding: 14, borderRadius: 14, border: "1px solid var(--card-border)" }}>
           <h1 style={{ fontSize: 22, fontWeight: 950 }}>Venue error</h1>
           <div style={{ marginTop: 8, opacity: 0.85 }}>
             {vErr?.message || "Venue not found."}
@@ -131,7 +131,7 @@ export default async function VenuePage({
           </div>
 
           {/* Analytics */}
-          <div style={{ marginTop: 18, padding: 14, border: "1px solid #eee", borderRadius: 14 }}>
+          <div style={{ marginTop: 18, padding: 14, border: "1px solid var(--card-border)", borderRadius: 14 }}>
             <div style={{ fontWeight: 950, fontSize: 16 }}>Pilot Analytics</div>
 
             {analyticsError ? (
@@ -140,22 +140,22 @@ export default async function VenuePage({
               </div>
             ) : (
               <div style={{ marginTop: 12, display: "flex", gap: 14, flexWrap: "wrap" }}>
-                <div style={{ padding: 10, border: "1px solid #eee", borderRadius: 12 }}>
+                <div style={{ padding: 10, border: "1px solid var(--card-border)", borderRadius: 12 }}>
                   <div style={{ fontSize: 12, opacity: 0.7 }}>Requests today</div>
                   <div style={{ fontSize: 20, fontWeight: 950 }}>{requestsToday.count ?? 0}</div>
                 </div>
 
-                <div style={{ padding: 10, border: "1px solid #eee", borderRadius: 12 }}>
+                <div style={{ padding: 10, border: "1px solid var(--card-border)", borderRadius: 12 }}>
                   <div style={{ fontSize: 12, opacity: 0.7 }}>Requests (7d)</div>
                   <div style={{ fontSize: 20, fontWeight: 950 }}>{requests7d.count ?? 0}</div>
                 </div>
 
-                <div style={{ padding: 10, border: "1px solid #eee", borderRadius: 12 }}>
+                <div style={{ padding: 10, border: "1px solid var(--card-border)", borderRadius: 12 }}>
                   <div style={{ fontSize: 12, opacity: 0.7 }}>Tokens issued (7d)</div>
                   <div style={{ fontSize: 20, fontWeight: 950 }}>{tokens7d.count ?? 0}</div>
                 </div>
 
-                <div style={{ padding: 10, border: "1px solid #eee", borderRadius: 12 }}>
+                <div style={{ padding: 10, border: "1px solid var(--card-border)", borderRadius: 12 }}>
                   <div style={{ fontSize: 12, opacity: 0.7 }}>Owner leads</div>
                   <div style={{ fontSize: 20, fontWeight: 950 }}>{leadsTotal.count ?? 0}</div>
                 </div>
@@ -178,7 +178,7 @@ export default async function VenuePage({
 
           <div style={{ marginTop: 10, display: "grid", gap: 10 }}>
             {(rules || []).map((r: any) => (
-              <div key={r.id} style={{ padding: 14, border: "1px solid #eee", borderRadius: 14 }}>
+              <div key={r.id} style={{ padding: 14, border: "1px solid var(--card-border)", borderRadius: 14 }}>
                 <div style={{ display: "flex", justifyContent: "space-between", gap: 10, flexWrap: "wrap" }}>
                   <div style={{ fontWeight: 950 }}>{r.rule_name}</div>
                   <div style={{ fontSize: 12, opacity: 0.7 }}>
@@ -193,7 +193,7 @@ export default async function VenuePage({
             ))}
 
             {(!rules || rules.length === 0) && (
-              <div style={{ padding: 14, border: "1px solid #eee", borderRadius: 14, opacity: 0.8 }}>
+              <div style={{ padding: 14, border: "1px solid var(--card-border)", borderRadius: 14, opacity: 0.8 }}>
                 No rules found yet.
               </div>
             )}
@@ -222,7 +222,7 @@ export default async function VenuePage({
                 display: "inline-block",
                 padding: "10px 14px",
                 borderRadius: 10,
-                border: "1px solid #ddd",
+                border: "1px solid var(--card-border)",
                 textDecoration: "none",
                 fontWeight: 900,
               }}
@@ -236,7 +236,7 @@ export default async function VenuePage({
                 display: "inline-block",
                 padding: "10px 14px",
                 borderRadius: 10,
-                border: "1px solid #ddd",
+                border: "1px solid var(--card-border)",
                 textDecoration: "none",
                 fontWeight: 900,
               }}

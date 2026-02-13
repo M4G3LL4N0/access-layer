@@ -22,14 +22,14 @@ export default function OwnersPage() {
           ["Audit + insights", "See requests and grants over time. Export logs when needed."],
           ["Monetization-ready", "Offer paid access to non-customers later (optional)."],
         ].map(([t, d]) => (
-          <div key={t} style={{ padding: 14, border: "1px solid #eee", borderRadius: 16 }}>
+          <div key={t} style={{ padding: 14, border: "1px solid var(--card-border)", borderRadius: 16 }}>
             <div style={{ fontWeight: 950 }}>{t}</div>
             <div style={{ marginTop: 6, opacity: 0.85, lineHeight: 1.5 }}>{d}</div>
           </div>
         ))}
       </div>
 
-      <div style={{ marginTop: 18, padding: 16, borderRadius: 16, border: "1px solid #eee" }}>
+      <div style={{ marginTop: 18, padding: 16, borderRadius: 16, border: "1px solid var(--card-border)" }}>
         <div style={{ fontWeight: 950, fontSize: 18 }}>SF Pilot</div>
         <div style={{ marginTop: 8, opacity: 0.85, lineHeight: 1.7 }}>
           We onboard venues fast. You get a venue page, access rules, and a claim/manage flow.

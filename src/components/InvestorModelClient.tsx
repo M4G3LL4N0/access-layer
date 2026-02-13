@@ -29,7 +29,7 @@ function Slider({
   onChange: (v: number) => void;
 }) {
   return (
-    <div style={{ padding: 12, border: "1px solid #eee", borderRadius: 14 }}>
+    <div style={{ padding: 12, border: "1px solid var(--card-border)", borderRadius: 14 }}>
       <div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
         <div style={{ fontWeight: 950 }}>{label}</div>
         <div style={{ fontVariantNumeric: "tabular-nums", opacity: 0.85 }}>
@@ -57,7 +57,7 @@ function Slider({
 
 function Stat({ label, value, sub }: { label: string; value: string; sub?: string }) {
   return (
-    <div style={{ padding: 12, border: "1px solid #eee", borderRadius: 14, minWidth: 220 }}>
+    <div style={{ padding: 12, border: "1px solid var(--card-border)", borderRadius: 14, minWidth: 220 }}>
       <div style={{ fontSize: 12, opacity: 0.7 }}>{label}</div>
       <div style={{ marginTop: 6, fontSize: 24, fontWeight: 950 }}>{value}</div>
       {sub && <div style={{ marginTop: 6, fontSize: 12, opacity: 0.6, lineHeight: 1.4 }}>{sub}</div>}
@@ -123,7 +123,7 @@ export default function InvestorModelClient() {
         <Slider label="Valuation multiple (ARR)" value={multiple} min={5} max={40} step={1} suffix="x" onChange={setMultiple} />
       </div>
 
-      <div style={{ padding: 16, border: "1px solid #eee", borderRadius: 16 }}>
+      <div style={{ padding: 16, border: "1px solid var(--card-border)", borderRadius: 16 }}>
         <div style={{ fontWeight: 950, fontSize: 18 }}>Optional paid access layer (future)</div>
         <div style={{ marginTop: 10, display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 14 }}>
           <Slider label="% venues enabling paid access" value={paidAccessRate} min={0} max={100} step={1} suffix="%" onChange={setPaidAccessRate} />
@@ -145,7 +145,7 @@ export default function InvestorModelClient() {
         <Stat label="Next-year ARR (NRR proxy)" value={fmtMoney(model.nextYearARR)} sub={`${netRetention}% NRR`} />
       </div>
 
-      <div style={{ padding: 16, border: "1px solid #eee", borderRadius: 16 }}>
+      <div style={{ padding: 16, border: "1px solid var(--card-border)", borderRadius: 16 }}>
         <div style={{ fontWeight: 950, fontSize: 18 }}>Mix visualization</div>
         <div style={{ marginTop: 10, display: "grid", gap: 10 }}>
           <div style={{ opacity: 0.8 }}>Revenue mix: paid layer share</div>
@@ -156,7 +156,7 @@ export default function InvestorModelClient() {
         </div>
       </div>
 
-      <div style={{ padding: 16, border: "1px solid #eee", borderRadius: 16 }}>
+      <div style={{ padding: 16, border: "1px solid var(--card-border)", borderRadius: 16 }}>
         <div style={{ fontWeight: 950, fontSize: 18 }}>Roadmap to scale (credible)</div>
         <ol style={{ marginTop: 10, lineHeight: 1.9, opacity: 0.9 }}>
           <li><b>Corridor density</b>: 20–50 venues in SF corridors + consistent token volume.</li>

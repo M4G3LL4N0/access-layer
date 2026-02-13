@@ -21,9 +21,9 @@ function Card({
     <div
       style={{
         padding: 18,
-        border: "1px solid #eee",
+        border: "1px solid var(--card-border)",
         borderRadius: 16,
-        background: "white",
+        background: "var(--card-bg)",
       }}
     >
       <div style={{ fontSize: 14, opacity: 0.75, fontWeight: 900 }}>{title}</div>
@@ -128,7 +128,7 @@ export default function PricingPage() {
         />
       </div>
 
-      <div style={{ marginTop: 18, padding: 14, borderRadius: 14, border: "1px solid #eee", opacity: 0.85, lineHeight: 1.6 }}>
+      <div style={{ marginTop: 18, padding: 14, borderRadius: 14, border: "1px solid var(--card-border)", opacity: 0.85, lineHeight: 1.6 }}>
         <b>Paid access</b> (future): venues can optionally monetize access for non-patrons via verified passes,
         with policies, time windows, and abuse prevention.
       </div>

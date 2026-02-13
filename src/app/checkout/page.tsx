@@ -22,7 +22,7 @@ export default async function CheckoutPage({
         features (owner dashboard, advanced analytics, exports).
       </p>
 
-      <div style={{ marginTop: 16, padding: 14, borderRadius: 14, border: "1px solid #eee" }}>
+      <div style={{ marginTop: 16, padding: 14, borderRadius: 14, border: "1px solid var(--card-border)" }}>
         <div style={{ fontWeight: 950 }}>What happens next</div>
         <ol style={{ marginTop: 10, lineHeight: 1.9 }}>
           <li>User selects plan</li>
@@ -54,7 +54,7 @@ export default async function CheckoutPage({
             display: "inline-block",
             padding: "10px 14px",
             borderRadius: 10,
-            border: "1px solid #ddd",
+            border: "1px solid var(--card-border)",
             textDecoration: "none",
             fontWeight: 950,
           }}

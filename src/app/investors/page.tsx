@@ -9,7 +9,7 @@ function Section({ title, children }: { title: string; children: any }) {
         marginTop: 18,
         padding: 16,
         borderRadius: 16,
-        border: "1px solid #eee",
+        border: "1px solid var(--card-border)",
       }}
     >
       <div style={{ fontWeight: 950, fontSize: 18 }}>{title}</div>
@@ -130,7 +130,7 @@ export default function InvestorsPage() {
           style={{
             padding: "10px 14px",
             borderRadius: 10,
-            border: "1px solid #ddd",
+            border: "1px solid var(--card-border)",
             textDecoration: "none",
             fontWeight: 950,
           }}

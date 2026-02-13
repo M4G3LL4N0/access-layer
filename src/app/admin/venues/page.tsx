@@ -35,7 +35,7 @@ export default async function AdminVenues({
 
       <div style={{ marginTop: 14, display: "grid", gap: 10 }}>
         {(venues || []).map((v) => (
-          <div key={v.id} style={{ padding: 14, border: "1px solid #eee", borderRadius: 14 }}>
+          <div key={v.id} style={{ padding: 14, border: "1px solid var(--card-border)", borderRadius: 14 }}>
             <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 10 }}>
               <div style={{ fontWeight: 950 }}>{v.name}</div>
               <div style={{ fontSize: 12, opacity: 0.7 }}>

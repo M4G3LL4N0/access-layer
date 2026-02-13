@@ -47,7 +47,7 @@ export default function VenuesDirectoryClient({
           maxWidth: 520,
           padding: "10px 12px",
           borderRadius: 10,
-          border: "1px solid #ddd",
+          border: "1px solid var(--card-border)",
           outline: "none",
         }}
       />

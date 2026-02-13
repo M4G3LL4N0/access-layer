@@ -53,7 +53,7 @@ export default async function SignagePage({
           border: "2px solid #111",
           borderRadius: 18,
           padding: 22,
-          background: "white",
+          background: "var(--card-bg)",
         }}
       >
         <div style={{ fontSize: 12, letterSpacing: 1.2, fontWeight: 950, opacity: 0.7 }}>
@@ -66,7 +66,7 @@ export default async function SignagePage({
         </div>
 
         <div style={{ marginTop: 16, display: "grid", gridTemplateColumns: "1fr", gap: 12 }}>
-          <div style={{ padding: 16, borderRadius: 16, border: "1px solid #eee" }}>
+          <div style={{ padding: 16, borderRadius: 16, border: "1px solid var(--card-border)" }}>
             <div style={{ fontWeight: 950, fontSize: 18 }}>Need access?</div>
             <div style={{ marginTop: 6, opacity: 0.85, lineHeight: 1.6 }}>
               Visit the link to request a time-limited access pass.
@@ -97,7 +97,7 @@ export default async function SignagePage({
             </div>
           </div>
 
-          <div style={{ padding: 16, borderRadius: 16, border: "1px solid #eee" }}>
+          <div style={{ padding: 16, borderRadius: 16, border: "1px solid var(--card-border)" }}>
             <div style={{ fontWeight: 950, fontSize: 18 }}>Venue staff</div>
             <div style={{ marginTop: 6, opacity: 0.85, lineHeight: 1.6 }}>
               This pilot reduces friction when staff are busy. The pass confirms a visitor

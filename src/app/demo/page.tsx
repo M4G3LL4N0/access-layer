@@ -26,7 +26,7 @@ export default function DemoPage() {
         </Card>
       </section>
 
-      <section style={{ marginTop: 18, padding: 16, borderRadius: 18, border: "1px solid #eee" }}>
+      <section style={{ marginTop: 18, padding: 16, borderRadius: 18, border: "1px solid var(--card-border)" }}>
         <h2 style={{ margin: 0, fontSize: 20, fontWeight: 950 }}>Investor links</h2>
         <div style={{ marginTop: 10, display: "flex", gap: 10, flexWrap: "wrap" }}>
           <Link href="/investors" style={pill}>Investor narrative →</Link>
@@ -41,7 +41,7 @@ export default function DemoPage() {
 
 function Card({ title, desc, children }: any) {
   return (
-    <div style={{ padding: 16, borderRadius: 18, border: "1px solid #eee", background: "white" }}>
+    <div style={{ padding: 16, borderRadius: 18, border: "1px solid var(--card-border)", background: "var(--card-bg)" }}>
       <div style={{ fontWeight: 950, fontSize: 18 }}>{title}</div>
       <div style={{ marginTop: 6, opacity: 0.8, lineHeight: 1.6 }}>{desc}</div>
       <div style={{ marginTop: 12 }}>{children}</div>
@@ -63,7 +63,7 @@ const pill: React.CSSProperties = {
   display: "inline-block",
   padding: "8px 12px",
   borderRadius: 999,
-  border: "1px solid #ddd",
+  border: "1px solid var(--card-border)",
   fontWeight: 900,
   textDecoration: "none",
 };

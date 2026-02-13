@@ -83,8 +83,8 @@ export default function AccountPage() {
           marginTop: 12,
           padding: "8px 12px",
           borderRadius: 10,
-          border: "1px solid #ddd",
-          background: "white",
+          border: "1px solid var(--card-border)",
+          background: "var(--card-bg)",
           cursor: "pointer",
           fontWeight: 900,
         }}
@@ -92,7 +92,7 @@ export default function AccountPage() {
         Sign out
       </button>
 
-      <section style={{ marginTop: 18, padding: 16, border: "1px solid #eee", borderRadius: 16 }}>
+      <section style={{ marginTop: 18, padding: 16, border: "1px solid var(--card-border)", borderRadius: 16 }}>
         <div style={{ fontWeight: 950, fontSize: 18 }}>Redeem invite token</div>
         <p style={{ marginTop: 6, opacity: 0.8 }}>
           Paste your invite token here to unlock venue management.
@@ -111,7 +111,7 @@ export default function AccountPage() {
             onChange={(e) => setInviteToken(e.target.value)}
             required
             placeholder="paste token here"
-            style={{ width: "100%", padding: 12, borderRadius: 12, border: "1px solid #ddd", fontFamily: "ui-monospace" }}
+            style={{ width: "100%", padding: 12, borderRadius: 12, border: "1px solid var(--card-border)", fontFamily: "ui-monospace" }}
           />
           <button
             style={{ marginTop: 12, padding: "10px 14px", borderRadius: 10, background: "black", color: "white", border: "none", fontWeight: 950, cursor: "pointer" }}

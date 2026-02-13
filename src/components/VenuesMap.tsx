@@ -37,7 +37,7 @@ export default function VenuesMap({ venues }: { venues: Venue[] }) {
   const center: LatLngExpression = [37.7749, -122.4194];
 
   return (
-    <div style={{ height: 360, borderRadius: 14, overflow: "hidden", border: "1px solid #eee" }}>
+    <div style={{ height: 360, borderRadius: 14, overflow: "hidden", border: "1px solid var(--card-border)" }}>
       <MapContainer center={center} zoom={12} style={{ height: "100%", width: "100%" }}>
         <TileLayer
           attribution='&copy; OpenStreetMap contributors'

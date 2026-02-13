@@ -5,7 +5,7 @@ import { supabaseServer } from "@/lib/supabaseServer";
 
 function Stat({ label, value, sub }: { label: string; value: string | number; sub?: string }) {
   return (
-    <div style={{ padding: 12, border: "1px solid #eee", borderRadius: 12, minWidth: 200 }}>
+    <div style={{ padding: 12, border: "1px solid var(--card-border)", borderRadius: 12, minWidth: 200 }}>
       <div style={{ fontSize: 12, opacity: 0.7 }}>{label}</div>
       <div style={{ fontSize: 24, fontWeight: 950, marginTop: 4 }}>{value}</div>
       {sub && <div style={{ fontSize: 12, opacity: 0.65, marginTop: 4 }}>{sub}</div>}
@@ -99,7 +99,7 @@ export default async function NetworkReportPage() {
         <Stat label="Tokens (7d)" value={tok7d.count ?? 0} />
       </div>
 
-      <section style={{ marginTop: 18, padding: 16, border: "1px solid #eee", borderRadius: 16 }}>
+      <section style={{ marginTop: 18, padding: 16, border: "1px solid var(--card-border)", borderRadius: 16 }}>
         <div style={{ fontWeight: 950, fontSize: 18 }}>What this means</div>
         <div style={{ marginTop: 10, opacity: 0.9, lineHeight: 1.7 }}>
           This system converts access intent into time-limited passes, enforces venue rules, and produces

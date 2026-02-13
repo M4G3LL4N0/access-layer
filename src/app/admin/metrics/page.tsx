@@ -5,7 +5,7 @@ import { supabaseServer } from "@/lib/supabaseServer";
 
 function Stat({ label, value }: { label: string; value: number }) {
   return (
-    <div style={{ padding: 12, border: "1px solid #eee", borderRadius: 12, minWidth: 180 }}>
+    <div style={{ padding: 12, border: "1px solid var(--card-border)", borderRadius: 12, minWidth: 180 }}>
       <div style={{ fontSize: 12, opacity: 0.7 }}>{label}</div>
       <div style={{ fontSize: 24, fontWeight: 950 }}>{value}</div>
     </div>
@@ -106,7 +106,7 @@ export default async function AdminMetrics({
         <Stat label="Tokens (30d)" value={tok30d.count ?? 0} />
       </div>
 
-      <section style={{ marginTop: 18, padding: 16, border: "1px solid #eee", borderRadius: 16 }}>
+      <section style={{ marginTop: 18, padding: 16, border: "1px solid var(--card-border)", borderRadius: 16 }}>
         <div style={{ fontWeight: 950, fontSize: 18 }}>Top venues by tokens (7d)</div>
         <div style={{ marginTop: 12, display: "grid", gap: 10 }}>
           {topNamed.length === 0 && <div style={{ opacity: 0.8 }}>No token activity in last 7 days yet.</div>}
@@ -123,7 +123,7 @@ export default async function AdminMetrics({
         </div>
       </section>
 
-      <section style={{ marginTop: 18, padding: 16, border: "1px solid #eee", borderRadius: 16, opacity: 0.9 }}>
+      <section style={{ marginTop: 18, padding: 16, border: "1px solid var(--card-border)", borderRadius: 16, opacity: 0.9 }}>
         <div style={{ fontWeight: 950, fontSize: 18 }}>Narrative (what to say)</div>
         <div style={{ marginTop: 10, lineHeight: 1.7 }}>
           This is the control plane for a programmable access layer. The system converts access intent into

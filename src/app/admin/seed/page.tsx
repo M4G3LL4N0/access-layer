@@ -45,7 +45,7 @@ export default async function AdminSeed({
           name="lines"
           rows={10}
           placeholder={"Pilot Venue — Hayes Valley Cafe | Hayes Valley | restroom\nPilot Venue — Mission Workspace | Mission District | workspace"}
-          style={{ width: "100%", padding: 12, borderRadius: 12, border: "1px solid #ddd" }}
+          style={{ width: "100%", padding: 12, borderRadius: 12, border: "1px solid var(--card-border)" }}
         />
         <button style={{ marginTop: 10, padding: "10px 14px", borderRadius: 10, background: "black", color: "white", border: "none", fontWeight: 950 }}>
           Seed now
@@ -55,7 +55,7 @@ export default async function AdminSeed({
       <h2 style={{ marginTop: 18, fontSize: 16, fontWeight: 950 }}>Recent venues</h2>
       <div style={{ marginTop: 10, display: "grid", gap: 10 }}>
         {(recent || []).map((v) => (
-          <div key={v.id} style={{ padding: 12, border: "1px solid #eee", borderRadius: 14 }}>
+          <div key={v.id} style={{ padding: 12, border: "1px solid var(--card-border)", borderRadius: 14 }}>
             <div style={{ fontWeight: 900 }}>{v.name}</div>
             <div style={{ fontSize: 12, opacity: 0.7 }}>
               {v.city}, {v.region} · {v.status} · {new Date(v.created_at).toLocaleString()}

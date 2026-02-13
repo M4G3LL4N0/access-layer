@@ -81,8 +81,8 @@ export default function LoginClient() {
           width: "100%",
           padding: "10px 14px",
           borderRadius: 10,
-          border: "1px solid #ddd",
-          background: "white",
+          border: "1px solid var(--card-border)",
+          background: "var(--card-bg)",
           fontWeight: 950,
           cursor: "pointer",
         }}
@@ -114,7 +114,7 @@ export default function LoginClient() {
             type="email"
             required
             placeholder="owner@venue.com"
-            style={{ width: "100%", padding: 12, borderRadius: 12, border: "1px solid #ddd" }}
+            style={{ width: "100%", padding: 12, borderRadius: 12, border: "1px solid var(--card-border)" }}
           />
           <button
             style={{
