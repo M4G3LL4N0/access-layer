@@ -1,365 +1,514 @@
 export default function Home() {
+  const year = new Date().getFullYear();
+
   return (
     <main
       style={{
-        fontFamily:
-          "system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif",
+        fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif",
         background: "#fff",
-        color: "#0b0b0c",
-        minHeight: "100vh",
+        color: "#000",
       }}
     >
-      <style>{`
-        html, body { margin: 0; padding: 0; }
-        *, *::before, *::after { box-sizing: border-box; }
-        a { color: inherit; }
-        
-        .container { max-width: 1120px; margin: 0 auto; padding: 56px 16px; }
-        @media (min-width: 640px) { .container { padding: 72px 20px; } }
-
-        /* Header */
-        .header {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          gap: 16px;
-          margin-bottom: 28px;
-        }
-        @media (max-width: 720px) {
-          .header { flex-direction: column; align-items: flex-start; }
-        }
-
-        .brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
-        .brandTitle { font-weight: 900; line-height: 1.1; }
-        .brandSub { font-size: 12px; opacity: .7; }
-
-        .topActions { display: flex; gap: 12px; flex-wrap: wrap; }
-        @media (max-width: 520px) { .topActions { width: 100%; } }
-
-        .btnPrimary, .btnGhost {
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          padding: 12px 16px;
-          border-radius: 999px;
-          font-weight: 900;
-          text-decoration: none;
-          border: 1px solid rgba(0,0,0,.14);
-          background: #fff;
-          color: #0b0b0c;
-          white-space: nowrap;
-        }
-        .btnPrimary {
-          background: #0b0b0c;
-          color: #fff;
-          border: 1px solid rgba(0,0,0,.1);
-        }
-        .btnPrimary:hover { opacity: .92; }
-        .btnGhost:hover { background: rgba(0,0,0,.03); }
-
-        @media (max-width: 520px) {
-          .btnPrimary, .btnGhost { width: 100%; border-radius: 16px; }
-        }
-
-        /* Hero layout: two columns on desktop, stacked on mobile (NO OVERLAP) */
-        .heroGrid {
-          display: grid;
-          grid-template-columns: minmax(0, 1.35fr) minmax(0, 0.85fr);
-          gap: 18px;
-          align-items: start;
-          margin-top: 10px;
-          margin-bottom: 26px;
-        }
-        @media (max-width: 860px) {
-          .heroGrid { grid-template-columns: 1fr; }
-        }
-
-        /* Left hero text */
-        .h1 {
-          font-size: clamp(40px, 6vw, 64px);
-          letter-spacing: -1.6px;
-          margin: 0 0 14px;
-          line-height: 1.02;
-          overflow-wrap: anywhere;
-        }
-        .lede {
-          font-size: 18px;
-          line-height: 1.55;
-          opacity: .82;
-          max-width: 720px;
-          margin: 0 0 18px;
-        }
-        @media (max-width: 520px) {
-          .lede { font-size: 16px; }
-        }
-
-        .ctaColumn {
-          display: flex;
-          flex-direction: column;
-          gap: 12px;
-          margin-top: 8px;
-          max-width: 420px;
-        }
-        @media (max-width: 860px) {
-          .ctaColumn { max-width: 520px; }
-        }
-
-        /* Right quick links panel (becomes stacked on mobile) */
-        .quickPanel {
-          border: 1px solid rgba(0,0,0,.12);
-          border-radius: 18px;
-          padding: 14px;
-          background: rgba(0,0,0,.01);
-        }
-        .quickTitle {
-          font-weight: 950;
-          letter-spacing: -0.2px;
-          margin: 2px 0 10px;
-          font-size: 14px;
-          opacity: .85;
-          text-transform: uppercase;
-        }
-        .quickLinks {
-          display: grid;
-          gap: 10px;
-        }
-        .quickLink {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          gap: 10px;
-          padding: 12px 14px;
-          border-radius: 16px;
-          border: 1px solid rgba(0,0,0,.12);
-          background: #fff;
-          text-decoration: none;
-          font-weight: 900;
-          letter-spacing: -0.2px;
-        }
-        .quickLink:hover { background: rgba(0,0,0,.02); }
-        .quickSub {
-          margin-top: 10px;
-          font-size: 13px;
-          opacity: .7;
-          line-height: 1.35;
-        }
-
-        /* Sections */
-        .sectionTitle { font-size: 28px; margin: 0 0 12px; letter-spacing: -0.4px; }
-        @media (max-width: 520px) { .sectionTitle { font-size: 22px; } }
-
-        .grid {
-          display: grid;
-          grid-template-columns: repeat(4, minmax(0, 1fr));
-          gap: 14px;
-          margin: 34px 0 52px;
-        }
-        @media (max-width: 980px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-        @media (max-width: 520px) { .grid { grid-template-columns: 1fr; } }
-
-        .card {
-          border: 1px solid rgba(0,0,0,.12);
-          border-radius: 16px;
-          padding: 16px;
-          background: #fff;
-        }
-        .cardTitle { font-weight: 950; margin-bottom: 6px; }
-        .cardDesc { font-size: 14px; opacity: .82; line-height: 1.45; }
-
-        .how {
-          margin-bottom: 52px;
-        }
-        .ol { margin: 0; padding-left: 18px; opacity: .92; line-height: 1.7; max-width: 900px; }
-        .ol b { font-weight: 950; }
-
-        .pilot {
-          border-radius: 18px;
-          padding: 18px;
-          border: 1px solid rgba(0,0,0,.12);
-          background: rgba(0,0,0,.015);
-        }
-        .pilot h3 { margin: 0 0 6px; font-size: 18px; letter-spacing: -0.2px; }
-        .pilot p { margin: 0 0 12px; opacity: .82; max-width: 920px; line-height: 1.5; }
-
-        .footer { margin-top: 46px; opacity: .65; font-size: 12px; }
-      `}</style>
-
-      <div className="container">
-        {/* Header */}
-        <header className="header">
-          <div className="brand">
+      <div style={{ maxWidth: 1120, margin: "0 auto", padding: "56px 16px" }}>
+        {/* Top bar */}
+        <header
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 12,
+            flexWrap: "wrap",
+            marginBottom: 34,
+          }}
+        >
+          <a
+            href="/"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 12,
+              textDecoration: "none",
+              color: "inherit",
+            }}
+          >
             <img
               src="/favicon.ico"
               alt="AXW"
               style={{
-                width: 36,
-                height: 36,
-                borderRadius: 10,
+                width: 38,
+                height: 38,
+                borderRadius: 12,
                 border: "1px solid rgba(0,0,0,0.12)",
-                flex: "0 0 auto",
               }}
             />
-            <div>
-              <div className="brandTitle">AXW</div>
-              <div className="brandSub">Access × World</div>
+            <div style={{ lineHeight: 1.1 }}>
+              <div style={{ fontWeight: 950, letterSpacing: -0.3 }}>AXW</div>
+              <div style={{ fontSize: 12, opacity: 0.7 }}>Access × World</div>
             </div>
-          </div>
+          </a>
 
-          <div className="topActions">
-            <a className="btnPrimary" href="https://app.accessxworld.com">
-              Open the app
+          <nav
+            style={{
+              display: "flex",
+              gap: 14,
+              flexWrap: "wrap",
+              alignItems: "center",
+              fontSize: 14,
+            }}
+          >
+            <a href="#what" style={navLink()}>
+              What
             </a>
-            <a className="btnGhost" href="/contact">
-              Talk to us
+            <a href="#how" style={navLink()}>
+              How
             </a>
-          </div>
+            <a href="#proof" style={navLink()}>
+              Proof
+            </a>
+            <a href="#pilot" style={navLink()}>
+              Pilot
+            </a>
+            <a href="/investors" style={navLinkStrong()}>
+              Investors
+            </a>
+          </nav>
         </header>
 
-        {/* HERO (No overlap: grid stacks on mobile) */}
-        <section className="heroGrid">
-          {/* Left: hero copy + CTAs */}
-          <div>
-            <h1 className="h1">
-              Programmable
-              <br />
-              access,
+        {/* Hero + Right rail (responsive grid, no overlap) */}
+        <section
+          style={{
+            display: "grid",
+            gridTemplateColumns: "minmax(0, 1fr)",
+            gap: 14,
+            alignItems: "start",
+          }}
+        >
+          {/* Left: hero */}
+          <div
+            style={{
+              border: "1px solid rgba(0,0,0,0.10)",
+              borderRadius: 18,
+              padding: 18,
+              background: "white",
+            }}
+          >
+            <h1
+              style={{
+                margin: "2px 0 10px",
+                fontWeight: 950,
+                letterSpacing: -1.4,
+                lineHeight: 0.98,
+                fontSize: "clamp(40px, 7.5vw, 62px)",
+                wordBreak: "break-word",
+              }}
+            >
+              Programmable access,
               <br />
               everywhere.
             </h1>
 
-            <p className="lede">
-              AXW is the coordination layer for access: policy-defined permissions,
-              time-bounded tokens, and auditable logs — designed to integrate with
-              real systems without publishing sensitive codes.
+            <p
+              style={{
+                margin: "0 0 14px",
+                fontSize: "clamp(15px, 2.8vw, 18px)",
+                lineHeight: 1.6,
+                opacity: 0.82,
+                maxWidth: 840,
+              }}
+            >
+              AXW is the coordination layer for access: policy-defined permissions, time-bounded tokens, and auditable logs —
+              designed to integrate with real systems without publishing sensitive codes.
             </p>
 
-            <div className="ctaColumn">
-              <a className="btnPrimary" href="https://app.accessxworld.com">
-                Launch app
+            <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 10 }}>
+              <a href="https://app.accessxworld.com" style={btnPrimary()}>
+                Open the app
               </a>
-              <a className="btnGhost" href="#pilot">
+              <a href="/contact" style={btnGhost()}>
+                Talk to us
+              </a>
+              <a href="#pilot" style={btnGhost()}>
                 Run a 7-day pilot
               </a>
-              <a className="btnGhost" href="/demo">
-                View demo
-              </a>
+            </div>
+
+            <div style={{ marginTop: 12, fontSize: 12, opacity: 0.65 }}>
+              Built for: venues • property ops • enterprise access • infrastructure partners
             </div>
           </div>
 
-          {/* Right: quick links panel */}
-          <aside className="quickPanel">
-            <div className="quickTitle">Quick links</div>
+          {/* Right: demo tiles */}
+          <aside
+            style={{
+              border: "1px solid rgba(0,0,0,0.10)",
+              borderRadius: 18,
+              padding: 18,
+              background: "white",
+            }}
+          >
+            <div style={{ fontWeight: 950, letterSpacing: -0.3, marginBottom: 10 }}>
+              Demo in minutes
+            </div>
 
-            <div className="quickLinks">
-              <a className="quickLink" href="/venues">
-                <span>Public Venue Directory</span>
-                <span aria-hidden="true">→</span>
+            <div style={{ display: "grid", gap: 10 }}>
+              <a href="/venues" style={tile()}>
+                <div>Public Venue Directory →</div>
+                <div style={tileSub()}>Map + list + request flows</div>
               </a>
 
-              <a className="quickLink" href="/sf-pilot">
-                <span>SF Pilot Brief</span>
-                <span aria-hidden="true">→</span>
+              <a href="/sf-pilot" style={tile()}>
+                <div>SF Pilot Brief →</div>
+                <div style={tileSub()}>Proof-of-work story</div>
               </a>
 
-              <a className="quickLink" href="/onboarding">
-                <span>Onboarding (7 days)</span>
-                <span aria-hidden="true">→</span>
+              <a href="/onboarding" style={tile()}>
+                <div>Onboarding (7 days) →</div>
+                <div style={tileSub()}>Operator checklist</div>
               </a>
 
-              <a className="quickLink" href="/outreach">
-                <span>Outreach kit</span>
-                <span aria-hidden="true">→</span>
+              <a href="/outreach" style={tile()}>
+                <div>Outreach kit →</div>
+                <div style={tileSub()}>Email + scripts + pitch</div>
               </a>
 
-              <a className="quickLink" href="/investors">
-                <span>Investor page</span>
-                <span aria-hidden="true">→</span>
+              <a href="/investors" style={tile()}>
+                <div>Investor page →</div>
+                <div style={tileSub()}>Interactive model + scenarios</div>
+              </a>
+
+              <a href="/demo" style={tile()}>
+                <div>VC demo page →</div>
+                <div style={tileSub()}>Everything clickable</div>
               </a>
             </div>
 
-            <div className="quickSub">
-              No fluff — everything above is intended to be demoable in minutes.
+            <div style={{ marginTop: 12, fontSize: 12, opacity: 0.65, lineHeight: 1.35 }}>
+              No fluff — everything above is intended to be demoable quickly.
             </div>
           </aside>
         </section>
 
-        {/* Value props */}
-        <section id="what">
-          <div className="grid">
-            {[
-              {
-                title: "Serious infrastructure",
-                desc:
-                  "Access is policy, not a shared secret. Built for reliability, accountability, and real-world ops.",
-              },
-              {
-                title: "Tokenized permissions",
-                desc:
-                  "Issue scoped, time-bounded access tokens with explicit rules and constraints — no codes displayed.",
-              },
-              {
-                title: "Auditable logs",
-                desc:
-                  "Every grant and verification is logged for compliance, dispute resolution, and continuous improvement.",
-              },
-              {
-                title: "Conversion-ready",
-                desc:
-                  "Start with a pilot. Prove value fast. Expand to more sites and integrations.",
-              },
-            ].map((c) => (
-              <div key={c.title} className="card">
-                <div className="cardTitle">{c.title}</div>
-                <div className="cardDesc">{c.desc}</div>
-              </div>
-            ))}
+        {/* What */}
+        <section id="what" style={{ marginTop: 18 }}>
+          <div
+            style={{
+              border: "1px solid rgba(0,0,0,0.10)",
+              borderRadius: 18,
+              padding: 18,
+              background: "white",
+            }}
+          >
+            <h2 style={{ margin: "0 0 10px", fontSize: 26, letterSpacing: -0.7 }}>What we are building</h2>
+
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+                gap: 12,
+              }}
+            >
+              {[
+                {
+                  t: "Universal access primitive",
+                  d: "A common layer across doors, staff checkpoints, kiosks, reservations, and verification flows.",
+                },
+                {
+                  t: "Tokenized permissions",
+                  d: "Issue scoped, time-bounded passes with explicit rules and enforcement.",
+                },
+                {
+                  t: "Policy engine",
+                  d: "Define rules once. Apply consistently across venues and verticals.",
+                },
+                {
+                  t: "Auditable logs",
+                  d: "Every request, grant, verification, and denial is logged for compliance and analytics.",
+                },
+                {
+                  t: "Pilot-to-rollout pipeline",
+                  d: "7-day pilot pack: signage + kiosk + staff verification + onboarding + outreach.",
+                },
+                {
+                  t: "Conversion-ready",
+                  d: "Start with one location, then scale to clusters, portfolios, and integrations.",
+                },
+              ].map((x) => (
+                <div
+                  key={x.t}
+                  style={{
+                    border: "1px solid rgba(0,0,0,0.10)",
+                    borderRadius: 16,
+                    padding: 14,
+                    background: "white",
+                  }}
+                >
+                  <div style={{ fontWeight: 950, marginBottom: 6 }}>{x.t}</div>
+                  <div style={{ fontSize: 14, opacity: 0.82, lineHeight: 1.45 }}>{x.d}</div>
+                </div>
+              ))}
+            </div>
           </div>
         </section>
 
-        {/* How it works */}
-        <section id="how" className="how">
-          <h2 className="sectionTitle">How it works</h2>
-          <ol className="ol">
-            <li>
-              <b>Define policies</b> (who / what / when / where) once.
-            </li>
-            <li>
-              <b>Issue tokens</b> that encode scope + expiry + constraints.
-            </li>
-            <li>
-              <b>Verify access</b> at the edge (apps, controllers, services).
-            </li>
-            <li>
-              <b>Log events</b> for audit, analytics, enforcement, and pricing.
-            </li>
-          </ol>
+        {/* How */}
+        <section id="how" style={{ marginTop: 14 }}>
+          <div
+            style={{
+              border: "1px solid rgba(0,0,0,0.10)",
+              borderRadius: 18,
+              padding: 18,
+              background: "white",
+            }}
+          >
+            <h2 style={{ margin: "0 0 10px", fontSize: 26, letterSpacing: -0.7 }}>How it works</h2>
+
+            <ol style={{ margin: 0, paddingLeft: 18, opacity: 0.9, lineHeight: 1.75, maxWidth: 920 }}>
+              <li>
+                <b>Define policies</b> (who/what/when/where) once.
+              </li>
+              <li>
+                <b>Issue passes</b> that encode scope + expiry + constraints.
+              </li>
+              <li>
+                <b>Verify at the edge</b> (staff scanner, kiosk, check-in, controller).
+              </li>
+              <li>
+                <b>Log events</b> for audit, analytics, and enforcement.
+              </li>
+            </ol>
+
+            <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 14 }}>
+              <a href="/verify" style={btnGhost()}>
+                Staff verify →
+              </a>
+              <a href="/scan" style={btnGhost()}>
+                QR scan →
+              </a>
+              <a href="/kiosk/0fc330aa-5c3d-4f7f-a74f-7de10c2b56b6" style={btnGhost()}>
+                Kiosk demo →
+              </a>
+            </div>
+
+            <div style={{ marginTop: 10, fontSize: 12, opacity: 0.65 }}>
+              (Kiosk demo uses a seeded venue ID — you can swap this to any venue ID from your directory.)
+            </div>
+          </div>
+        </section>
+
+        {/* Proof */}
+        <section id="proof" style={{ marginTop: 14 }}>
+          <div
+            style={{
+              border: "1px solid rgba(0,0,0,0.10)",
+              borderRadius: 18,
+              padding: 18,
+              background: "white",
+            }}
+          >
+            <h2 style={{ margin: "0 0 10px", fontSize: 26, letterSpacing: -0.7 }}>Proof of work (demo pathways)</h2>
+
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+                gap: 12,
+              }}
+            >
+              <div style={proofCard()}>
+                <div style={{ fontWeight: 950 }}>Guest flow</div>
+                <div style={proofSub()}>
+                  Directory → Venue page → Request access → Pass token → Verify
+                </div>
+                <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 10 }}>
+                  <a href="/venues" style={btnPrimarySm()}>
+                    Start →
+                  </a>
+                  <a href="/verify" style={btnGhostSm()}>
+                    Verify →
+                  </a>
+                </div>
+              </div>
+
+              <div style={proofCard()}>
+                <div style={{ fontWeight: 950 }}>Operator flow</div>
+                <div style={proofSub()}>
+                  Lead capture → Onboarding checklist → Pilot pack routes (signage, kiosk, staff tools)
+                </div>
+                <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 10 }}>
+                  <a href="/contact" style={btnPrimarySm()}>
+                    Start pilot →
+                  </a>
+                  <a href="/onboarding" style={btnGhostSm()}>
+                    Onboarding →
+                  </a>
+                </div>
+              </div>
+
+              <div style={proofCard()}>
+                <div style={{ fontWeight: 950 }}>Investor flow</div>
+                <div style={proofSub()}>
+                  Interactive scenario model → VC demo page → SF pilot brief
+                </div>
+                <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 10 }}>
+                  <a href="/investors" style={btnPrimarySm()}>
+                    Model →
+                  </a>
+                  <a href="/demo" style={btnGhostSm()}>
+                    Demo →
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
         </section>
 
         {/* Pilot CTA */}
-        <section id="pilot" className="pilot">
-          <h3>Pilot in 7 days</h3>
-          <p>
-            Start with one location or one workflow. Define the rules, issue tokens,
-            verify instantly, and log everything. Expand after the first proof of value.
-          </p>
+        <section id="pilot" style={{ marginTop: 14 }}>
+          <div
+            style={{
+              borderRadius: 18,
+              padding: 18,
+              border: "1px solid rgba(0,0,0,0.10)",
+              background: "white",
+            }}
+          >
+            <h3 style={{ margin: "0 0 6px", fontSize: 18, letterSpacing: -0.2, fontWeight: 950 }}>Pilot in 7 days</h3>
+            <p style={{ margin: "0 0 12px", opacity: 0.82, maxWidth: 900, lineHeight: 1.5 }}>
+              Start with one location or one workflow. Define the rules, issue passes, verify at the edge, and log everything.
+              Expand after the first proof of value.
+            </p>
 
-          <div className="topActions" style={{ marginTop: 10 }}>
-            <a className="btnPrimary" href="https://app.accessxworld.com">
-              Launch app
-            </a>
-            <a className="btnGhost" href="/contact">
-              Contact
-            </a>
-            <a className="btnGhost" href="/investors/model">
-              See the model
-            </a>
+            <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+              <a href="/contact" style={btnPrimary()}>
+                Start a pilot
+              </a>
+              <a href="/outreach" style={btnGhost()}>
+                Outreach kit
+              </a>
+              <a href="/investors" style={btnGhost()}>
+                Investor model
+              </a>
+            </div>
           </div>
         </section>
 
-        <footer className="footer">
-          © {new Date().getFullYear()} AXW — Access × World
+        <footer style={{ marginTop: 26, opacity: 0.65, fontSize: 12, lineHeight: 1.4 }}>
+          © {year} AXW — Access × World •{" "}
+          <a href="/legal/terms" style={{ color: "inherit" }}>
+            Terms
+          </a>{" "}
+          •{" "}
+          <a href="/legal/privacy" style={{ color: "inherit" }}>
+            Privacy
+          </a>
         </footer>
       </div>
+
+      {/* Responsive layout rules */}
+      <style>{`
+        /* Wide screens: hero + rail side-by-side */
+        @media (min-width: 980px) {
+          main > div > section {
+            grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+          }
+        }
+
+        /* Prevent any weird iOS zoom/overlap behavior */
+        * { box-sizing: border-box; }
+        img { max-width: 100%; height: auto; }
+      `}</style>
     </main>
   );
+}
+
+function navLink() {
+  return { color: "inherit", textDecoration: "none", opacity: 0.78, fontWeight: 850 };
+}
+function navLinkStrong() {
+  return {
+    color: "inherit",
+    textDecoration: "none",
+    opacity: 0.95,
+    fontWeight: 950 as const,
+    border: "1px solid rgba(0,0,0,0.14)",
+    padding: "8px 10px",
+    borderRadius: 12,
+  };
+}
+function btnPrimary() {
+  return {
+    padding: "12px 16px",
+    borderRadius: 14,
+    background: "black",
+    color: "white",
+    textDecoration: "none",
+    fontWeight: 950 as const,
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    border: "1px solid rgba(0,0,0,0.14)",
+  };
+}
+function btnGhost() {
+  return {
+    padding: "12px 16px",
+    borderRadius: 14,
+    background: "white",
+    color: "black",
+    textDecoration: "none",
+    fontWeight: 950 as const,
+    border: "1px solid rgba(0,0,0,0.14)",
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+  };
+}
+function btnPrimarySm() {
+  return {
+    padding: "10px 12px",
+    borderRadius: 12,
+    background: "black",
+    color: "white",
+    textDecoration: "none",
+    fontWeight: 950 as const,
+    border: "1px solid rgba(0,0,0,0.14)",
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+  };
+}
+function btnGhostSm() {
+  return {
+    padding: "10px 12px",
+    borderRadius: 12,
+    background: "white",
+    color: "black",
+    textDecoration: "none",
+    fontWeight: 950 as const,
+    border: "1px solid rgba(0,0,0,0.14)",
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+  };
+}
+function tile() {
+  return {
+    textDecoration: "none",
+    color: "inherit",
+    border: "1px solid rgba(0,0,0,0.10)",
+    borderRadius: 16,
+    padding: 12,
+    background: "white",
+    fontWeight: 950 as const,
+    lineHeight: 1.25,
+  };
+}
+function tileSub() {
+  return { fontSize: 12, opacity: 0.65, fontWeight: 850 as const, marginTop: 4, lineHeight: 1.25 };
+}
+function proofCard() {
+  return { border: "1px solid rgba(0,0,0,0.10)", borderRadius: 16, padding: 14, background: "white" };
+}
+function proofSub() {
+  return { fontSize: 13, opacity: 0.8, lineHeight: 1.4, marginTop: 6 };
 }
