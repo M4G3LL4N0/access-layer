@@ -13,8 +13,17 @@ type Stats = {
     expires_at: string;
     status: string;
   } | null;
-  error?: string;
+  error?: any;
 };
+
+function safeStringify(x: any) {
+  try {
+    if (typeof x === "string") return x;
+    return JSON.stringify(x, null, 2);
+  } catch {
+    return String(x);
+  }
+}
 
 export default function KioskClient({ venueId }: { venueId: string }) {
   const [pin, setPin] = useState("");
@@ -23,6 +32,8 @@ export default function KioskClient({ venueId }: { venueId: string }) {
 
   const [stats, setStats] = useState<Stats | null>(null);
   const [loadingStats, setLoadingStats] = useState(false);
+  const [lastStatsUrl, setLastStatsUrl] = useState<string>("");
+  const [lastStatsRaw, setLastStatsRaw] = useState<string>("");
 
   const [issuing, setIssuing] = useState(false);
   const [issueErr, setIssueErr] = useState<string | null>(null);
@@ -35,15 +46,45 @@ export default function KioskClient({ venueId }: { venueId: string }) {
 
   async function refreshStats() {
     setLoadingStats(true);
+    setPinErr(null);
+
+    const url = `/api/kiosk/stats?venueId=${encodeURIComponent(venueId)}`;
+    setLastStatsUrl(url);
+
     try {
-      const res = await fetch(`/api/kiosk/stats?venueId=${encodeURIComponent(venueId)}`, {
-        cache: "no-store",
-      });
-      const json = (await res.json()) as Stats;
+      const res = await fetch(url, { cache: "no-store" });
+      const raw = await res.text();
+      setLastStatsRaw(raw);
+
+      if (!res.ok) {
+        setStats({
+          ok: false,
+          error: `HTTP ${res.status} ${res.statusText}\n\n${raw}`,
+        });
+        return;
+      }
+
+      let json: any = null;
+      try {
+        json = JSON.parse(raw);
+      } catch {
+        setStats({
+          ok: false,
+          error: `Stats response was not JSON.\n\n${raw}`,
+        });
+        return;
+      }
+
       setStats(json);
-      if (json?.latest?.token) setIssuedToken(json.latest.token);
+
+      if (json?.ok && json?.latest?.token) {
+        setIssuedToken(String(json.latest.token));
+      }
     } catch (e: any) {
-      setStats({ ok: false, error: String(e?.message || e) });
+      setStats({
+        ok: false,
+        error: safeStringify(e?.message ? e.message : e),
+      });
     } finally {
       setLoadingStats(false);
     }
@@ -64,37 +105,43 @@ export default function KioskClient({ venueId }: { venueId: string }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ venueId, pin, dryRun: true }),
       });
-      const json = await res.json();
+      const json = await res.json().catch(() => ({}));
+
       if (!res.ok || json?.ok === false) {
-        setPinErr(json?.error || "Invalid PIN");
+        setPinErr(json?.error || `Invalid PIN (HTTP ${res.status})`);
         return;
       }
+
       setUnlocked(true);
       localStorage.setItem(`kiosk_unlocked_${venueId}`, "1");
     } catch (e: any) {
-      setPinErr(String(e?.message || e));
+      setPinErr(safeStringify(e?.message || e));
     }
   }
 
   async function issuePass() {
     setIssueErr(null);
     setIssuing(true);
+
     try {
       const res = await fetch("/api/kiosk/issue-pass", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ venueId, pin }),
       });
-      const json = await res.json();
+
+      const json = await res.json().catch(() => ({}));
+
       if (!res.ok || json?.ok === false) {
-        setIssueErr(json?.error || "Failed to issue pass");
+        setIssueErr(json?.error || `Failed to issue pass (HTTP ${res.status})`);
         return;
       }
+
       const t = String(json?.token || "");
       setIssuedToken(t || null);
       refreshStats();
     } catch (e: any) {
-      setIssueErr(String(e?.message || e));
+      setIssueErr(safeStringify(e?.message || e));
     } finally {
       setIssuing(false);
     }
@@ -116,6 +163,7 @@ export default function KioskClient({ venueId }: { venueId: string }) {
       manage: `${base}/manage/${venueId}`,
       signage: `${base}/signage/${venueId}`,
       pilotPack: `${base}/pilot-pack/${venueId}`,
+      stats: `${base}/api/kiosk/stats?venueId=${venueId}`,
     };
   }, [issuedToken, venueId]);
 
@@ -132,7 +180,7 @@ export default function KioskClient({ venueId }: { venueId: string }) {
         padding: 24,
       }}
     >
-      <div style={{ width: "100%", maxWidth: 900 }}>
+      <div style={{ width: "100%", maxWidth: 920 }}>
         <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 12 }}>
           <div>
             <h1 style={{ margin: 0, fontSize: 28, fontWeight: 950 }}>Kiosk Mode</h1>
@@ -142,6 +190,9 @@ export default function KioskClient({ venueId }: { venueId: string }) {
           </div>
 
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap", justifyContent: "flex-end" }}>
+            <button onClick={refreshStats} style={btnGhost} disabled={loadingStats}>
+              {loadingStats ? "Refreshing…" : "Refresh"}
+            </button>
             <a href={links.directory} style={btnGhost}>Directory</a>
             <a href={links.venue} style={btnGhost}>Venue</a>
             <a href={links.verify} style={btnGhost}>Verify</a>
@@ -171,6 +222,7 @@ export default function KioskClient({ venueId }: { venueId: string }) {
           />
         </div>
 
+        {/* Only show if stats truly failed */}
         {stats?.ok === false && (
           <div
             style={{
@@ -179,12 +231,46 @@ export default function KioskClient({ venueId }: { venueId: string }) {
               borderRadius: 14,
               border: "1px solid rgba(239,68,68,0.35)",
               background: "rgba(239,68,68,0.12)",
-              fontWeight: 800,
+              fontWeight: 900,
+              whiteSpace: "pre-wrap",
             }}
           >
-            Stats error: {stats?.error || "unknown"}
+            Stats error:
+            {"\n"}
+            {safeStringify(stats?.error || "unknown")}
           </div>
         )}
+
+        {/* Debug panel (so we never guess again) */}
+        <details style={{ marginTop: 12, opacity: 0.9 }}>
+          <summary style={{ cursor: "pointer", fontWeight: 900 }}>Debug (stats fetch)</summary>
+          <div style={{ marginTop: 10, fontFamily: "ui-monospace, Menlo, monospace", fontSize: 12 }}>
+            <div style={{ opacity: 0.8 }}>URL:</div>
+            <div style={{ padding: 10, borderRadius: 12, border: "1px solid rgba(255,255,255,0.12)" }}>
+              {lastStatsUrl}
+            </div>
+
+            <div style={{ opacity: 0.8, marginTop: 10 }}>Raw response:</div>
+            <div
+              style={{
+                padding: 10,
+                borderRadius: 12,
+                border: "1px solid rgba(255,255,255,0.12)",
+                whiteSpace: "pre-wrap",
+                maxHeight: 240,
+                overflow: "auto",
+              }}
+            >
+              {lastStatsRaw || "(empty)"}
+            </div>
+
+            <div style={{ marginTop: 10 }}>
+              <a href={links.stats} style={{ color: "white", textDecoration: "underline", fontWeight: 900 }}>
+                Open stats endpoint
+              </a>
+            </div>
+          </div>
+        </details>
 
         {/* Unlock */}
         <div
@@ -199,9 +285,7 @@ export default function KioskClient({ venueId }: { venueId: string }) {
           <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 10 }}>
             <div style={{ fontWeight: 950, fontSize: 16 }}>Staff Controls</div>
             {unlocked ? (
-              <button onClick={lock} style={btnDanger}>
-                Lock
-              </button>
+              <button onClick={lock} style={btnDanger}>Lock</button>
             ) : null}
           </div>
 
@@ -229,9 +313,7 @@ export default function KioskClient({ venueId }: { venueId: string }) {
                     letterSpacing: 2,
                   }}
                 />
-                <button onClick={unlock} style={btnPrimary}>
-                  Unlock
-                </button>
+                <button onClick={unlock} style={btnPrimary}>Unlock</button>
               </div>
 
               {pinErr && (
@@ -242,7 +324,8 @@ export default function KioskClient({ venueId }: { venueId: string }) {
                     borderRadius: 14,
                     border: "1px solid rgba(239,68,68,0.35)",
                     background: "rgba(239,68,68,0.12)",
-                    fontWeight: 800,
+                    fontWeight: 900,
+                    whiteSpace: "pre-wrap",
                   }}
                 >
                   {pinErr}
@@ -273,7 +356,8 @@ export default function KioskClient({ venueId }: { venueId: string }) {
                     borderRadius: 14,
                     border: "1px solid rgba(239,68,68,0.35)",
                     background: "rgba(239,68,68,0.12)",
-                    fontWeight: 800,
+                    fontWeight: 900,
+                    whiteSpace: "pre-wrap",
                   }}
                 >
                   {issueErr}
@@ -301,9 +385,7 @@ export default function KioskClient({ venueId }: { venueId: string }) {
                         Open Pass (QR)
                       </a>
                     ) : null}
-                    <a href={links.verify} style={btnGhost}>
-                      Verify Scanner
-                    </a>
+                    <a href={links.verify} style={btnGhost}>Verify Scanner</a>
                   </div>
                 </div>
               )}
