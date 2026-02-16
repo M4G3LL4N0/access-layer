@@ -1,251 +1,251 @@
-export const dynamic = "force-dynamic";
-
 import Link from "next/link";
 import { supabaseServer } from "@/lib/supabaseServer";
 
-const UUID_RE =
-  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+export const dynamic = "force-dynamic";
+
+type Venue = {
+  id: string;
+  name: string;
+  address: string | null;
+  city: string | null;
+  region: string | null;
+  country: string | null;
+  category: string | null;
+  status: string | null;
+  lat: number | null;
+  lng: number | null;
+};
+
+type Rule = {
+  id: string;
+  rule_name: string | null;
+  is_enabled: boolean | null;
+  start_time: string | null;
+  end_time: string | null;
+  days_of_week: number[] | null;
+  max_grants_per_user_per_day: number | null;
+  min_minutes_between_grants: number | null;
+  access_mode: string | null;
+  requires_payment: boolean | null;
+  price_cents: number | null;
+  require_login: boolean | null;
+};
+
+function fmtTime(t?: string | null) {
+  if (!t) return "—";
+  return t.slice(0, 5);
+}
+
+function fmtDays(d?: number[] | null) {
+  if (!d || d.length === 0) return "Any day";
+  const map = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  return d.map((x) => map[x] || String(x)).join(", ");
+}
 
 export default async function VenuePage({
   params,
-  searchParams,
 }: {
   params: Promise<{ venueId: string }>;
-  searchParams?: Promise<{ error?: string }>;
 }) {
   const { venueId } = await params;
-  const sp = (await searchParams) || {};
-  const error = sp.error || "";
 
-  if (!UUID_RE.test(venueId)) {
+  const supabase = supabaseServer;
+
+  const { data: venue, error: vErr } = await supabase
+    .from("venues")
+    .select("id,name,address,city,region,country,category,status,lat,lng")
+    .eq("id", venueId)
+    .limit(1)
+    .maybeSingle();
+
+  if (vErr) {
     return (
       <main style={{ padding: 24, fontFamily: "system-ui" }}>
-        <h1 style={{ fontSize: 22, fontWeight: 950 }}>Venue error</h1>
-        <p style={{ marginTop: 10 }}>Invalid venue id.</p>
-        <Link href="/venues" style={{ opacity: 0.8 }}>
-          ← Back to directory
-        </Link>
+        <h1 style={{ fontSize: 22, fontWeight: 900 }}>Venue error</h1>
+        <pre style={{ whiteSpace: "pre-wrap" }}>{vErr.message}</pre>
+        <Link href="/venues">Back</Link>
       </main>
     );
   }
 
-  // Venue
-  const { data: venue, error: vErr } = await supabaseServer
-    .from("venues")
-    .select("id,name,address,city,region,category,status,created_at")
-    .eq("id", venueId)
-    .maybeSingle();
+  if (!venue) {
+    return (
+      <main style={{ padding: 24, fontFamily: "system-ui" }}>
+        <h1 style={{ fontSize: 22, fontWeight: 900 }}>Venue error</h1>
+        <p>Venue not found.</p>
+        <p style={{ opacity: 0.75 }}>
+          Tip: confirm the venue id exists in Supabase.
+        </p>
+        <Link href="/venues">Back</Link>
+      </main>
+    );
+  }
 
-  // Rules
-  const { data: rules, error: rErr } = await supabaseServer
+  const { data: rules } = await supabase
     .from("access_rules")
     .select(
-      "id,rule_name,is_enabled,access_mode,start_time,end_time,max_grants_per_user_per_day,min_minutes_between_grants,created_at"
+      "id,rule_name,is_enabled,start_time,end_time,days_of_week,max_grants_per_user_per_day,min_minutes_between_grants,access_mode,requires_payment,price_cents,require_login"
     )
-    .eq("venue_id", venueId)
-    .order("created_at", { ascending: false });
+    .eq("venue_id", venue.id)
+    .order("created_at", { ascending: false })
+    .limit(5);
 
-  // ----- Pilot Analytics -----
-  const now = new Date();
-  const startOfDay = new Date(now);
-  startOfDay.setHours(0, 0, 0, 0);
-  const dayISO = startOfDay.toISOString();
+  const rule = (rules && rules[0]) as Rule | undefined;
 
-  const start7 = new Date(now);
-  start7.setDate(start7.getDate() - 7);
-  start7.setHours(0, 0, 0, 0);
-  const weekISO = start7.toISOString();
+  const line = [
+    venue.address,
+    venue.city,
+    venue.region,
+    venue.country,
+  ]
+    .filter(Boolean)
+    .join(" — ");
 
-  const requestsToday = await supabaseServer
-    .from("access_requests")
-    .select("id", { count: "exact", head: true })
-    .eq("venue_id", venueId)
-    .gte("requested_at", dayISO);
+  const pillStyle: React.CSSProperties = {
+    display: "inline-block",
+    padding: "6px 10px",
+    borderRadius: 999,
+    border: "1px solid rgba(0,0,0,0.12)",
+    fontSize: 12,
+    fontWeight: 800,
+    opacity: 0.9,
+  };
 
-  const requests7d = await supabaseServer
-    .from("access_requests")
-    .select("id", { count: "exact", head: true })
-    .eq("venue_id", venueId)
-    .gte("requested_at", weekISO);
+  const cardStyle: React.CSSProperties = {
+    border: "1px solid rgba(0,0,0,0.12)",
+    borderRadius: 16,
+    padding: 16,
+    background: "white",
+  };
 
-  const tokens7d = await supabaseServer
-    .from("access_tokens")
-    .select("id", { count: "exact", head: true })
-    .eq("venue_id", venueId)
-    .gte("issued_at", weekISO);
+  const btnBlack: React.CSSProperties = {
+    display: "inline-block",
+    padding: "10px 14px",
+    borderRadius: 12,
+    background: "black",
+    color: "white",
+    textDecoration: "none",
+    fontWeight: 900,
+  };
 
-  const leadsTotal = await supabaseServer
-    .from("owner_leads")
-    .select("id", { count: "exact", head: true })
-    .eq("venue_id", venueId);
-
-  const analyticsError =
-    requestsToday.error || requests7d.error || tokens7d.error || leadsTotal.error;
+  const btnOutline: React.CSSProperties = {
+    display: "inline-block",
+    padding: "10px 14px",
+    borderRadius: 12,
+    border: "1px solid rgba(0,0,0,0.14)",
+    color: "black",
+    textDecoration: "none",
+    fontWeight: 900,
+  };
 
   return (
-    <main style={{ padding: 24, fontFamily: "system-ui", maxWidth: 980, margin: "0 auto" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
-        <Link href="/venues" style={{ opacity: 0.85 }}>
-          ← Directory
-        </Link>
-        <Link href="/owners" style={{ opacity: 0.85 }}>
-          For Owners
-        </Link>
-      </div>
-
-      {error === "cooldown" && (
-        <div
-          style={{
-            marginTop: 14,
-            padding: 12,
-            borderRadius: 12,
-            background: "#fff7ed",
-            border: "1px solid #fed7aa",
-            fontWeight: 800,
-          }}
-        >
-          Cooldown active. Try again later.
+    <main
+      style={{
+        padding: 24,
+        fontFamily:
+          "system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif",
+        background: "#f7f7f8",
+        minHeight: "100vh",
+      }}
+    >
+      <div style={{ maxWidth: 980, margin: "0 auto" }}>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <Link href="/venues" style={{ opacity: 0.8 }}>
+            ← Back to directory
+          </Link>
+          <a href="/contact" style={{ opacity: 0.8 }}>
+            Contact
+          </a>
         </div>
-      )}
 
-      {(vErr || !venue) && (
-        <div style={{ marginTop: 14, padding: 14, borderRadius: 14, border: "1px solid var(--card-border)" }}>
-          <h1 style={{ fontSize: 22, fontWeight: 950 }}>Venue error</h1>
-          <div style={{ marginTop: 8, opacity: 0.85 }}>
-            {vErr?.message || "Venue not found."}
-          </div>
-          <div style={{ marginTop: 10, fontSize: 12, opacity: 0.7 }}>
-            Tip: confirm the venue id exists in Supabase.
-          </div>
+        <h1 style={{ marginTop: 12, fontSize: 28, fontWeight: 950 }}>
+          {venue.name}
+        </h1>
+
+        <div style={{ marginTop: 8, opacity: 0.8 }}>{line || "—"}</div>
+
+        <div style={{ marginTop: 10, display: "flex", gap: 10, flexWrap: "wrap" }}>
+          <span style={pillStyle}>{venue.category || "venue"}</span>
+          <span style={pillStyle}>{venue.status || "unknown"}</span>
         </div>
-      )}
 
-      {venue && (
-        <>
-          <h1 style={{ marginTop: 14, fontSize: 28, fontWeight: 950 }}>{venue.name}</h1>
-          <div style={{ marginTop: 6, opacity: 0.85 }}>
-            {venue.address} — {venue.city} {venue.region}
-          </div>
-          <div style={{ marginTop: 8, fontSize: 12, opacity: 0.7 }}>
-            {venue.category} · {venue.status}
-          </div>
+        {/* Access Rules */}
+        <section style={{ marginTop: 18 }}>
+          <div style={cardStyle}>
+            <h2 style={{ margin: 0, fontSize: 16, fontWeight: 950 }}>
+              Access Rules
+            </h2>
 
-          {/* Analytics */}
-          <div style={{ marginTop: 18, padding: 14, border: "1px solid var(--card-border)", borderRadius: 14 }}>
-            <div style={{ fontWeight: 950, fontSize: 16 }}>Pilot Analytics</div>
-
-            {analyticsError ? (
-              <div style={{ marginTop: 10, opacity: 0.85 }}>
-                Analytics unavailable (query error). Safe to ignore for now.
+            {rule ? (
+              <div style={{ marginTop: 10, lineHeight: 1.65 }}>
+                <div style={{ fontWeight: 900 }}>
+                  {rule.rule_name || "Default Rule"}
+                </div>
+                <div style={{ opacity: 0.85 }}>
+                  {fmtDays(rule.days_of_week)} · {fmtTime(rule.start_time)} to{" "}
+                  {fmtTime(rule.end_time)} · max/day{" "}
+                  {rule.max_grants_per_user_per_day ?? "—"} · cooldown{" "}
+                  {rule.min_minutes_between_grants ?? "—"} min · mode:{" "}
+                  {rule.access_mode || "—"}
+                </div>
               </div>
             ) : (
-              <div style={{ marginTop: 12, display: "flex", gap: 14, flexWrap: "wrap" }}>
-                <div style={{ padding: 10, border: "1px solid var(--card-border)", borderRadius: 12 }}>
-                  <div style={{ fontSize: 12, opacity: 0.7 }}>Requests today</div>
-                  <div style={{ fontSize: 20, fontWeight: 950 }}>{requestsToday.count ?? 0}</div>
-                </div>
-
-                <div style={{ padding: 10, border: "1px solid var(--card-border)", borderRadius: 12 }}>
-                  <div style={{ fontSize: 12, opacity: 0.7 }}>Requests (7d)</div>
-                  <div style={{ fontSize: 20, fontWeight: 950 }}>{requests7d.count ?? 0}</div>
-                </div>
-
-                <div style={{ padding: 10, border: "1px solid var(--card-border)", borderRadius: 12 }}>
-                  <div style={{ fontSize: 12, opacity: 0.7 }}>Tokens issued (7d)</div>
-                  <div style={{ fontSize: 20, fontWeight: 950 }}>{tokens7d.count ?? 0}</div>
-                </div>
-
-                <div style={{ padding: 10, border: "1px solid var(--card-border)", borderRadius: 12 }}>
-                  <div style={{ fontSize: 12, opacity: 0.7 }}>Owner leads</div>
-                  <div style={{ fontSize: 20, fontWeight: 950 }}>{leadsTotal.count ?? 0}</div>
-                </div>
+              <div style={{ marginTop: 10, opacity: 0.8 }}>
+                No rules configured yet.
               </div>
             )}
 
-            <div style={{ marginTop: 8, fontSize: 12, opacity: 0.65 }}>
-              Rule-based access layer · no codes published.
+            <div style={{ marginTop: 14, display: "flex", gap: 12, flexWrap: "wrap" }}>
+              <Link href={`/request/${venue.id}`} style={btnBlack}>
+                Request Access
+              </Link>
+
+              <Link href={`/verify?venueId=${venue.id}`} style={btnOutline}>
+                Staff Verify
+              </Link>
+            </div>
+
+            <div style={{ marginTop: 10 }}>
+              <Link
+                href={`/manage/${venue.id}`}
+                style={{ opacity: 0.85, textDecoration: "underline", fontWeight: 800 }}
+              >
+                Claim & manage this venue →
+              </Link>
             </div>
           </div>
+        </section>
 
-          {/* Rules */}
-          <h2 style={{ marginTop: 18, fontSize: 18, fontWeight: 950 }}>Access Rules</h2>
+        {/* Parking Validation */}
+        <section style={{ marginTop: 14 }}>
+          <div style={cardStyle}>
+            <h2 style={{ margin: 0, fontSize: 16, fontWeight: 950 }}>
+              Parking Validation (Pilot)
+            </h2>
+            <p style={{ marginTop: 8, opacity: 0.85, lineHeight: 1.55 }}>
+              Issue time-bounded parking validations (like Target / garages). This is a
+              controlled token system — no shared codes.
+            </p>
 
-          {rErr && (
-            <pre style={{ marginTop: 10, padding: 12, background: "#fee", borderRadius: 10 }}>
-              Rules error: {rErr.message}
-            </pre>
-          )}
+            <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+              <Link href={`/kiosk/parking/${venue.id}`} style={btnBlack}>
+                Open Parking Kiosk
+              </Link>
 
-          <div style={{ marginTop: 10, display: "grid", gap: 10 }}>
-            {(rules || []).map((r: any) => (
-              <div key={r.id} style={{ padding: 14, border: "1px solid var(--card-border)", borderRadius: 14 }}>
-                <div style={{ display: "flex", justifyContent: "space-between", gap: 10, flexWrap: "wrap" }}>
-                  <div style={{ fontWeight: 950 }}>{r.rule_name}</div>
-                  <div style={{ fontSize: 12, opacity: 0.7 }}>
-                    {r.is_enabled ? "enabled" : "disabled"} · mode: {r.access_mode}
-                  </div>
-                </div>
-                <div style={{ marginTop: 8, opacity: 0.85 }}>
-                  {r.start_time}–{r.end_time} · max/day {r.max_grants_per_user_per_day} · cooldown{" "}
-                  {r.min_minutes_between_grants} min
-                </div>
-              </div>
-            ))}
+              <a
+                href={`/api/parking/latest?venueId=${venue.id}`}
+                style={btnOutline}
+              >
+                View latest validations (debug)
+              </a>
+            </div>
 
-            {(!rules || rules.length === 0) && (
-              <div style={{ padding: 14, border: "1px solid var(--card-border)", borderRadius: 14, opacity: 0.8 }}>
-                No rules found yet.
-              </div>
-            )}
+            <div style={{ marginTop: 10, fontSize: 13, opacity: 0.7 }}>
+              Demo workflow: kiosk issues token → driver exits gate → staff/edge verifies token.
+            </div>
           </div>
-
-          {/* CTAs */}
-          <div style={{ marginTop: 18, display: "flex", gap: 12, flexWrap: "wrap" }}>
-            <Link
-              href={`/request/${venue.id}`}
-              style={{
-                display: "inline-block",
-                padding: "10px 14px",
-                borderRadius: 10,
-                background: "black",
-                color: "white",
-                textDecoration: "none",
-                fontWeight: 900,
-              }}
-            >
-              Request Access
-            </Link>
-
-            <a
-              href={`/manage/${venue.id}`}
-              style={{
-                display: "inline-block",
-                padding: "10px 14px",
-                borderRadius: 10,
-                border: "1px solid var(--card-border)",
-                textDecoration: "none",
-                fontWeight: 900,
-              }}
-            >
-              Manage (stub)
-            </a>
-
-            <a
-              href={`/claim/${venue.id}`}
-              style={{
-                display: "inline-block",
-                padding: "10px 14px",
-                borderRadius: 10,
-                border: "1px solid var(--card-border)",
-                textDecoration: "none",
-                fontWeight: 900,
-              }}
-            >
-              Claim venue
-            </a>
-          </div>
-        </>
-      )}
+        </section>
+      </div>
     </main>
   );
 }
