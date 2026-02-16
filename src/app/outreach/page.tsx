@@ -1,137 +1,105 @@
-export const dynamic = "force-dynamic";
-
-import Link from "next/link";
-
-function Block({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
+export default function OutreachPage() {
+  const Section = ({
+    title,
+    children,
+  }: {
+    title: string;
+    children: any;
+  }) => (
     <section
       style={{
-        background: "white",
-        border: "1px solid #e5e7eb",
+        border: "1px solid rgba(0,0,0,.12)",
         borderRadius: 16,
         padding: 16,
+        marginBottom: 14,
+        background: "rgba(255,255,255,.02)",
       }}
     >
-      <div style={{ fontWeight: 1000, fontSize: 18 }}>{title}</div>
-      <div style={{ marginTop: 10, lineHeight: 1.6, color: "#111" }}>{children}</div>
+      <div style={{ fontWeight: 1000, marginBottom: 8 }}>{title}</div>
+      <div style={{ opacity: 0.9, lineHeight: 1.7 }}>{children}</div>
     </section>
   );
-}
-
-function CodeBox({ text }: { text: string }) {
-  return (
-    <pre
-      style={{
-        marginTop: 10,
-        whiteSpace: "pre-wrap",
-        background: "#0b0b0e",
-        color: "#f8fafc",
-        padding: 14,
-        borderRadius: 14,
-        border: "1px solid #111",
-        overflow: "auto",
-        fontSize: 13,
-      }}
-    >
-      {text}
-    </pre>
-  );
-}
-
-export default function OutreachPage() {
-  const dm = `Hey — quick note. We’re piloting Access ↔ Space in SF.
-
-If a customer needs access (restroom / workspace / office area) and staff is busy, we issue a time-limited “access pass” (no codes published). Staff can verify in 5 seconds.
-
-Want a free pilot? I can set up your location in <5 minutes and you’ll get:
-• QR signage
-• rate limits / hours / rules
-• staff verifier page
-• basic usage metrics
-
-Reply with the venue name + neighborhood and I’ll send your pilot links.`;
-
-  const email = `Subject: Free SF Pilot — time-limited access passes (no codes)
-
-Hi [Name],
-
-We’re running an SF pilot called Access ↔ Space. When staff is busy, patrons can request a time-limited access pass (no codes published). Staff verifies quickly on a phone.
-
-Pilot includes:
-• QR signage (front desk + door)
-• configurable hours/rules + rate limits
-• staff verify page
-• basic usage metrics
-
-If you’re open, reply with:
-1) venue name
-2) neighborhood
-3) what space (restroom / workspace / office)
-
-I’ll set it up in <5 minutes and send links.
-
-Thanks,
-[Your Name]`;
 
   return (
-    <main style={{ padding: 28, fontFamily: "system-ui", background: "#f6f7fb", minHeight: "100vh" }}>
-      <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
-          <div>
-            <h1 style={{ margin: 0, fontSize: 34, fontWeight: 1000 }}>Outreach Engine</h1>
-            <p style={{ marginTop: 6, opacity: 0.75 }}>
-              7-day plan to onboard SF venues fast (Hayes, Mission, SOMA first).
-            </p>
-          </div>
-          <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-            <Link href="/venues" style={{ textDecoration: "underline", fontWeight: 900 }}>
-              Public Directory →
-            </Link>
-            <Link href="/contact" style={{ textDecoration: "underline", fontWeight: 900 }}>
-              Lead Form →
-            </Link>
-            <Link href="/admin/leads" style={{ textDecoration: "underline", fontWeight: 900 }}>
-              Admin Leads →
-            </Link>
-          </div>
+    <main style={{ padding: 24, fontFamily: "system-ui", maxWidth: 980, margin: "0 auto" }}>
+      <h1 style={{ margin: "0 0 8px", fontSize: 32, fontWeight: 1000 }}>
+        Outreach Playbook (SF Pilot)
+      </h1>
+      <p style={{ margin: "0 0 18px", opacity: 0.8, lineHeight: 1.6 }}>
+        This is the “operator engine” to onboard venues fast: who to target, what to say,
+        what to leave behind, and how to close pilots in under 7 days.
+      </p>
+
+      <Section title="Target list (SF wedge)">
+        <ul style={{ margin: 0, paddingLeft: 18 }}>
+          <li><b>Workspaces</b>: coworking, shared offices, small private suites.</li>
+          <li><b>Cafes + venues</b>: restroom access, after-hours access controls.</li>
+          <li><b>Property ops</b>: multi-tenant buildings, shared amenities.</li>
+          <li><b>Clinics + service providers</b>: controlled rooms and staff workflows.</li>
+        </ul>
+      </Section>
+
+      <Section title="Offer (pilot terms)">
+        <ul style={{ margin: 0, paddingLeft: 18 }}>
+          <li><b>7-day pilot</b> with one site + one workflow.</li>
+          <li>We configure <b>rules + passes + staff verification</b>.</li>
+          <li><b>No codes published</b>. Time-bounded pass tokens only.</li>
+          <li>Deliver: pilot pack + signage + metrics snapshot.</li>
+        </ul>
+      </Section>
+
+      <Section title="30-second opener (in person)">
+        <div style={{ whiteSpace: "pre-wrap" }}>
+{`“We’re building a neutral access layer between access and space.
+Instead of sharing secrets, you define rules and we issue time-bounded passes.
+Your staff can verify via QR/token, and everything is logged.
+We can pilot this here in 7 days with almost no disruption.”`}
         </div>
+      </Section>
 
-        <div style={{ marginTop: 18, display: "grid", gap: 12, gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))" }}>
-          <Block title="Targets (start here)">
-            <ul style={{ margin: 0, paddingLeft: 18 }}>
-              <li>Cafes with restrooms (Hayes Valley)</li>
-              <li>Coworking / study spaces (Mission)</li>
-              <li>Small offices / studios (SOMA)</li>
-              <li>Gyms / boutique fitness</li>
-              <li>Community orgs / galleries</li>
-            </ul>
-            <div style={{ marginTop: 10, opacity: 0.75 }}>
-              Goal: onboard <b>5 venues</b> in week 1 with public pilot pages + signage.
-            </div>
-          </Block>
+      <Section title="Cold email (copy/paste)">
+        <div style={{ whiteSpace: "pre-wrap" }}>
+{`Subject: 7-day access pilot (no codes shared)
 
-          <Block title="Daily cadence (do this every day)">
-            <ol style={{ margin: 0, paddingLeft: 18 }}>
-              <li>Build a list of 25 venues (Google Maps/Yelp)</li>
-              <li>Send 15 DMs + 10 emails</li>
-              <li>Convert 1 lead → venue in admin</li>
-              <li>Generate signage + send pilot pack</li>
-              <li>Ask for 1 intro to another venue</li>
-            </ol>
-          </Block>
+Hi {Name} —
 
-          <Block title="DM script (copy/paste)">
-            <CodeBox text={dm} />
-          </Block>
+I’m running a small SF pilot for AXW (Access × World): a policy-driven access layer that issues time-bounded passes (no secrets published), with verification + audit logs.
 
-          <Block title="Email template (copy/paste)">
-            <CodeBox text={email} />
-          </Block>
+Pilot is 7 days:
+• One location or workflow
+• Rules + passes + staff verification
+• Basic usage metrics snapshot
+
+If you have 10 minutes, I can show the live demo and we can pick a workflow to pilot.
+
+— {Your Name}
+{Link to /demo}`}
         </div>
+      </Section>
 
-        <div style={{ marginTop: 14, opacity: 0.75 }}>
-          Next: run outreach → convert leads → send pilot pack → track metrics.
+      <Section title="Text / DM script">
+        <div style={{ whiteSpace: "pre-wrap" }}>
+{`Quick question: do you ever need time-bounded access for a room/restroom/workspace
+without sharing a permanent code? We’re piloting a rules→pass→verify system in SF.
+Can I show you a 60-second demo?`}
         </div>
+      </Section>
+
+      <Section title="Close (pilot confirmation)">
+        <ul style={{ margin: 0, paddingLeft: 18 }}>
+          <li>Pick workflow + hours + caps (cooldown / max per day).</li>
+          <li>Put up signage (QR to request page).</li>
+          <li>Train 1 staff member on verify page.</li>
+          <li>Run 7 days → review logs + outcomes → expand.</li>
+        </ul>
+      </Section>
+
+      <div style={{ marginTop: 18, opacity: 0.8 }}>
+        Links:{" "}
+        <a href="/demo">/demo</a>{" "}
+        · <a href="/onboarding">/onboarding</a>{" "}
+        · <a href="/sf-pilot">/sf-pilot</a>{" "}
+        · <a href="/investors/model">/investors/model</a>
       </div>
     </main>
   );
