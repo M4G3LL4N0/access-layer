@@ -2,11 +2,7 @@
 
 import { useMemo, useState } from "react";
 
-export default function ParkingKioskPage({
-  params,
-}: {
-  params: { venueId: string };
-}) {
+export default function ParkingKioskPage({ params }: { params: { venueId: string } }) {
   const venueId = params.venueId;
 
   const [plate, setPlate] = useState("");
@@ -23,8 +19,7 @@ export default function ParkingKioskPage({
       page: {
         minHeight: "100vh",
         padding: 18,
-        fontFamily:
-          'system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif',
+        fontFamily: 'system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif',
         color: text,
         background:
           "radial-gradient(1200px 700px at 20% 10%, rgba(59,130,246,0.16), transparent 60%), #020617",
@@ -126,11 +121,8 @@ export default function ParkingKioskPage({
         body: JSON.stringify({ venueId, plate, minutes }),
       });
       const j = await r.json();
-      if (!r.ok || !j?.ok) {
-        setErr(j?.error || `Failed (HTTP ${r.status})`);
-      } else {
-        setResp(j);
-      }
+      if (!r.ok || !j?.ok) setErr(j?.error || `Failed (HTTP ${r.status})`);
+      else setResp(j);
     } catch (e: any) {
       setErr(String(e?.message || e));
     } finally {
@@ -139,9 +131,7 @@ export default function ParkingKioskPage({
   }
 
   const token = resp?.validation?.token;
-  const verifyUrl = token
-    ? `/api/parking/verify?token=${encodeURIComponent(token)}`
-    : null;
+  const verifyUrl = token ? `/api/parking/verify?token=${encodeURIComponent(token)}` : null;
 
   return (
     <main style={styles.page}>
@@ -155,9 +145,7 @@ export default function ParkingKioskPage({
         <div style={{ display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
           <div>
             <h1 style={styles.h1}>Parking Validation (Kiosk)</h1>
-            <p style={styles.p}>
-              Enter a plate to issue a time-bounded validation token (default 2 hours).
-            </p>
+            <p style={styles.p}>Enter a plate to issue a time-bounded validation token (default 2 hours).</p>
           </div>
           <div style={styles.pill}>venueId: {venueId}</div>
         </div>
@@ -210,18 +198,14 @@ export default function ParkingKioskPage({
               Verify URL (for gate/attendant):{" "}
               <span style={{ fontFamily: "ui-monospace" }}>{verifyUrl}</span>
               <div style={{ marginTop: 8 }}>
-                Expires:{" "}
-                <span style={{ fontFamily: "ui-monospace" }}>
-                  {resp?.validation?.expires_at}
-                </span>
+                Expires: <span style={{ fontFamily: "ui-monospace" }}>{resp?.validation?.expires_at}</span>
               </div>
             </div>
           </div>
         )}
 
         <div style={styles.box}>
-          <b>Deploy pattern:</b> Put this page on a tablet at checkout, or convert to QR signage.
-          Gate system calls the verify URL to open the barrier.
+          <b>Deploy pattern:</b> tablet at checkout → issue token → gate verifies via API → logs.
         </div>
       </div>
     </main>

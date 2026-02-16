@@ -5,10 +5,7 @@ import { supabaseServer } from "@/lib/supabaseServer";
 export const dynamic = "force-dynamic";
 
 function normalizePlate(p: string) {
-  return (p || "")
-    .toUpperCase()
-    .replace(/[^A-Z0-9]/g, "")
-    .trim();
+  return (p || "").toUpperCase().replace(/[^A-Z0-9]/g, "").trim();
 }
 
 function sha256(s: string) {
@@ -24,7 +21,7 @@ export async function POST(req: Request) {
     const body = await req.json().catch(() => ({} as any));
     const venueId = String(body?.venueId || "");
     const plate = normalizePlate(String(body?.plate || ""));
-    const minutes = Math.max(5, Math.min(24 * 60, Number(body?.minutes || 120))); // default 120m, cap 24h
+    const minutes = Math.max(5, Math.min(24 * 60, Number(body?.minutes || 120))); // default 120m
 
     if (!venueId) {
       return NextResponse.json({ ok: false, error: "Missing venueId" }, { status: 400 });
@@ -33,19 +30,17 @@ export async function POST(req: Request) {
       return NextResponse.json({ ok: false, error: "Invalid plate" }, { status: 400 });
     }
 
-    const supabase = await supabaseServer();
+    // In this repo, supabaseServer is already a client (NOT a function)
+    const supabase = supabaseServer;
 
-    // Confirm venue exists
-    const { data: venue, error: vErr } = await supabase
+    const { data: venueRows, error: vErr } = await supabase
       .from("venues")
       .select("id, name, status")
       .eq("id", venueId)
       .limit(1);
 
-    if (vErr) {
-      return NextResponse.json({ ok: false, error: vErr.message }, { status: 500 });
-    }
-    if (!venue || venue.length === 0) {
+    if (vErr) return NextResponse.json({ ok: false, error: vErr.message }, { status: 500 });
+    if (!venueRows || venueRows.length === 0) {
       return NextResponse.json({ ok: false, error: "Venue not found" }, { status: 404 });
     }
 
@@ -71,30 +66,27 @@ export async function POST(req: Request) {
       .select("token, issued_at, expires_at, status, venue_id")
       .limit(1);
 
-    if (error) {
-      return NextResponse.json({ ok: false, error: error.message }, { status: 500 });
-    }
+    if (error) return NextResponse.json({ ok: false, error: error.message }, { status: 500 });
 
-    // Log event (best-effort)
-    await supabase.from("parking_events").insert([
-      {
-        venue_id: venueId,
-        token,
-        event_type: "issued",
-        meta: { minutes },
-      },
-    ]);
+    // Log event (ignore failures cleanly)
+    try {
+      const { error: evErr } = await supabase
+        .from("parking_events")
+        .insert([{ venue_id: venueId, token, event_type: "issued", meta: { minutes } }]);
+      if (evErr) {
+        // ignore
+      }
+    } catch {
+      // ignore
+    }
 
     return NextResponse.json({
       ok: true,
-      venue: { id: venueId, name: venue[0].name },
+      venue: { id: venueId, name: venueRows[0].name },
       validation: data?.[0],
       verifyUrl: `/api/parking/verify?token=${encodeURIComponent(token)}`,
     });
   } catch (e: any) {
-    return NextResponse.json(
-      { ok: false, error: String(e?.message || e) },
-      { status: 500 }
-    );
+    return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 });
   }
 }
