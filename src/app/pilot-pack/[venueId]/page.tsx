@@ -1,7 +1,45 @@
-export const dynamic = "force-dynamic";
-
 import Link from "next/link";
 import { supabaseServer } from "@/lib/supabaseServer";
+
+export const dynamic = "force-dynamic";
+
+function asClient(maybeFn: any) {
+  return typeof maybeFn === "function" ? maybeFn() : maybeFn;
+}
+
+function box(): React.CSSProperties {
+  return {
+    border: "1px solid rgba(0,0,0,0.12)",
+    borderRadius: 16,
+    padding: 16,
+    background: "#fff",
+  };
+}
+
+function btnPrimary(): React.CSSProperties {
+  return {
+    display: "inline-block",
+    padding: "10px 14px",
+    borderRadius: 12,
+    background: "black",
+    color: "white",
+    textDecoration: "none",
+    fontWeight: 950,
+  };
+}
+
+function btn(): React.CSSProperties {
+  return {
+    display: "inline-block",
+    padding: "10px 14px",
+    borderRadius: 12,
+    border: "1px solid rgba(0,0,0,0.14)",
+    color: "inherit",
+    textDecoration: "none",
+    fontWeight: 950,
+    background: "#fff",
+  };
+}
 
 export default async function PilotPackPage({
   params,
@@ -10,141 +48,126 @@ export default async function PilotPackPage({
 }) {
   const { venueId } = await params;
 
-  const supabase = supabaseServer;
+  const supabase = await asClient(supabaseServer);
 
-  const { data: rows, error } = await supabase
+  const { data: venue, error: vErr } = await supabase
     .from("venues")
-    .select("id, name, city, region, category, status")
+    .select("id,name,address,city,region,country,category,status")
     .eq("id", venueId)
-    .limit(1);
+    .limit(1)
+    .maybeSingle();
 
-  const venue = rows?.[0];
-
-  if (error || !venue) {
+  if (vErr || !venue) {
     return (
-      <main style={{ padding: 28, fontFamily: "system-ui" }}>
-        <h1 style={{ fontSize: 28, fontWeight: 1000 }}>Pilot Pack</h1>
-        <p style={{ color: "crimson" }}>Venue not found.</p>
-        <Link href="/venues" style={{ textDecoration: "underline" }}>
-          Back to directory →
-        </Link>
+      <main style={{ padding: 22, fontFamily: "system-ui", background: "#fff", color: "#0b0b0b" }}>
+        <div style={{ maxWidth: 980, margin: "0 auto" }}>
+          <h1 style={{ margin: 0, fontSize: 26, fontWeight: 1000 }}>Pilot Pack</h1>
+          <div style={{ marginTop: 10, ...box() }}>
+            <div style={{ fontWeight: 950 }}>Venue not found.</div>
+            <div style={{ opacity: 0.8, marginTop: 8 }}>
+              Debug: confirm venue id exists in Supabase.
+            </div>
+            <div style={{ marginTop: 12 }}>
+              <Link href="/venues" style={btn()}>
+                Back to directory →
+              </Link>
+            </div>
+          </div>
+        </div>
       </main>
     );
   }
 
-  const origin = "https://access-layer-five.vercel.app";
+  const base =
+    process.env.NEXT_PUBLIC_APP_BASE_URL?.replace(/\/$/, "") ||
+    "https://app.accessxworld.com";
 
   const links = {
-    venue: `${origin}/v/${venue.id}`,
-    request: `${origin}/request/${venue.id}`,
-    verify: `${origin}/verify`,
-    signage: `${origin}/signage/${venue.id}`,
-    manage: `${origin}/manage/${venue.id}`,
-    metrics: `${origin}/admin/metrics`,
+    venue: `${base}/v/${venue.id}`,
+    request: `${base}/request/${venue.id}`,
+    signage: `${base}/signage/${venue.id}`,
+    verify: `${base}/verify`,
+    manage: `${base}/manage/${venue.id}`,
+    report: `${base}/reports/sf`,
+    contact: `${base}/contact`,
   };
 
-  const box: React.CSSProperties = {
-    background: "white",
-    border: "1px solid #e5e7eb",
-    borderRadius: 16,
-    padding: 16,
-  };
-
-  const a: React.CSSProperties = {
-    fontWeight: 900,
-    textDecoration: "underline",
-    display: "inline-block",
-    marginTop: 8,
-  };
+  const line = [
+    venue.address || "",
+    venue.city || "",
+    venue.region || "",
+    venue.country || "",
+  ]
+    .filter(Boolean)
+    .join(" · ");
 
   return (
-    <main
-      style={{
-        padding: 28,
-        fontFamily: "system-ui",
-        background: "#f6f7fb",
-        minHeight: "100vh",
-      }}
-    >
-      <div style={{ maxWidth: 900, margin: "0 auto" }}>
+    <main style={{ padding: 22, fontFamily: "system-ui", background: "#fff", color: "#0b0b0b" }}>
+      <div style={{ maxWidth: 980, margin: "0 auto" }}>
         <div style={{ display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
           <div>
-            <h1 style={{ margin: 0, fontSize: 34, fontWeight: 1000 }}>Pilot Pack</h1>
-            <div style={{ marginTop: 6, opacity: 0.85 }}>
-              <b>{venue.name}</b> — {venue.city} {venue.region} · {venue.category} · {venue.status}
+            <h1 style={{ margin: 0, fontSize: 28, fontWeight: 1000, letterSpacing: -0.4 }}>
+              Pilot Pack
+            </h1>
+            <div style={{ marginTop: 6, opacity: 0.8 }}>
+              One-link kit for onboarding staff + proving value fast.
             </div>
           </div>
-          <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-            <Link href={`/v/${venue.id}`} style={{ textDecoration: "underline", fontWeight: 900 }}>
-              Venue Page →
-            </Link>
-            <Link href="/venues" style={{ textDecoration: "underline", fontWeight: 900 }}>
-              Directory →
-            </Link>
+
+          <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
+            <Link href="/venues" style={btn()}>Directory</Link>
+            <a href={links.report} style={btn()} target="_blank" rel="noreferrer">SF Report</a>
+            <a href={links.contact} style={btn()} target="_blank" rel="noreferrer">Contact</a>
           </div>
         </div>
 
-        <section style={{ ...box, marginTop: 16 }}>
-          <div style={{ fontWeight: 1000, fontSize: 18 }}>What this is</div>
-          <p style={{ marginTop: 10, lineHeight: 1.7, opacity: 0.9 }}>
-            A lightweight pilot that issues <b>time-limited access passes</b> (no codes published). Patrons request
-            a pass, staff verifies on a phone in seconds.
-          </p>
-          <ol style={{ marginTop: 8, lineHeight: 1.8 }}>
-            <li>Patron opens the request page and taps “Request”.</li>
-            <li>They receive an active pass for a short window.</li>
-            <li>Staff verifies token/QR at /verify.</li>
-          </ol>
-        </section>
+        <div style={{ marginTop: 14, ...box() }}>
+          <div style={{ fontWeight: 1000, fontSize: 20 }}>{venue.name}</div>
+          <div style={{ marginTop: 6, opacity: 0.8 }}>
+            {line || `${venue.city || ""} ${venue.region || ""}`.trim() || "—"}
+            {venue.category ? ` · ${venue.category}` : ""}
+            {venue.status ? ` · ${venue.status}` : ""}
+          </div>
+        </div>
 
-        <section style={{ ...box, marginTop: 12 }}>
-          <div style={{ fontWeight: 1000, fontSize: 18 }}>Core links</div>
-
-          <div style={{ marginTop: 8 }}>
-            <a href={links.request} style={a}>
-              Request Page
-            </a>
-            <br />
-            <a href={links.verify} style={a}>
-              Staff Verify Page
-            </a>
-            <br />
-            <a href={links.signage} style={a}>
-              Printable Signage
-            </a>
-            <br />
-            <a href={links.venue} style={a}>
-              Public Venue Page
-            </a>
-            <br />
-            <a href={links.manage} style={a}>
-              Owner Manage (WIP)
-            </a>
-            <br />
-            <a href={links.metrics} style={a}>
-              Pilot Metrics (Demo)
-            </a>
+        <div style={{ marginTop: 12, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+          <div style={box()}>
+            <div style={{ fontWeight: 1000, marginBottom: 10 }}>Core links</div>
+            <div style={{ display: "grid", gap: 8 }}>
+              <a href={links.venue} style={btn()} target="_blank" rel="noreferrer">Venue Page</a>
+              <a href={links.request} style={btnPrimary()} target="_blank" rel="noreferrer">Request Access</a>
+              <a href={links.signage} style={btn()} target="_blank" rel="noreferrer">Print Signage</a>
+              <a href={links.verify} style={btn()} target="_blank" rel="noreferrer">Staff Verify</a>
+            </div>
           </div>
 
-          <p style={{ marginTop: 12, opacity: 0.75, fontSize: 13 }}>
-            Tip: print signage and place near door + front desk. Staff keeps /verify open.
-          </p>
-        </section>
+          <div style={box()}>
+            <div style={{ fontWeight: 1000, marginBottom: 10 }}>What to tell staff (15 seconds)</div>
+            <div style={{ lineHeight: 1.6, opacity: 0.92 }}>
+              Guests show a <b>time-limited pass</b> (QR/token). Staff checks validity on{" "}
+              <b>/verify</b>. Passes expire automatically. No codes are published.
+            </div>
 
-        <section style={{ ...box, marginTop: 12 }}>
-          <div style={{ fontWeight: 1000, fontSize: 18 }}>1-minute demo script</div>
-          <ol style={{ marginTop: 10, lineHeight: 1.8 }}>
-            <li>Open Request Page → Request a pass.</li>
-            <li>Copy the token from the pass page.</li>
-            <li>Open Staff Verify → paste token → show “valid”.</li>
-            <li>Open Metrics → show today’s pass count.</li>
-          </ol>
-        </section>
+            <div style={{ marginTop: 12, fontWeight: 1000 }}>Pilot checklist</div>
+            <ol style={{ margin: "8px 0 0", paddingLeft: 18, lineHeight: 1.7 }}>
+              <li>Confirm hours + caps + cooldown.</li>
+              <li>Print signage + brief staff.</li>
+              <li>Run 7 days, watch issuance + denials.</li>
+              <li>Expand to another workflow if it helps.</li>
+            </ol>
+          </div>
+        </div>
 
-        <div style={{ marginTop: 14 }}>
-          <Link href="/venues" style={{ textDecoration: "underline", fontWeight: 900 }}>
-            Back to directory →
-          </Link>
+        <div style={{ marginTop: 12, ...box() }}>
+          <div style={{ fontWeight: 1000, marginBottom: 10 }}>Owner controls (optional)</div>
+          <div style={{ opacity: 0.85 }}>
+            If you’re invited as an owner you can manage rules and venue details:
+          </div>
+          <div style={{ marginTop: 10 }}>
+            <a href={links.manage} style={btn()} target="_blank" rel="noreferrer">
+              Manage Venue →
+            </a>
+          </div>
         </div>
       </div>
     </main>
