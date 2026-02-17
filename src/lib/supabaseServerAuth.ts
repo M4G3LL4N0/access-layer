@@ -1,18 +1,29 @@
 import { cookies } from "next/headers";
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+import { createClient } from "@supabase/supabase-js";
 
 export async function supabaseServerAuth() {
-  const supabase = createServerComponentClient({
-    cookies,
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+
+  // Create a server Supabase client
+  const supabase = createClient(supabaseUrl, supabaseKey, {
+    auth: {
+      persistSession: false,
+      detectSessionInUrl: false,
+    },
   });
 
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
+  // Parse cookies to attempt reading a session
+  const cookieStore = cookies();
+  const token = cookieStore.get("supabase-auth-token");
 
-  if (!session || !session.user) {
-    return { supabase, user: null };
+  let user = null;
+
+  if (token && token.value) {
+    // Try to fetch the session/user from Supabase
+    const { data } = await supabase.auth.getUser(token.value);
+    user = data.user ?? null;
   }
 
-  return { supabase, user: session.user };
+  return { supabase, user };
 }
