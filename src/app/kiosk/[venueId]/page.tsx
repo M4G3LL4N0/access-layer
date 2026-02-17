@@ -1,6 +1,6 @@
 import KioskClient from "@/components/KioskClient";
 
-export default function KioskPage({
+export default async function KioskPage({
   params,
 }: {
   params: { venueId: string };
