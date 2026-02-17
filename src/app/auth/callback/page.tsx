@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { createSupabaseClient } from "@supabase/auth-helpers-react";
 
 export default function AuthCallbackPage() {
   const router = useRouter();
@@ -11,7 +11,7 @@ export default function AuthCallbackPage() {
 
   useEffect(() => {
     async function handleCallback() {
-      const supabase = createClientComponentClient({
+      const supabase = createSupabaseClient({
         supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL!,
         supabaseKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
       });
@@ -47,7 +47,7 @@ export default function AuthCallbackPage() {
           Auth callback error: {err}
         </div>
       ) : (
-        <div>Signing you in...</div>
+        <div>Signing you in…</div>
       )}
     </main>
   );

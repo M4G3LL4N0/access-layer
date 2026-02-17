@@ -12,7 +12,6 @@ export async function POST(req: Request) {
 
   const supabase = supabaseServer;
 
-  // Send magic link with callback path
   const { error } = await supabase.auth.api.sendMagicLinkEmail(
     email,
     {
