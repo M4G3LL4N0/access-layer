@@ -1,4 +1,4 @@
-// src/app/venues/page.tsx
+// src/app/parking/page.tsx
 import Link from "next/link";
 import { supabaseServer } from "@/lib/supabaseServer";
 import VenuesDirectoryClient from "@/components/VenuesDirectoryClient";
@@ -20,7 +20,8 @@ type Venue = {
   created_at?: string | null;
 };
 
-export default async function VenuesPage() {
+export default async function ParkingDirectoryPage() {
+  // NOTE: In this repo, supabaseServer is a client (NOT a function).
   const supabase = supabaseServer;
 
   const { data, error } = await supabase
@@ -29,7 +30,10 @@ export default async function VenuesPage() {
     .eq("status", "active")
     .order("created_at", { ascending: false });
 
-  const venues = (data || []) as Venue[];
+  const venues = ((data || []) as Venue[]).filter((v) => {
+    const cat = (v.category || "").toLowerCase();
+    return cat === "parking" || cat.includes("parking");
+  });
 
   return (
     <main style={{ padding: 24, fontFamily: "system-ui" }}>
@@ -38,14 +42,16 @@ export default async function VenuesPage() {
           Home
         </Link>
         <span style={{ opacity: 0.35 }}>·</span>
-        <Link href="/owners" style={{ textDecoration: "none", color: "inherit", opacity: 0.8 }}>
-          Owners
-        </Link>
-        <span style={{ opacity: 0.35 }}>·</span>
-        <Link href="/parking" style={{ textDecoration: "none", color: "inherit", opacity: 0.8 }}>
-          Parking
+        <Link href="/venues" style={{ textDecoration: "none", color: "inherit", opacity: 0.8 }}>
+          Venues
         </Link>
       </div>
+
+      <h1 style={{ margin: 0, fontSize: 26, fontWeight: 900 }}>Parking Validation Directory</h1>
+      <p style={{ marginTop: 8, opacity: 0.75, maxWidth: 860 }}>
+        Time-bounded parking permissions and verification. This is a filtered view of the same venue system
+        (not a separate product).
+      </p>
 
       {error && (
         <div
@@ -62,12 +68,18 @@ export default async function VenuesPage() {
         </div>
       )}
 
-      <div style={{ marginTop: 10 }}>
+      <div style={{ marginTop: 14 }}>
         <VenuesMap venues={venues as any} />
       </div>
 
       <div style={{ marginTop: 14 }}>
-        <VenuesDirectoryClient venues={venues as any} />
+        <VenuesDirectoryClient
+          venues={venues as any}
+          initialCategory="parking"
+          title="Parking Venues"
+          subtitle="Active venues with parking validation enabled."
+          showCategoryTabs={false}
+        />
       </div>
     </main>
   );
