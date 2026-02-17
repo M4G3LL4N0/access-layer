@@ -17,21 +17,19 @@ export async function POST(req: Request) {
     const url = new URL(req.url);
 
     // Accept venueId from:
-    // 1) FormData  2) JSON body  3) querystring
+    // 1) querystring 2) FormData 3) JSON body
     let venueId = asString(url.searchParams.get("venueId"));
 
     const ct = req.headers.get("content-type") || "";
-    if (!venueId && ct.includes("multipart/form-data")) {
-      const form = await req.formData();
-      venueId = asString(form.get("venueId"));
-    } else if (!venueId && ct.includes("application/x-www-form-urlencoded")) {
+
+    if (!venueId && (ct.includes("multipart/form-data") || ct.includes("application/x-www-form-urlencoded"))) {
       const form = await req.formData();
       venueId = asString(form.get("venueId"));
     } else if (!venueId && ct.includes("application/json")) {
-      const body = await req.json().catch(() => ({}));
+      const body = await req.json().catch(() => ({} as any));
       venueId = asString(body?.venueId);
     } else if (!venueId) {
-      // try formData anyway (safe)
+      // last-chance attempt (safe)
       const form = await req.formData().catch(() => null);
       if (form) venueId = asString(form.get("venueId"));
     }
@@ -40,7 +38,8 @@ export async function POST(req: Request) {
       return NextResponse.json({ ok: false, error: "Missing venueId" }, { status: 400 });
     }
 
-    const supabase = supabaseServer();
+    // IMPORTANT: supabaseServer() is async in your project — must await it.
+    const supabase = await supabaseServer();
 
     // Confirm venue exists
     const { data: v, error: vErr } = await supabase
@@ -54,7 +53,7 @@ export async function POST(req: Request) {
 
     const token = randomToken(18);
     const now = new Date();
-    const expires = new Date(now.getTime() + 15 * 60 * 1000); // 15 min
+    const expires = new Date(now.getTime() + 15 * 60 * 1000); // 15 minutes
 
     const { data: inserted, error: insErr } = await supabase
       .from("access_passes")
@@ -82,9 +81,6 @@ export async function POST(req: Request) {
       verifyUrl: `/verify?token=${encodeURIComponent(token)}`,
     });
   } catch (e: any) {
-    return NextResponse.json(
-      { ok: false, error: String(e?.message || e) },
-      { status: 500 }
-    );
+    return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 });
   }
 }
