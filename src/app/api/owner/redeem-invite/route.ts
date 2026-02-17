@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
-// Redeem an invite using token + email
 export const dynamic = "force-dynamic";
 
 export async function POST(request: Request) {
@@ -16,65 +15,76 @@ export async function POST(request: Request) {
       );
     }
 
-    // Create supabase client with SERVICE ROLE
     const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.SUPABASE_SERVICE_ROLE_KEY!
     );
 
-    // Look up the invite by token
-    const { data: inviteData, error: inviteErr } = await supabase
+    // Look up invite
+    const { data: invite, error: inviteErr } = await supabase
       .from("venue_owner_invites")
       .select("*")
       .eq("token", token)
       .single();
 
-    if (inviteErr || !inviteData) {
+    if (inviteErr || !invite) {
       return NextResponse.json(
         { ok: false, error: "Invite token not found" },
         { status: 404 }
       );
     }
 
-    // Confirm invite matches venueId/email
-    if (inviteData.venue_id !== venueId || inviteData.email !== email) {
+    if (invite.venue_id !== venueId || invite.email !== email) {
       return NextResponse.json(
-        { ok: false, error: "Venue ID or email does not match invite" },
+        { ok: false, error: "Venue or email mismatch" },
         { status: 400 }
       );
     }
 
-    // Create or retrieve the user by email
-    const { data: userData, error: userErr } = await supabase.auth.admin.upsertUser({
-      email,
-    });
+    // Check if user exists
+    const { data: existingUsers } = await supabase
+      .from("users")
+      .select("id")
+      .eq("email", email);
 
-    if (userErr || !userData.user) {
-      return NextResponse.json(
-        { ok: false, error: "Failed to create or get user" },
-        { status: 500 }
-      );
+    let userId: string;
+
+    if (existingUsers && existingUsers.length > 0) {
+      userId = existingUsers[0].id;
+    } else {
+      // Create the user
+      const { data: created, error: createErr } = await supabase.auth.admin.createUser({
+        email,
+        email_confirm: true,
+      });
+
+      if (createErr || !created?.user) {
+        return NextResponse.json(
+          { ok: false, error: "Failed to create user" },
+          { status: 500 }
+        );
+      }
+
+      userId = created.user.id;
     }
 
-    const userId = userData.user.id;
-
-    // Add user as a venue_owner
+    // Insert venue owner
     const { error: ownerErr } = await supabase
       .from("venue_owners")
       .insert([{ venue_id: venueId, user_id: userId, role: "owner" }]);
 
     if (ownerErr) {
       return NextResponse.json(
-        { ok: false, error: "Failed to add user as venue owner" },
+        { ok: false, error: "Failed to assign owner" },
         { status: 500 }
       );
     }
 
-    // Optionally delete the invite so it can’t be used again
+    // Delete the invite token
     await supabase
       .from("venue_owner_invites")
       .delete()
-      .eq("id", inviteData.id);
+      .eq("id", invite.id);
 
     return NextResponse.json({ ok: true, userId });
   } catch (e: any) {
