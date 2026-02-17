@@ -1,108 +1,96 @@
-export const dynamic = "force-dynamic";
+"use client";
 
-export default async function KioskPage({
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+
+export default function KioskPage({
   params,
 }: {
   params: { venueId: string };
 }) {
   const venueId = params?.venueId || "";
+  const [result, setResult] = useState<any>(null);
+  const [err, setErr] = useState<string | null>(null);
+  const router = useRouter();
 
-  const statsUrl = `/api/kiosk/stats?venueId=${encodeURIComponent(venueId)}`;
-  const issueUrl = `/api/kiosk/issue-pass`;
+  async function issuePass() {
+    setErr(null);
+    setResult(null);
 
-  return (
-    <main style={{ padding: 24, fontFamily: "system-ui" }}>
-      <h1 style={{ fontSize: 28, fontWeight: 900, marginBottom: 10 }}>
-        Kiosk Mode
-      </h1>
+    if (!venueId) {
+      setErr("Missing venueId (page param)");
+      return;
+    }
 
-      <div style={{ opacity: 0.8, marginBottom: 14 }}>
-        <b>venueId</b> = {venueId ? venueId : "(missing)"} · <b>statsUrl</b> ={" "}
-        {statsUrl}
-      </div>
+    try {
+      const fd = new FormData();
+      fd.set("venueId", venueId);
 
-      <hr style={{ margin: "14px 0" }} />
+      const res = await fetch("/api/kiosk/issue-pass", {
+        method: "POST",
+        body: fd,
+      });
 
-      <section style={{ marginBottom: 18 }}>
-        <h2 style={{ fontSize: 18, fontWeight: 900, marginBottom: 8 }}>
-          Issue an Access Pass
-        </h2>
+      const j = await res.json();
 
-        <form action={issueUrl} method="post">
-          <input type="hidden" name="venueId" value={venueId} />
-          <button
-            type="submit"
-            style={{
-              padding: "10px 14px",
-              borderRadius: 10,
-              background: "black",
-              color: "white",
-              fontWeight: 900,
-              border: "none",
-              cursor: "pointer",
-            }}
-          >
-            Issue access pass
-          </button>
-        </form>
-
-        <div style={{ fontSize: 12, opacity: 0.7, marginTop: 8 }}>
-          This posts venueId to <code>{issueUrl}</code>.
-        </div>
-      </section>
-
-      <hr style={{ margin: "14px 0" }} />
-
-      <section>
-        <h2 style={{ fontSize: 18, fontWeight: 900, marginBottom: 8 }}>
-          Kiosk Stats
-        </h2>
-
-        <StatsBlock statsUrl={statsUrl} venueId={venueId} />
-      </section>
-    </main>
-  );
-}
-
-async function StatsBlock({
-  statsUrl,
-  venueId,
-}: {
-  statsUrl: string;
-  venueId: string;
-}) {
-  if (!venueId) {
-    return (
-      <div
-        style={{
-          padding: 12,
-          borderRadius: 10,
-          border: "1px solid #ddd",
-          background: "#fff7ed",
-          fontWeight: 800,
-        }}
-      >
-        Stats error: Missing venueId (page param).
-      </div>
-    );
+      if (!res.ok || !j.ok) {
+        setErr(j.error || `HTTP ${res.status}`);
+      } else {
+        setResult(j);
+      }
+    } catch (e: any) {
+      setErr(String(e?.message || e));
+    }
   }
 
-  const res = await fetch(statsUrl, { cache: "no-store" });
-  const text = await res.text();
-
   return (
-    <pre
-      style={{
-        whiteSpace: "pre-wrap",
-        padding: 12,
-        borderRadius: 10,
-        border: "1px solid #ddd",
-        background: "#f8fafc",
-        fontSize: 12,
-        lineHeight: 1.4,
-      }}
-    >
-      {`HTTP ${res.status}\n\n${text}`}
-    </pre>
+    <main style={{ padding: 24, fontFamily: "system-ui, sans-serif" }}>
+      <h1 style={{ fontSize: 28, fontWeight: 900 }}>Kiosk Mode</h1>
+
+      <div style={{ marginBottom: 14 }}>
+        <div>
+          <b>venueId:</b>{" "}
+          <span style={{ fontFamily: "ui-monospace, Menlo, monospace" }}>
+            {venueId || "(missing)"}
+          </span>
+        </div>
+      </div>
+
+      <button
+        onClick={issuePass}
+        style={{
+          marginBottom: 14,
+          padding: "10px 14px",
+          borderRadius: 10,
+          fontWeight: 800,
+          background: "black",
+          color: "white",
+          border: "none",
+          cursor: "pointer",
+        }}
+      >
+        Issue access pass
+      </button>
+
+      {err && (
+        <div style={{ color: "red", marginBottom: 12 }}>
+          <strong>Error:</strong> {err}
+        </div>
+      )}
+
+      {result && (
+        <pre
+          style={{
+            padding: 12,
+            borderRadius: 10,
+            background: "#f7f7f7",
+            overflowX: "auto",
+            fontSize: 13,
+          }}
+        >
+          {JSON.stringify(result, null, 2)}
+        </pre>
+      )}
+    </main>
   );
 }
