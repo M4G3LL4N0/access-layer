@@ -1,126 +1,205 @@
-import Link from "next/link";
+"use client";
 
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
+import { useEffect, useMemo, useState } from "react";
 
-type StatsResp =
-  | {
-      ok: true;
-      venueId: string;
-      venue: { id: string; name: string };
-      total: number;
-      today: number;
-      latest: { token: string; created_at: string; expires_at: string; status: string } | null;
-    }
-  | { ok: false; error: string; where?: string; venueId?: string };
-
-export default async function KioskPage({
+export default function KioskVenuePage({
   params,
 }: {
-  params: Promise<{ venueId: string }>;
+  params: { venueId: string };
 }) {
-  const { venueId } = await params;
+  const venueId = params?.venueId || "";
 
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/api/kiosk/stats?venueId=${encodeURIComponent(
-      venueId
-    )}`,
-    { cache: "no-store" }
-  );
+  const statsUrl = useMemo(() => {
+    return `/api/kiosk/stats?venueId=${encodeURIComponent(venueId)}`;
+  }, [venueId]);
 
-  let stats: StatsResp;
-  try {
-    stats = (await res.json()) as StatsResp;
-  } catch {
-    stats = { ok: false, error: `Stats error: HTTP ${res.status} (non-JSON response)` };
+  const [stats, setStats] = useState<any>(null);
+  const [statsErr, setStatsErr] = useState<string | null>(null);
+
+  const [issueErr, setIssueErr] = useState<string | null>(null);
+  const [issuing, setIssuing] = useState(false);
+  const [issued, setIssued] = useState<any>(null);
+
+  async function loadStats() {
+    setStatsErr(null);
+    try {
+      if (!venueId) {
+        setStatsErr("Missing venueId (route param).");
+        return;
+      }
+      const r = await fetch(statsUrl, { cache: "no-store" });
+      const j = await r.json();
+      if (!r.ok) throw new Error(j?.error || `HTTP ${r.status}`);
+      setStats(j);
+    } catch (e: any) {
+      setStatsErr(String(e?.message || e));
+    }
+  }
+
+  useEffect(() => {
+    loadStats();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [venueId]);
+
+  async function issuePass() {
+    setIssueErr(null);
+    setIssued(null);
+
+    try {
+      if (!venueId) {
+        setIssueErr("Missing venueId (route param).");
+        return;
+      }
+
+      setIssuing(true);
+
+      // FormData POST (simple + reliable)
+      const fd = new FormData();
+      fd.set("venueId", venueId);
+
+      const r = await fetch("/api/kiosk/issue-pass", {
+        method: "POST",
+        body: fd,
+      });
+
+      const j = await r.json();
+      if (!r.ok) throw new Error(j?.error || `HTTP ${r.status}`);
+
+      setIssued(j);
+      await loadStats();
+    } catch (e: any) {
+      setIssueErr(String(e?.message || e));
+    } finally {
+      setIssuing(false);
+    }
   }
 
   return (
-    <main style={{ padding: 24, fontFamily: "system-ui" }}>
-      <div style={{ marginBottom: 10 }}>
-        <Link href="/venues" style={{ opacity: 0.85 }}>
-          ← Back to directory
-        </Link>
-      </div>
+    <main style={{ padding: 24, fontFamily: "system-ui", maxWidth: 980, margin: "0 auto" }}>
+      <h1 style={{ fontSize: 28, fontWeight: 1000, marginBottom: 6 }}>Kiosk Mode</h1>
 
-      <h1 style={{ fontSize: 26, fontWeight: 950, margin: "6px 0" }}>Kiosk Mode</h1>
       <div style={{ opacity: 0.75, marginBottom: 14 }}>
-        Venue ID: <span style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>{venueId}</span>
+        venueId ={" "}
+        <span style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>
+          {venueId || "(missing)"}
+        </span>{" "}
+        · statsUrl ={" "}
+        <span style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>
+          {statsUrl}
+        </span>
       </div>
 
-      {!stats.ok ? (
-        <div style={{ padding: 12, borderRadius: 12, border: "1px solid #ddd", background: "#fff5f5" }}>
-          <div style={{ fontWeight: 900 }}>Stats error</div>
-          <div style={{ marginTop: 6, opacity: 0.85 }}>
-            HTTP {res.status}
-            <br />
-            {stats.error}
-            {stats.where ? (
-              <>
-                <br />
-                <span style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>
-                  where={stats.where}
-                </span>
-              </>
-            ) : null}
-          </div>
-        </div>
-      ) : (
-        <div style={{ padding: 12, borderRadius: 12, border: "1px solid #ddd" }}>
-          <div style={{ fontWeight: 950, fontSize: 18 }}>{stats.venue?.name}</div>
-          <div style={{ marginTop: 8, display: "flex", gap: 10, flexWrap: "wrap" }}>
-            <div style={{ padding: "6px 10px", borderRadius: 999, border: "1px solid #ddd", fontWeight: 900 }}>
-              Total passes: {stats.total}
-            </div>
-            <div style={{ padding: "6px 10px", borderRadius: 999, border: "1px solid #ddd", fontWeight: 900 }}>
-              Today: {stats.today}
-            </div>
-          </div>
+      <div
+        style={{
+          border: "1px solid rgba(0,0,0,0.12)",
+          borderRadius: 16,
+          padding: 16,
+          background: "white",
+        }}
+      >
+        <h2 style={{ fontSize: 16, fontWeight: 900, margin: 0, marginBottom: 10 }}>
+          Issue an Access Pass
+        </h2>
 
-          <div style={{ marginTop: 12, opacity: 0.85 }}>
-            Latest:{" "}
-            {stats.latest ? (
-              <span style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>
-                {stats.latest.token}
-              </span>
-            ) : (
-              "none"
-            )}
-          </div>
-        </div>
-      )}
-
-      <div style={{ marginTop: 16, display: "flex", gap: 10, flexWrap: "wrap" }}>
-        <form action="/api/kiosk/issue-pass" method="post">
-          <input type="hidden" name="venueId" value={venueId} />
-          <button
-            style={{
-              padding: "10px 14px",
-              borderRadius: 12,
-              background: "black",
-              color: "white",
-              fontWeight: 950,
-              border: "none",
-              cursor: "pointer",
-            }}
-          >
-            Issue Access Pass
-          </button>
-        </form>
-
-        <a
-          href={`/verify?venueId=${encodeURIComponent(venueId)}`}
+        <button
+          onClick={issuePass}
+          disabled={issuing || !venueId}
           style={{
-            padding: "10px 14px",
+            padding: "12px 14px",
             borderRadius: 12,
-            border: "1px solid rgba(0,0,0,0.15)",
-            textDecoration: "none",
-            fontWeight: 950,
-            color: "black",
+            border: "none",
+            background: "black",
+            color: "white",
+            fontWeight: 900,
+            cursor: "pointer",
           }}
         >
-          Staff Verify
-        </a>
+          {issuing ? "Issuing…" : "Issue access pass"}
+        </button>
+
+        {issueErr && (
+          <div
+            style={{
+              marginTop: 12,
+              padding: 12,
+              borderRadius: 12,
+              background: "#fff5f5",
+              border: "1px solid #ffd0d0",
+              fontWeight: 800,
+              whiteSpace: "pre-wrap",
+            }}
+          >
+            Error
+            {"\n"}
+            {issueErr}
+          </div>
+        )}
+
+        {issued?.ok && (
+          <div
+            style={{
+              marginTop: 12,
+              padding: 12,
+              borderRadius: 12,
+              background: "#e8fff0",
+              border: "1px solid #bdf2c9",
+            }}
+          >
+            <div style={{ fontWeight: 1000, marginBottom: 6 }}>Pass issued</div>
+            <div style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>
+              token: {issued?.pass?.token}
+            </div>
+            <div style={{ marginTop: 8, display: "flex", gap: 10, flexWrap: "wrap" }}>
+              <a
+                href={`/pass/${encodeURIComponent(issued?.pass?.token)}`}
+                style={{ fontWeight: 900, textDecoration: "underline" }}
+              >
+                Open pass →
+              </a>
+              <a
+                href={`/verify?token=${encodeURIComponent(issued?.pass?.token)}`}
+                style={{ fontWeight: 900, textDecoration: "underline" }}
+              >
+                Verify token →
+              </a>
+            </div>
+          </div>
+        )}
+      </div>
+
+      <div style={{ marginTop: 16 }}>
+        <h2 style={{ fontSize: 16, fontWeight: 900, marginBottom: 10 }}>Kiosk Stats</h2>
+
+        {statsErr && (
+          <div
+            style={{
+              padding: 12,
+              borderRadius: 12,
+              background: "#fff5f5",
+              border: "1px solid #ffd0d0",
+              fontWeight: 800,
+              whiteSpace: "pre-wrap",
+            }}
+          >
+            Stats error:
+            {"\n"}
+            {statsErr}
+          </div>
+        )}
+
+        <pre
+          style={{
+            marginTop: 0,
+            padding: 12,
+            borderRadius: 12,
+            background: "#0b0b0b",
+            color: "white",
+            overflowX: "auto",
+            fontSize: 12,
+          }}
+        >
+          {JSON.stringify({ stats }, null, 2)}
+        </pre>
       </div>
     </main>
   );

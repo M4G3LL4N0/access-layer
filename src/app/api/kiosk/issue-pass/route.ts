@@ -4,83 +4,87 @@ import { supabaseServer } from "@/lib/supabaseServer";
 
 export const dynamic = "force-dynamic";
 
-function getServerSupabase() {
-  const any = supabaseServer as any;
-  return typeof any === "function" ? any() : any;
+function randomToken(len = 18) {
+  return crypto.randomBytes(len).toString("base64url");
 }
 
-function randomToken(len = 24) {
-  return crypto.randomBytes(len).toString("base64url");
+function asString(x: any) {
+  return typeof x === "string" ? x : "";
 }
 
 export async function POST(req: Request) {
   try {
-    const body = await req.json().catch(() => ({}));
-    const venueId = String(body?.venueId || "").trim();
-    const pin = String(body?.pin || "").trim();
-    const dryRun = Boolean(body?.dryRun);
+    const url = new URL(req.url);
+
+    // Accept venueId from:
+    // 1) FormData  2) JSON body  3) querystring
+    let venueId = asString(url.searchParams.get("venueId"));
+
+    const ct = req.headers.get("content-type") || "";
+    if (!venueId && ct.includes("multipart/form-data")) {
+      const form = await req.formData();
+      venueId = asString(form.get("venueId"));
+    } else if (!venueId && ct.includes("application/x-www-form-urlencoded")) {
+      const form = await req.formData();
+      venueId = asString(form.get("venueId"));
+    } else if (!venueId && ct.includes("application/json")) {
+      const body = await req.json().catch(() => ({}));
+      venueId = asString(body?.venueId);
+    } else if (!venueId) {
+      // try formData anyway (safe)
+      const form = await req.formData().catch(() => null);
+      if (form) venueId = asString(form.get("venueId"));
+    }
 
     if (!venueId) {
       return NextResponse.json({ ok: false, error: "Missing venueId" }, { status: 400 });
     }
 
-    const requirePin = String(process.env.KIOSK_REQUIRE_PIN || "").toLowerCase() === "true";
-    const expectedPin = String(process.env.KIOSK_PIN || "").trim();
-
-    if (requirePin) {
-      if (!expectedPin) {
-        return NextResponse.json({ ok: false, error: "Server missing KIOSK_PIN" }, { status: 500 });
-      }
-      if (pin !== expectedPin) {
-        return NextResponse.json({ ok: false, error: "Invalid PIN" }, { status: 401 });
-      }
-    }
-
-    // If this is just a PIN check, return OK now
-    if (dryRun) {
-      return NextResponse.json({ ok: true });
-    }
-
-    const supabase = await getServerSupabase();
+    const supabase = supabaseServer();
 
     // Confirm venue exists
-    const { data: venueRows, error: venueErr } = await supabase
+    const { data: v, error: vErr } = await supabase
       .from("venues")
-      .select("id, name, status")
+      .select("id,name")
       .eq("id", venueId)
       .limit(1);
 
-    if (venueErr) throw venueErr;
-    const venue = venueRows?.[0];
-    if (!venue) return NextResponse.json({ ok: false, error: "Venue not found" }, { status: 404 });
+    if (vErr) return NextResponse.json({ ok: false, error: vErr.message }, { status: 500 });
+    if (!v?.[0]) return NextResponse.json({ ok: false, error: "Venue not found" }, { status: 404 });
 
-    const token = randomToken(24);
-
+    const token = randomToken(18);
     const now = new Date();
     const expires = new Date(now.getTime() + 15 * 60 * 1000); // 15 min
 
-    const { error: insErr } = await supabase.from("access_passes").insert([
-      {
-        venue_id: venueId,
-        token,
-        status: "active",
-        issued_at: now.toISOString(),
-        expires_at: expires.toISOString(),
-        requester_id: "kiosk",
-        ip_hash: null,
-        user_agent_hash: null,
-      },
-    ]);
+    const { data: inserted, error: insErr } = await supabase
+      .from("access_passes")
+      .insert([
+        {
+          venue_id: venueId,
+          token,
+          status: "active",
+          issued_at: now.toISOString(),
+          expires_at: expires.toISOString(),
+        },
+      ])
+      .select("token,venue_id,status,issued_at,expires_at,created_at")
+      .limit(1);
 
-    if (insErr) throw insErr;
+    if (insErr) return NextResponse.json({ ok: false, error: insErr.message }, { status: 500 });
+
+    const pass = inserted?.[0];
 
     return NextResponse.json({
       ok: true,
-      venue: { id: venue.id, name: venue.name },
-      token,
-      expires_at: expires.toISOString(),
+      venue: v[0],
+      pass,
+      passUrl: `/pass/${encodeURIComponent(token)}`,
+      verifyUrl: `/verify?token=${encodeURIComponent(token)}`,
     });
   } catch (e: any) {
-    return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 });
+    return NextResponse.json(
+      { ok: false, error: String(e?.message || e) },
+      { status: 500 }
+    );
   }
 }
