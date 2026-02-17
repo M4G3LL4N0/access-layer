@@ -9,24 +9,50 @@ export async function GET(req: Request) {
     const token = String(url.searchParams.get("token") || "").trim();
 
     if (!token) {
-      return NextResponse.json({ ok: false, error: "Missing token" }, { status: 400 });
+      return NextResponse.json(
+        { ok: false, error: "Missing token" },
+        { status: 400 }
+      );
     }
 
     const supabase = supabaseServer;
 
-    const { data } = await supabase
+    // Find all events for this token, newest first
+    const { data: events, error: eventsErr } = await supabase
       .from("parking_events")
-      .select("token,venue_id,event_type,issued_at,created_at")
-      .eq("token", token);
+      .select("*")
+      .eq("token", token)
+      .order("created_at", { ascending: false });
 
-    const record = data?.[0];
-
-    if (!record) {
-      return NextResponse.json({ ok: false, error: "Not found" }, { status: 404 });
+    if (eventsErr) {
+      return NextResponse.json(
+        { ok: false, error: eventsErr.message },
+        { status: 500 }
+      );
     }
 
-    return NextResponse.json({ ok: true, record });
+    if (!events || events.length === 0) {
+      return NextResponse.json(
+        { ok: false, error: "Token not found" },
+        { status: 404 }
+      );
+    }
+
+    // Build a summary from events
+    const issuedEvent = events.find((e) => e.event_type === "issued");
+    const verifyEvent = events.find((e) => e.event_type === "verify_ok");
+
+    return NextResponse.json({
+      ok: true,
+      token,
+      issued_at: issuedEvent?.created_at || null,
+      verify: verifyEvent || null,
+      allEvents: events,
+    });
   } catch (e: any) {
-    return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 });
+    return NextResponse.json(
+      { ok: false, error: String(e?.message || e) },
+      { status: 500 }
+    );
   }
 }
