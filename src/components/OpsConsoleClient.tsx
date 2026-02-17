@@ -25,8 +25,8 @@ type ParkingVerifyResp = ParkingVerifyOk | { ok: false; error: string };
 
 function Card({
   title,
-  children,
   subtitle,
+  children,
 }: {
   title: string;
   subtitle?: string;
@@ -47,23 +47,6 @@ function Card({
       </div>
       {children}
     </section>
-  );
-}
-
-function Pill({ children }: { children: React.ReactNode }) {
-  return (
-    <span
-      style={{
-        display: "inline-flex",
-        padding: "6px 10px",
-        borderRadius: 999,
-        border: "1px solid rgba(0,0,0,0.14)",
-        fontWeight: 900,
-        fontSize: 12,
-      }}
-    >
-      {children}
-    </span>
   );
 }
 
@@ -89,7 +72,15 @@ export default function OpsConsoleClient({ venueId }: { venueId: string }) {
   const [parkingVerifyBusy, setParkingVerifyBusy] = useState(false);
   const [parkingVerifyRes, setParkingVerifyRes] = useState<ParkingVerifyResp | null>(null);
 
-  const passUrl = useMemo(() => (issuedToken ? `/pass/${encodeURIComponent(issuedToken)}` : null), [issuedToken]);
+  const passUrl = useMemo(
+    () => (issuedToken ? `/pass/${encodeURIComponent(issuedToken)}` : null),
+    [issuedToken]
+  );
+
+  const statsUrl = useMemo(
+    () => `/api/kiosk/stats?venueId=${encodeURIComponent(venueId)}`,
+    [venueId]
+  );
 
   async function refreshStats() {
     setLoadingStats(true);
@@ -97,7 +88,7 @@ export default function OpsConsoleClient({ venueId }: { venueId: string }) {
     setStatsHttp(null);
 
     try {
-      const res = await fetch(`/api/kiosk/stats?venueId=${encodeURIComponent(venueId)}`, { cache: "no-store" });
+      const res = await fetch(statsUrl, { cache: "no-store" });
       setStatsHttp(res.status);
       const j = (await res.json()) as StatsResp;
       setStats(j);
@@ -128,7 +119,6 @@ export default function OpsConsoleClient({ venueId }: { venueId: string }) {
       if (!res.ok || !j?.ok) {
         setIssueErr(j?.error ? String(j.error) : `HTTP ${res.status}`);
       } else {
-        // Expect { ok:true, token, passUrl }
         setIssuedToken(String(j.token || ""));
         refreshStats();
       }
@@ -196,89 +186,27 @@ export default function OpsConsoleClient({ venueId }: { venueId: string }) {
   }
 
   return (
-    <div
-      style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
-        gap: 12,
-      }}
-    >
-      <Card title="Live venue stats" subtitle="This is the proof-of-work counter investors care about.">
-        <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
-          <button
-            onClick={refreshStats}
-            disabled={loadingStats}
-            style={{
-              padding: "10px 12px",
-              borderRadius: 12,
-              border: "1px solid rgba(0,0,0,0.15)",
-              background: "white",
-              fontWeight: 950,
-              cursor: "pointer",
-            }}
-          >
-            {loadingStats ? "Refreshing…" : "Refresh"}
-          </button>
+    <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+      {/* ALWAYS VISIBLE DEBUG PANEL */}
+      <section
+        style={{
+          border: "2px solid rgba(0,0,0,0.18)",
+          borderRadius: 16,
+          padding: 14,
+          background: "#fff",
+        }}
+      >
+        <div style={{ display: "flex", justifyContent: "space-between", gap: 10, flexWrap: "wrap" }}>
+          <div>
+            <div style={{ fontWeight: 950 }}>DEBUG PANEL (always visible)</div>
+            <div style={{ opacity: 0.8, fontSize: 13 }}>
+              If you see this, the Ops page is loading correctly.
+            </div>
+          </div>
 
-          {stats && "ok" in stats && stats.ok ? (
-            <>
-              <Pill>Total: {stats.total}</Pill>
-              <Pill>Today: {stats.today}</Pill>
-              <Pill>Latest: {stats.latest ? "yes" : "none"}</Pill>
-            </>
-          ) : null}
-        </div>
-
-        <div style={{ marginTop: 10, fontSize: 13, opacity: 0.85 }}>
-          HTTP: {statsHttp ?? "—"}
-        </div>
-
-        <div style={{ marginTop: 10, fontSize: 13, opacity: 0.9 }}>
-          {stats ? (
-            stats.ok ? (
-              <>
-                <div style={{ fontWeight: 950 }}>{stats.venue?.name}</div>
-                <div style={{ marginTop: 6 }}>
-                  Latest token:{" "}
-                  <span style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>
-                    {stats.latest?.token || "—"}
-                  </span>
-                </div>
-              </>
-            ) : (
-              <div style={{ background: "#fff5f5", border: "1px solid #ffd0d0", padding: 10, borderRadius: 12 }}>
-                <div style={{ fontWeight: 950 }}>Error</div>
-                <div>{stats.error}</div>
-                {stats.where ? <div style={{ opacity: 0.75 }}>where={stats.where}</div> : null}
-              </div>
-            )
-          ) : (
-            <div style={{ opacity: 0.7 }}>No data yet.</div>
-          )}
-        </div>
-      </Card>
-
-      <Card title="Issue access pass (kiosk)" subtitle="Instant time-bounded pass. No codes.">
-        <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
-          <button
-            onClick={issuePass}
-            disabled={issueBusy}
-            style={{
-              padding: "10px 12px",
-              borderRadius: 12,
-              border: "none",
-              background: "black",
-              color: "white",
-              fontWeight: 950,
-              cursor: "pointer",
-            }}
-          >
-            {issueBusy ? "Issuing…" : "Issue access pass"}
-          </button>
-
-          {issuedToken ? (
+          <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
             <a
-              href={passUrl || "#"}
+              href={statsUrl}
               style={{
                 padding: "10px 12px",
                 borderRadius: 12,
@@ -286,190 +214,292 @@ export default function OpsConsoleClient({ venueId }: { venueId: string }) {
                 textDecoration: "none",
                 fontWeight: 950,
                 color: "black",
+                background: "white",
+              }}
+              target="_blank"
+              rel="noreferrer"
+            >
+              Open stats JSON →
+            </a>
+
+            <button
+              onClick={refreshStats}
+              disabled={loadingStats}
+              style={{
+                padding: "10px 12px",
+                borderRadius: 12,
+                border: "none",
+                background: "black",
+                color: "white",
+                fontWeight: 950,
+                cursor: "pointer",
               }}
             >
-              Open pass →
-            </a>
+              {loadingStats ? "Refreshing…" : "Refresh stats"}
+            </button>
+          </div>
+        </div>
+
+        <div style={{ marginTop: 10, fontSize: 13, opacity: 0.85 }}>
+          venueId ={" "}
+          <span style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>{venueId}</span>
+          {" · "}
+          statsUrl ={" "}
+          <span style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>{statsUrl}</span>
+          {" · "}
+          HTTP = {statsHttp ?? "—"}
+        </div>
+
+        <pre
+          style={{
+            marginTop: 10,
+            padding: 10,
+            borderRadius: 12,
+            border: "1px solid rgba(0,0,0,0.12)",
+            background: "#f7f7f7",
+            overflowX: "auto",
+            fontSize: 12,
+            maxHeight: 260,
+          }}
+        >
+          {JSON.stringify({ stats }, null, 2)}
+        </pre>
+      </section>
+
+      {/* GRID */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+          gap: 12,
+        }}
+      >
+        <Card title="Issue access pass (kiosk)" subtitle="Instant time-bounded pass. No codes.">
+          <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
+            <button
+              onClick={issuePass}
+              disabled={issueBusy}
+              style={{
+                padding: "10px 12px",
+                borderRadius: 12,
+                border: "none",
+                background: "black",
+                color: "white",
+                fontWeight: 950,
+                cursor: "pointer",
+              }}
+            >
+              {issueBusy ? "Issuing…" : "Issue access pass"}
+            </button>
+
+            {issuedToken ? (
+              <a
+                href={passUrl || "#"}
+                style={{
+                  padding: "10px 12px",
+                  borderRadius: 12,
+                  border: "1px solid rgba(0,0,0,0.15)",
+                  textDecoration: "none",
+                  fontWeight: 950,
+                  color: "black",
+                }}
+              >
+                Open pass →
+              </a>
+            ) : null}
+          </div>
+
+          {issueErr ? (
+            <div
+              style={{
+                marginTop: 10,
+                background: "#fff5f5",
+                border: "1px solid #ffd0d0",
+                padding: 10,
+                borderRadius: 12,
+              }}
+            >
+              <div style={{ fontWeight: 950 }}>Error</div>
+              <div style={{ opacity: 0.9 }}>{issueErr}</div>
+            </div>
           ) : null}
-        </div>
 
-        {issueErr ? (
-          <div style={{ marginTop: 10, background: "#fff5f5", border: "1px solid #ffd0d0", padding: 10, borderRadius: 12 }}>
-            <div style={{ fontWeight: 950 }}>Error</div>
-            <div style={{ opacity: 0.9 }}>{issueErr}</div>
+          {issuedToken ? (
+            <div style={{ marginTop: 10, fontSize: 13, opacity: 0.85 }}>
+              Token:{" "}
+              <span style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>
+                {issuedToken}
+              </span>
+            </div>
+          ) : null}
+        </Card>
+
+        <Card title="Staff verify (token)" subtitle="Paste a token to validate status + expiry.">
+          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+            <input
+              value={verifyToken}
+              onChange={(e) => setVerifyToken(e.target.value)}
+              placeholder="Paste access token…"
+              style={{
+                flex: "1 1 220px",
+                padding: "10px 12px",
+                borderRadius: 12,
+                border: "1px solid rgba(0,0,0,0.15)",
+              }}
+            />
+            <button
+              onClick={verifyPassToken}
+              disabled={verifyBusy}
+              style={{
+                padding: "10px 12px",
+                borderRadius: 12,
+                border: "none",
+                background: "black",
+                color: "white",
+                fontWeight: 950,
+                cursor: "pointer",
+              }}
+            >
+              {verifyBusy ? "Checking…" : "Verify"}
+            </button>
           </div>
-        ) : null}
 
-        {issuedToken ? (
-          <div style={{ marginTop: 10, fontSize: 13, opacity: 0.85 }}>
-            Token:{" "}
-            <span style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>{issuedToken}</span>
+          {verifyResult ? (
+            <pre
+              style={{
+                marginTop: 10,
+                padding: 10,
+                borderRadius: 12,
+                border: "1px solid rgba(0,0,0,0.12)",
+                background: "#f7f7f7",
+                overflowX: "auto",
+                fontSize: 12,
+                maxHeight: 260,
+              }}
+            >
+              {JSON.stringify(verifyResult, null, 2)}
+            </pre>
+          ) : null}
+        </Card>
+
+        <Card title="Parking validation (issue)" subtitle="Issue a time-limited validation token.">
+          <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
+            <label style={{ fontSize: 12, fontWeight: 900, opacity: 0.8 }}>Minutes</label>
+            <input
+              value={minutes}
+              onChange={(e) => setMinutes(Number(e.target.value || 0))}
+              type="number"
+              min={1}
+              style={{
+                width: 110,
+                padding: "10px 12px",
+                borderRadius: 12,
+                border: "1px solid rgba(0,0,0,0.15)",
+              }}
+            />
+            <input
+              value={plate}
+              onChange={(e) => setPlate(e.target.value)}
+              placeholder="Plate (optional)"
+              style={{
+                flex: "1 1 180px",
+                padding: "10px 12px",
+                borderRadius: 12,
+                border: "1px solid rgba(0,0,0,0.15)",
+              }}
+            />
+            <button
+              onClick={issueParking}
+              disabled={parkingIssueBusy}
+              style={{
+                padding: "10px 12px",
+                borderRadius: 12,
+                border: "none",
+                background: "black",
+                color: "white",
+                fontWeight: 950,
+                cursor: "pointer",
+              }}
+            >
+              {parkingIssueBusy ? "Issuing…" : "Issue validation"}
+            </button>
           </div>
-        ) : null}
-      </Card>
 
-      <Card title="Staff verify (token)" subtitle="Paste a token to validate status + expiry.">
-        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-          <input
-            value={verifyToken}
-            onChange={(e) => setVerifyToken(e.target.value)}
-            placeholder="Paste access token…"
-            style={{
-              flex: "1 1 220px",
-              padding: "10px 12px",
-              borderRadius: 12,
-              border: "1px solid rgba(0,0,0,0.15)",
-            }}
-          />
-          <button
-            onClick={verifyPassToken}
-            disabled={verifyBusy}
-            style={{
-              padding: "10px 12px",
-              borderRadius: 12,
-              border: "none",
-              background: "black",
-              color: "white",
-              fontWeight: 950,
-              cursor: "pointer",
-            }}
-          >
-            {verifyBusy ? "Checking…" : "Verify"}
-          </button>
-        </div>
+          {parkingIssueRes ? (
+            <pre
+              style={{
+                marginTop: 10,
+                padding: 10,
+                borderRadius: 12,
+                border: "1px solid rgba(0,0,0,0.12)",
+                background: "#f7f7f7",
+                overflowX: "auto",
+                fontSize: 12,
+                maxHeight: 260,
+              }}
+            >
+              {JSON.stringify(parkingIssueRes, null, 2)}
+            </pre>
+          ) : null}
 
-        {verifyResult ? (
-          <pre
-            style={{
-              marginTop: 10,
-              padding: 10,
-              borderRadius: 12,
-              border: "1px solid rgba(0,0,0,0.12)",
-              background: "#f7f7f7",
-              overflowX: "auto",
-              fontSize: 12,
-            }}
-          >
-            {JSON.stringify(verifyResult, null, 2)}
-          </pre>
-        ) : null}
-      </Card>
+          {"ok" in (parkingIssueRes || {}) && (parkingIssueRes as any)?.ok ? (
+            <div style={{ marginTop: 10, fontSize: 13 }}>
+              Verify URL:{" "}
+              <a href={(parkingIssueRes as ParkingIssueOk).verifyUrl} style={{ fontWeight: 950 }}>
+                {(parkingIssueRes as ParkingIssueOk).verifyUrl}
+              </a>
+            </div>
+          ) : null}
+        </Card>
 
-      <Card title="Parking validation (issue)" subtitle="Issue a time-limited validation token (garage / lot).">
-        <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
-          <label style={{ fontSize: 12, fontWeight: 900, opacity: 0.8 }}>Minutes</label>
-          <input
-            value={minutes}
-            onChange={(e) => setMinutes(Number(e.target.value || 0))}
-            type="number"
-            min={1}
-            style={{
-              width: 110,
-              padding: "10px 12px",
-              borderRadius: 12,
-              border: "1px solid rgba(0,0,0,0.15)",
-            }}
-          />
-          <input
-            value={plate}
-            onChange={(e) => setPlate(e.target.value)}
-            placeholder="Plate (optional)"
-            style={{
-              flex: "1 1 180px",
-              padding: "10px 12px",
-              borderRadius: 12,
-              border: "1px solid rgba(0,0,0,0.15)",
-            }}
-          />
-          <button
-            onClick={issueParking}
-            disabled={parkingIssueBusy}
-            style={{
-              padding: "10px 12px",
-              borderRadius: 12,
-              border: "none",
-              background: "black",
-              color: "white",
-              fontWeight: 950,
-              cursor: "pointer",
-            }}
-          >
-            {parkingIssueBusy ? "Issuing…" : "Issue validation"}
-          </button>
-        </div>
-
-        {parkingIssueRes ? (
-          <pre
-            style={{
-              marginTop: 10,
-              padding: 10,
-              borderRadius: 12,
-              border: "1px solid rgba(0,0,0,0.12)",
-              background: "#f7f7f7",
-              overflowX: "auto",
-              fontSize: 12,
-            }}
-          >
-            {JSON.stringify(parkingIssueRes, null, 2)}
-          </pre>
-        ) : null}
-
-        {"ok" in (parkingIssueRes || {}) && (parkingIssueRes as any)?.ok ? (
-          <div style={{ marginTop: 10, fontSize: 13 }}>
-            Verify URL:{" "}
-            <a href={(parkingIssueRes as ParkingIssueOk).verifyUrl} style={{ fontWeight: 950 }}>
-              {(parkingIssueRes as ParkingIssueOk).verifyUrl}
-            </a>
+        <Card title="Parking validation (verify)" subtitle="Exit gate checks token validity.">
+          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+            <input
+              value={parkingVerifyToken}
+              onChange={(e) => setParkingVerifyToken(e.target.value)}
+              placeholder="Paste parking token…"
+              style={{
+                flex: "1 1 220px",
+                padding: "10px 12px",
+                borderRadius: 12,
+                border: "1px solid rgba(0,0,0,0.15)",
+              }}
+            />
+            <button
+              onClick={verifyParking}
+              disabled={parkingVerifyBusy}
+              style={{
+                padding: "10px 12px",
+                borderRadius: 12,
+                border: "none",
+                background: "black",
+                color: "white",
+                fontWeight: 950,
+                cursor: "pointer",
+              }}
+            >
+              {parkingVerifyBusy ? "Checking…" : "Verify"}
+            </button>
           </div>
-        ) : null}
-      </Card>
 
-      <Card title="Parking validation (verify)" subtitle="Staff/exit gate checks token validity.">
-        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-          <input
-            value={parkingVerifyToken}
-            onChange={(e) => setParkingVerifyToken(e.target.value)}
-            placeholder="Paste parking token…"
-            style={{
-              flex: "1 1 220px",
-              padding: "10px 12px",
-              borderRadius: 12,
-              border: "1px solid rgba(0,0,0,0.15)",
-            }}
-          />
-          <button
-            onClick={verifyParking}
-            disabled={parkingVerifyBusy}
-            style={{
-              padding: "10px 12px",
-              borderRadius: 12,
-              border: "none",
-              background: "black",
-              color: "white",
-              fontWeight: 950,
-              cursor: "pointer",
-            }}
-          >
-            {parkingVerifyBusy ? "Checking…" : "Verify"}
-          </button>
-        </div>
-
-        {parkingVerifyRes ? (
-          <pre
-            style={{
-              marginTop: 10,
-              padding: 10,
-              borderRadius: 12,
-              border: "1px solid rgba(0,0,0,0.12)",
-              background: "#f7f7f7",
-              overflowX: "auto",
-              fontSize: 12,
-            }}
-          >
-            {JSON.stringify(parkingVerifyRes, null, 2)}
-          </pre>
-        ) : null}
-      </Card>
+          {parkingVerifyRes ? (
+            <pre
+              style={{
+                marginTop: 10,
+                padding: 10,
+                borderRadius: 12,
+                border: "1px solid rgba(0,0,0,0.12)",
+                background: "#f7f7f7",
+                overflowX: "auto",
+                fontSize: 12,
+                maxHeight: 260,
+              }}
+            >
+              {JSON.stringify(parkingVerifyRes, null, 2)}
+            </pre>
+          ) : null}
+        </Card>
+      </div>
     </div>
   );
 }
