@@ -12,23 +12,16 @@ export async function POST(req: Request) {
 
   const supabase = supabaseServer;
 
-  const { error } = await supabase.auth.admin.createUser({
-    email,
-  });
-
-  if (error) {
-    return NextResponse.json({ ok: false, error: error.message });
-  }
-
-  const { error: sendError } = await supabase.auth.api.sendMagicLinkEmail(
+  // Send magic link with callback path
+  const { error } = await supabase.auth.api.sendMagicLinkEmail(
     email,
     {
-      redirectTo: `${process.env.NEXT_PUBLIC_APP_BASE_URL}/account`,
+      redirectTo: `${process.env.NEXT_PUBLIC_APP_BASE_URL}/auth/callback`,
     }
   );
 
-  if (sendError) {
-    return NextResponse.json({ ok: false, error: sendError.message });
+  if (error) {
+    return NextResponse.json({ ok: false, error: error.message });
   }
 
   return NextResponse.json({ ok: true });
