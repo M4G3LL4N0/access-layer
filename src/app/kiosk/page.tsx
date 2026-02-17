@@ -30,7 +30,9 @@ export default function KioskIndex() {
 
   return (
     <main style={{ padding: 24, fontFamily: "system-ui" }}>
-      <h1 style={{ fontSize: 28, fontWeight: 900 }}>Kiosk Mode — Select Venue</h1>
+      <h1 style={{ fontSize: 28, fontWeight: 900 }}>
+        Kiosk Mode — Select Venue
+      </h1>
 
       {err && (
         <div style={{ marginTop: 12, color: "red" }}>
@@ -52,7 +54,14 @@ export default function KioskIndex() {
         >
           <div style={{ fontSize: 18, fontWeight: 700 }}>{v.name}</div>
 
-          <div style={{ marginTop: 8, display: "flex", gap: 8 }}>
+          <div
+            style={{
+              marginTop: 8,
+              display: "flex",
+              gap: 8,
+              flexWrap: "wrap",
+            }}
+          >
             <Link
               href={`/kiosk/${v.id}`}
               style={{
@@ -99,3 +108,4 @@ export default function KioskIndex() {
       ))}
     </main>
   );
+}
