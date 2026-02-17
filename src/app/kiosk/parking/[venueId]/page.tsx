@@ -1,222 +1,141 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState, useEffect } from "react";
+import { useParams } from "next/navigation";
 
-export const dynamic = "force-dynamic";
+export default function ParkingKiosk() {
+  const { venueId } = useParams() as { venueId: string };
 
-function getVenueIdFromPath(): string {
-  // Works even if Next params fail for any reason.
-  if (typeof window === "undefined") return "";
-  const parts = window.location.pathname.split("/").filter(Boolean);
-  // expected: /kiosk/parking/:venueId
-  const idx = parts.findIndex((p) => p === "parking");
-  if (idx >= 0 && parts[idx + 1]) return parts[idx + 1];
-  // fallback: last segment
-  return parts[parts.length - 1] || "";
-}
+  const [entryToken, setEntryToken] = useState("");
+  const [exitToken, setExitToken] = useState("");
+  const [statusMsg, setStatusMsg] = useState("");
 
-export default function ParkingKioskPage() {
-  const [minutes, setMinutes] = useState<number>(120);
-  const [status, setStatus] = useState<"idle" | "loading" | "ok" | "err">("idle");
-  const [err, setErr] = useState<string>("");
-  const [token, setToken] = useState<string>("");
-  const [expiresAt, setExpiresAt] = useState<string>("");
-  const [verifyUrl, setVerifyUrl] = useState<string>("");
-
-  const venueId = useMemo(() => getVenueIdFromPath(), []);
-
-  const issueEndpoint = "/api/parking/issue";
-
-  async function issue() {
-    setStatus("loading");
-    setErr("");
-    setToken("");
-    setExpiresAt("");
-    setVerifyUrl("");
+  async function issueParkingValidation() {
+    if (!venueId) {
+      setStatusMsg("Missing venueId");
+      return;
+    }
 
     try {
-      if (!venueId) throw new Error("Missing venueId (URL path parsing failed).");
+      const fd = new FormData();
+      fd.set("venueId", venueId);
 
-      const res = await fetch(issueEndpoint, {
+      const res = await fetch("/api/parking/issue", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ venueId, minutes }),
+        body: fd,
       });
 
-      const json = await res.json().catch(() => ({}));
-      if (!res.ok) {
-        throw new Error(json?.error || json?.msg || `Request failed (${res.status})`);
+      const j = await res.json();
+      if (!res.ok || !j.ok) {
+        setStatusMsg(`Error: ${j.error || res.statusText}`);
+      } else {
+        setEntryToken(j.token);
+        setStatusMsg("Issued parking validation.");
       }
-
-      const t = json?.validation?.token || json?.token || "";
-      const exp = json?.validation?.expires_at || json?.expires_at || "";
-      const vurl = json?.verifyUrl || (t ? `/api/parking/verify?token=${encodeURIComponent(t)}` : "");
-
-      setToken(t);
-      setExpiresAt(exp);
-      setVerifyUrl(vurl);
-      setStatus("ok");
     } catch (e: any) {
-      setErr(String(e?.message || e));
-      setStatus("err");
+      setStatusMsg(String(e?.message || e));
     }
   }
 
-  const curl = venueId
-    ? `curl -s -X POST "${issueEndpoint}" -H "Content-Type: application/json" -d '{"venueId":"${venueId}","minutes":${minutes}}'`
-    : "(venueId missing)";
+  async function verifyParkingToken() {
+    if (!exitToken) {
+      setStatusMsg("Enter token to verify.");
+      return;
+    }
+
+    try {
+      const res = await fetch(`/api/parking/verify?token=${encodeURIComponent(exitToken)}`);
+      const j = await res.json();
+
+      setStatusMsg(JSON.stringify(j, null, 2));
+    } catch (e: any) {
+      setStatusMsg(String(e?.message || e));
+    }
+  }
 
   return (
-    <main
-      style={{
-        minHeight: "100vh",
-        padding: 24,
-        fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif",
-        background: "#f7f7f8",
-      }}
-    >
-      <div style={{ maxWidth: 860, margin: "0 auto" }}>
-        <h1 style={{ margin: 0, fontSize: 28, fontWeight: 950 }}>Parking Kiosk</h1>
-        <p style={{ marginTop: 8, opacity: 0.85 }}>
-          Issue time-bounded parking validations. No shared codes.
-        </p>
+    <main style={{ padding: 24, fontFamily: "system-ui" }}>
+      <h1>Parking Kiosk – {venueId || "(no venue)"}</h1>
 
-        {/* DEBUG HEADER */}
-        <div
+      <section style={{ marginTop: 18 }}>
+        <button
+          onClick={issueParkingValidation}
           style={{
-            marginTop: 14,
-            padding: 14,
-            borderRadius: 16,
-            border: "1px solid rgba(0,0,0,0.12)",
-            background: "white",
+            padding: "10px 14px",
+            background: "black",
+            color: "white",
+            fontWeight: 900,
+            borderRadius: 8,
+            cursor: "pointer",
           }}
         >
-          <div style={{ fontWeight: 900, marginBottom: 6 }}>Debug</div>
-          <div style={{ fontSize: 13, opacity: 0.8, lineHeight: 1.55 }}>
-            <div>
-              <b>URL:</b> {typeof window !== "undefined" ? window.location.href : "—"}
-            </div>
-            <div>
-              <b>venueId:</b> {venueId || "(missing)"}
-            </div>
-            <div>
-              <b>issue endpoint:</b> {issueEndpoint}
-            </div>
-            <div style={{ marginTop: 8 }}>
-              <b>curl:</b>
-              <pre
-                style={{
-                  marginTop: 6,
-                  padding: 10,
-                  borderRadius: 12,
-                  background: "#0b0b0c",
-                  color: "white",
-                  overflowX: "auto",
-                  fontSize: 12,
-                }}
-              >
-                {curl}
-              </pre>
+          Issue Parking Validation
+        </button>
+      </section>
+
+      {entryToken && (
+        <div style={{ marginTop: 14 }}>
+          <div><b>Parking token:</b> {entryToken}</div>
+          <div style={{ marginTop: 8 }}>
+            Copy or scan this token to exit:
+            <div
+              style={{
+                padding: 10,
+                fontFamily: "ui-monospace, Menlo, monospace",
+                background: "#f0f0f0",
+                borderRadius: 6,
+                marginTop: 6,
+              }}
+            >
+              {entryToken}
             </div>
           </div>
         </div>
+      )}
 
-        {/* CONTROLS */}
-        <div
+      <section style={{ marginTop: 24 }}>
+        <h3>Verify / Exit Token</h3>
+        <input
+          value={exitToken}
+          onChange={(e) => setExitToken(e.target.value)}
+          placeholder="Paste token here"
           style={{
-            marginTop: 14,
-            padding: 16,
-            borderRadius: 16,
-            border: "1px solid rgba(0,0,0,0.12)",
-            background: "white",
+            padding: "8px 10px",
+            border: "1px solid #ccc",
+            borderRadius: 6,
+            width: "100%",
+            marginBottom: 8,
+          }}
+        />
+        <button
+          onClick={verifyParkingToken}
+          style={{
+            padding: "10px 14px",
+            background: "#0056b3",
+            color: "white",
+            fontWeight: 900,
+            borderRadius: 8,
+            cursor: "pointer",
           }}
         >
-          <div style={{ fontWeight: 950, marginBottom: 10 }}>Issue validation</div>
+          Verify Parking Token
+        </button>
+      </section>
 
-          <label style={{ display: "block", fontWeight: 800, marginBottom: 6 }}>
-            Minutes valid
-          </label>
-          <input
-            type="number"
-            min={15}
-            step={15}
-            value={minutes}
-            onChange={(e) => setMinutes(Number(e.target.value || 0))}
-            style={{
-              width: 160,
-              padding: "10px 12px",
-              borderRadius: 12,
-              border: "1px solid rgba(0,0,0,0.18)",
-            }}
-          />
-
-          <div style={{ marginTop: 12 }}>
-            <button
-              onClick={issue}
-              disabled={status === "loading"}
-              style={{
-                padding: "12px 16px",
-                borderRadius: 12,
-                background: "black",
-                color: "white",
-                border: "none",
-                fontWeight: 900,
-                cursor: "pointer",
-              }}
-            >
-              {status === "loading" ? "Issuing…" : "Issue Access Pass"}
-            </button>
-          </div>
-
-          {status === "err" && (
-            <div
-              style={{
-                marginTop: 12,
-                padding: 12,
-                borderRadius: 12,
-                border: "1px solid #ffd1d1",
-                background: "#fff5f5",
-                color: "#7a0b0b",
-                fontWeight: 800,
-                whiteSpace: "pre-wrap",
-              }}
-            >
-              {err}
-            </div>
-          )}
-
-          {status === "ok" && (
-            <div
-              style={{
-                marginTop: 12,
-                padding: 12,
-                borderRadius: 12,
-                border: "1px solid #cdebd6",
-                background: "#f0fff4",
-              }}
-            >
-              <div style={{ fontWeight: 950 }}>Issued</div>
-              <div style={{ marginTop: 6, fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>
-                Token: {token}
-              </div>
-              <div style={{ marginTop: 6, opacity: 0.85 }}>
-                Expires: {expiresAt || "(unknown)"}
-              </div>
-
-              {verifyUrl && (
-                <div style={{ marginTop: 10 }}>
-                  <a
-                    href={verifyUrl}
-                    style={{ fontWeight: 900, textDecoration: "underline" }}
-                  >
-                    Verify token →
-                  </a>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-      </div>
+      {statusMsg && (
+        <pre
+          style={{
+            marginTop: 16,
+            padding: 12,
+            border: "1px solid #ddd",
+            borderRadius: 8,
+            background: "#fafafa",
+            fontSize: 12,
+          }}
+        >
+          {statusMsg}
+        </pre>
+      )}
     </main>
   );
 }
