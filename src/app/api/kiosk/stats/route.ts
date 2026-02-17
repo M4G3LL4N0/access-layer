@@ -2,10 +2,9 @@ import { NextResponse } from "next/server";
 import { supabaseServer } from "@/lib/supabaseServer";
 
 export const dynamic = "force-dynamic";
-export const revalidate = 0;
 
-function isUuid(s: string) {
-  return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(s);
+function jsonError(message: string, status = 400, extra?: any) {
+  return NextResponse.json({ ok: false, error: message, ...extra }, { status });
 }
 
 export async function GET(req: Request) {
@@ -13,68 +12,37 @@ export async function GET(req: Request) {
     const url = new URL(req.url);
     const venueId = String(url.searchParams.get("venueId") || "");
 
-    if (!venueId || !isUuid(venueId)) {
-      return NextResponse.json(
-        { ok: false, error: "Missing or invalid venueId", venueId },
-        { status: 400 }
-      );
-    }
+    if (!venueId) return jsonError("Missing venueId (query param).", 400);
 
-    // IMPORTANT: supabaseServer is an instance, do NOT call it as a function.
     const supabase = supabaseServer;
 
-    // Confirm venue exists (avoid .single())
-    const { data: vRows, error: vErr } = await supabase
+    const { data: venue, error: vErr } = await supabase
       .from("venues")
       .select("id,name")
       .eq("id", venueId)
       .limit(1);
 
-    const venue = vRows?.[0] || null;
+    if (vErr) return jsonError("Venue lookup failed", 500, { detail: vErr });
+    if (!venue?.[0]) return jsonError("Venue not found", 404, { venueId });
 
-    if (vErr || !venue) {
-      return NextResponse.json(
-        {
-          ok: false,
-          error: vErr ? String(vErr.message || vErr) : "Venue not found",
-          venueId,
-          venueRows: vRows?.length || 0,
-        },
-        { status: 404 }
-      );
-    }
-
-    // Total passes
-    const { count: totalCount, error: totalErr } = await supabase
+    const { count: total, error: totalErr } = await supabase
       .from("access_passes")
-      .select("id", { count: "exact", head: true })
+      .select("*", { count: "exact", head: true })
       .eq("venue_id", venueId);
 
-    if (totalErr) {
-      return NextResponse.json(
-        { ok: false, error: String(totalErr.message || totalErr), venueId, where: "count_total" },
-        { status: 500 }
-      );
-    }
+    if (totalErr) return jsonError("Count failed", 500, { detail: totalErr });
 
-    // Today passes (UTC day)
-    const startUtc = new Date();
-    startUtc.setUTCHours(0, 0, 0, 0);
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0, 0);
 
-    const { count: todayCount, error: todayErr } = await supabase
+    const { count: today, error: todayErr } = await supabase
       .from("access_passes")
-      .select("id", { count: "exact", head: true })
+      .select("*", { count: "exact", head: true })
       .eq("venue_id", venueId)
-      .gte("created_at", startUtc.toISOString());
+      .gte("created_at", startOfDay.toISOString());
 
-    if (todayErr) {
-      return NextResponse.json(
-        { ok: false, error: String(todayErr.message || todayErr), venueId, where: "count_today" },
-        { status: 500 }
-      );
-    }
+    if (todayErr) return jsonError("Today count failed", 500, { detail: todayErr });
 
-    // Latest pass (avoid .single())
     const { data: latestRows, error: latestErr } = await supabase
       .from("access_passes")
       .select("token,created_at,expires_at,status")
@@ -82,29 +50,17 @@ export async function GET(req: Request) {
       .order("created_at", { ascending: false })
       .limit(1);
 
-    if (latestErr) {
-      return NextResponse.json(
-        { ok: false, error: String(latestErr.message || latestErr), venueId, where: "latest" },
-        { status: 500 }
-      );
-    }
+    if (latestErr) return jsonError("Latest failed", 500, { detail: latestErr });
 
     return NextResponse.json({
       ok: true,
       venueId,
-      venue,
-      total: totalCount ?? 0,
-      today: todayCount ?? 0,
+      venue: venue[0],
+      total: total ?? 0,
+      today: today ?? 0,
       latest: latestRows?.[0] || null,
     });
   } catch (e: any) {
-    return NextResponse.json(
-      {
-        ok: false,
-        error: String(e?.message || e),
-        where: "top-level",
-      },
-      { status: 500 }
-    );
+    return jsonError("Unexpected error", 500, { detail: String(e?.message || e) });
   }
 }
