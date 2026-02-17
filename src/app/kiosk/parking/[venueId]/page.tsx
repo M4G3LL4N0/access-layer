@@ -1,13 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useParams } from "next/navigation";
 
 export default function ParkingKiosk() {
   const { venueId } = useParams() as { venueId: string };
-
   const [entryToken, setEntryToken] = useState("");
-  const [exitToken, setExitToken] = useState("");
+  const [verifyResult, setVerifyResult] = useState<any>(null);
   const [statusMsg, setStatusMsg] = useState("");
 
   async function issueParkingValidation() {
@@ -30,24 +29,31 @@ export default function ParkingKiosk() {
         setStatusMsg(`Error: ${j.error || res.statusText}`);
       } else {
         setEntryToken(j.token);
-        setStatusMsg("Issued parking validation.");
+        setStatusMsg("Issued parking token. You can verify it below.");
+        setVerifyResult(null);
       }
     } catch (e: any) {
       setStatusMsg(String(e?.message || e));
     }
   }
 
-  async function verifyParkingToken() {
-    if (!exitToken) {
+  async function verifyParkingToken(tokenToVerify: string) {
+    if (!tokenToVerify) {
       setStatusMsg("Enter token to verify.");
       return;
     }
 
     try {
-      const res = await fetch(`/api/parking/verify?token=${encodeURIComponent(exitToken)}`);
+      const res = await fetch(
+        `/api/parking/verify?token=${encodeURIComponent(tokenToVerify)}`
+      );
       const j = await res.json();
-
-      setStatusMsg(JSON.stringify(j, null, 2));
+      if (!res.ok || !j.ok) {
+        setStatusMsg(`Verify error: ${j.error || res.statusText}`);
+      } else {
+        setVerifyResult(j);
+        setStatusMsg("Verification complete.");
+      }
     } catch (e: any) {
       setStatusMsg(String(e?.message || e));
     }
@@ -55,9 +61,11 @@ export default function ParkingKiosk() {
 
   return (
     <main style={{ padding: 24, fontFamily: "system-ui" }}>
-      <h1>Parking Kiosk – {venueId || "(no venue)"}</h1>
+      <h1 style={{ fontSize: 28, fontWeight: 900 }}>
+        Parking Kiosk — {venueId}
+      </h1>
 
-      <section style={{ marginTop: 18 }}>
+      <section style={{ margin: "18px 0" }}>
         <button
           onClick={issueParkingValidation}
           style={{
@@ -69,46 +77,60 @@ export default function ParkingKiosk() {
             cursor: "pointer",
           }}
         >
-          Issue Parking Validation
+          Issue Parking Validation Token
         </button>
       </section>
 
       {entryToken && (
-        <div style={{ marginTop: 14 }}>
-          <div><b>Parking token:</b> {entryToken}</div>
-          <div style={{ marginTop: 8 }}>
-            Copy or scan this token to exit:
-            <div
-              style={{
-                padding: 10,
-                fontFamily: "ui-monospace, Menlo, monospace",
-                background: "#f0f0f0",
-                borderRadius: 6,
-                marginTop: 6,
-              }}
-            >
-              {entryToken}
-            </div>
+        <div style={{ marginTop: 12 }}>
+          <div style={{ fontWeight: 700 }}>Issued Parking Token:</div>
+          <div
+            style={{
+              marginTop: 6,
+              fontFamily: "ui-monospace, Menlo, monospace",
+              padding: 10,
+              background: "#f0f0f0",
+              borderRadius: 6,
+            }}
+          >
+            {entryToken}
           </div>
+
+          <button
+            onClick={() => verifyParkingToken(entryToken)}
+            style={{
+              marginTop: 12,
+              padding: "8px 12px",
+              background: "#0072e5",
+              color: "white",
+              borderRadius: 8,
+              fontWeight: 800,
+              cursor: "pointer",
+            }}
+          >
+            Verify This Token
+          </button>
         </div>
       )}
 
       <section style={{ marginTop: 24 }}>
-        <h3>Verify / Exit Token</h3>
+        <h2 style={{ fontSize: 20, fontWeight: 800 }}>Verify Token</h2>
         <input
-          value={exitToken}
-          onChange={(e) => setExitToken(e.target.value)}
-          placeholder="Paste token here"
+          type="text"
+          placeholder="Enter parking token"
+          value={verifyResult?.token ?? ""}
+          onChange={(e) => setVerifyResult(null)}
           style={{
-            padding: "8px 10px",
-            border: "1px solid #ccc",
-            borderRadius: 6,
             width: "100%",
+            padding: "8px 10px",
+            borderRadius: 6,
+            border: "1px solid #ccc",
             marginBottom: 8,
           }}
         />
+
         <button
-          onClick={verifyParkingToken}
+          onClick={() => verifyParkingToken(verifyResult?.token || entryToken)}
           style={{
             padding: "10px 14px",
             background: "#0056b3",
@@ -118,23 +140,74 @@ export default function ParkingKiosk() {
             cursor: "pointer",
           }}
         >
-          Verify Parking Token
+          Check Token
         </button>
       </section>
 
       {statusMsg && (
-        <pre
+        <div
           style={{
-            marginTop: 16,
-            padding: 12,
-            border: "1px solid #ddd",
+            marginTop: 18,
+            padding: 10,
+            background: "#fff6d6",
             borderRadius: 8,
-            background: "#fafafa",
-            fontSize: 12,
+            fontSize: 13,
+            fontWeight: 700,
           }}
         >
           {statusMsg}
-        </pre>
+        </div>
+      )}
+
+      {verifyResult && (
+        <div
+          style={{
+            marginTop: 18,
+            padding: 12,
+            border: "1px solid #ddd",
+            borderRadius: 8,
+            background: "#f8f9fa",
+          }}
+        >
+          <div>
+            <strong>Token:</strong> {verifyResult.token}
+          </div>
+          <div>
+            <strong>Issued:</strong>{" "}
+            {verifyResult.issued_at
+              ? new Date(verifyResult.issued_at).toLocaleString()
+              : "Unknown"}
+          </div>
+
+          {verifyResult.verify ? (
+            <div>
+              <div>
+                <strong>Status:</strong>{" "}
+                {verifyResult.verify.meta?.status}
+              </div>
+              <div>
+                <strong>Expires:</strong>{" "}
+                {verifyResult.verify.meta?.expires_at}
+              </div>
+            </div>
+          ) : (
+            <div style={{ opacity: 0.8 }}>Not yet verified.</div>
+          )}
+
+          <div style={{ marginTop: 8, fontSize: 12 }}>
+            <em>Raw events:</em>
+            <pre
+              style={{
+                fontSize: 10,
+                padding: 6,
+                background: "#fff",
+                borderRadius: 6,
+              }}
+            >
+              {JSON.stringify(verifyResult.allEvents, null, 2)}
+            </pre>
+          </div>
+        </div>
       )}
     </main>
   );
