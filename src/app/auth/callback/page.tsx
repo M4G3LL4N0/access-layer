@@ -1,28 +1,29 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
-import { createSupabaseClient } from "@supabase/auth-helpers-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 
 export default function AuthCallbackPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [err, setErr] = useState("");
+  const [status, setStatus] = useState("Signing in…");
 
   useEffect(() => {
-    async function handleCallback() {
-      const supabase = createSupabaseClient({
-        supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        supabaseKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      });
-
+    async function handleAuthCallback() {
       const access_token = searchParams.get("access_token");
       const refresh_token = searchParams.get("refresh_token");
 
+      // Ensure tokens exist
       if (!access_token || !refresh_token) {
-        setErr("Missing auth tokens in callback URL.");
+        setStatus("⚠️ Missing auth tokens in callback URL");
         return;
       }
+
+      const supabase = createSupabaseClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+      );
 
       const { error } = await supabase.auth.setSession({
         access_token,
@@ -30,25 +31,20 @@ export default function AuthCallbackPage() {
       });
 
       if (error) {
-        setErr(error.message);
+        setStatus("❌ " + error.message);
         return;
       }
 
+      // Redirect to account
       router.replace("/account");
     }
 
-    handleCallback();
+    handleAuthCallback();
   }, [router, searchParams]);
 
   return (
-    <main style={{ fontFamily: "system-ui", padding: 24 }}>
-      {err ? (
-        <div style={{ color: "red", fontWeight: 700 }}>
-          Auth callback error: {err}
-        </div>
-      ) : (
-        <div>Signing you in…</div>
-      )}
+    <main style={{ padding: 24, fontFamily: "system-ui" }}>
+      <p>{status}</p>
     </main>
   );
 }

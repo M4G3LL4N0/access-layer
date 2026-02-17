@@ -12,12 +12,10 @@ export async function POST(req: Request) {
 
   const supabase = supabaseServer;
 
-  const { error } = await supabase.auth.api.sendMagicLinkEmail(
-    email,
-    {
-      redirectTo: `${process.env.NEXT_PUBLIC_APP_BASE_URL}/auth/callback`,
-    }
-  );
+  // Send magic link with explicit callback redirect
+  const { error } = await supabase.auth.api.sendMagicLinkEmail(email, {
+    redirectTo: `${process.env.NEXT_PUBLIC_APP_BASE_URL}/auth/callback`,
+  });
 
   if (error) {
     return NextResponse.json({ ok: false, error: error.message });
