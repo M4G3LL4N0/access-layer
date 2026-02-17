@@ -4,7 +4,8 @@ import { supabaseServer } from "@/lib/supabaseServer";
 export const dynamic = "force-dynamic";
 
 export default async function HardwareConsolePage() {
-  const supabase = await supabaseServer();
+  // IMPORTANT: supabaseServer is a client instance, NOT a function.
+  const supabase = supabaseServer;
 
   const { data: venues, error } = await supabase
     .from("venues")
@@ -23,8 +24,8 @@ export default async function HardwareConsolePage() {
             Hardware / Operator Console
           </h1>
           <p style={{ marginTop: 8, opacity: 0.8, lineHeight: 1.5 }}>
-            One place to operate real-world access: kiosk issuance, pass verification,
-            scanning, signage, and parking validation.
+            Operate real-world access: kiosk issuance, pass verification, scanning,
+            signage, and parking validation.
           </p>
         </header>
 

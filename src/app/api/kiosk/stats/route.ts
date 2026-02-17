@@ -1,61 +1,61 @@
 import { NextResponse } from "next/server";
 import { supabaseServer } from "@/lib/supabaseServer";
 
-function getServerSupabase() {
-  const any = supabaseServer as any;
-  return typeof any === "function" ? any() : any;
-}
-
 export const dynamic = "force-dynamic";
+
+function errToString(e: any) {
+  if (!e) return "Unknown error";
+  if (typeof e === "string") return e;
+  if (e.message) return String(e.message);
+  try {
+    return JSON.stringify(e);
+  } catch {
+    return String(e);
+  }
+}
 
 export async function GET(req: Request) {
   try {
     const url = new URL(req.url);
     const venueId = String(url.searchParams.get("venueId") || "").trim();
+
     if (!venueId) {
       return NextResponse.json({ ok: false, error: "Missing venueId" }, { status: 400 });
     }
 
-    const supabase = await getServerSupabase();
+    // IMPORTANT: supabaseServer is a client instance, NOT a function.
+    const supabase = supabaseServer;
 
-    // Total count
-    const { count: total, error: totalErr } = await supabase
+    const { data: totalRows, error: totalErr } = await supabase
       .from("access_passes")
       .select("id", { count: "exact", head: true })
       .eq("venue_id", venueId);
 
-    if (totalErr) throw totalErr;
+    if (totalErr) {
+      return NextResponse.json({ ok: false, error: errToString(totalErr) }, { status: 500 });
+    }
 
-    // Today count (UTC day boundary)
-    const start = new Date();
-    start.setUTCHours(0, 0, 0, 0);
+    const total = (totalRows as any) ? (totalRows as any).length : 0;
 
-    const { count: today, error: todayErr } = await supabase
-      .from("access_passes")
-      .select("id", { count: "exact", head: true })
-      .eq("venue_id", venueId)
-      .gte("created_at", start.toISOString());
-
-    if (todayErr) throw todayErr;
-
-    // Latest pass
     const { data: latest, error: latestErr } = await supabase
       .from("access_passes")
-      .select("token, created_at, expires_at, status")
+      .select("token,created_at,expires_at,status")
       .eq("venue_id", venueId)
       .order("created_at", { ascending: false })
       .limit(1);
 
-    if (latestErr) throw latestErr;
+    if (latestErr) {
+      return NextResponse.json({ ok: false, error: errToString(latestErr) }, { status: 500 });
+    }
 
     return NextResponse.json({
       ok: true,
       venueId,
-      total: total ?? 0,
-      today: today ?? 0,
-      latest: (latest && latest[0]) || null,
+      total,
+      today: 0,
+      latest: latest?.[0] || null,
     });
   } catch (e: any) {
-    return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 });
+    return NextResponse.json({ ok: false, error: errToString(e) }, { status: 500 });
   }
 }
