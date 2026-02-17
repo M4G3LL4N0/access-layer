@@ -8,52 +8,58 @@ function randomToken(len = 18) {
   return crypto.randomBytes(len).toString("base64url");
 }
 
-function asString(x: any) {
-  return typeof x === "string" ? x : "";
+function jsonError(message: string, status = 400, extra?: any) {
+  return NextResponse.json({ ok: false, error: message, ...extra }, { status });
 }
 
 export async function POST(req: Request) {
   try {
-    const url = new URL(req.url);
-
     // Accept venueId from:
-    // 1) querystring 2) FormData 3) JSON body
-    let venueId = asString(url.searchParams.get("venueId"));
+    // - form post (kiosk UI)
+    // - JSON body (future / programmatic)
+    // - query string (fallback)
+    const url = new URL(req.url);
+    const qsVenueId = url.searchParams.get("venueId") || "";
 
-    const ct = req.headers.get("content-type") || "";
+    let venueId = "";
 
-    if (!venueId && (ct.includes("multipart/form-data") || ct.includes("application/x-www-form-urlencoded"))) {
-      const form = await req.formData();
-      venueId = asString(form.get("venueId"));
-    } else if (!venueId && ct.includes("application/json")) {
-      const body = await req.json().catch(() => ({} as any));
-      venueId = asString(body?.venueId);
-    } else if (!venueId) {
-      // last-chance attempt (safe)
+    const contentType = req.headers.get("content-type") || "";
+
+    if (contentType.includes("application/json")) {
+      const body = await req.json().catch(() => ({}));
+      venueId = String(body?.venueId || "");
+    } else {
       const form = await req.formData().catch(() => null);
-      if (form) venueId = asString(form.get("venueId"));
+      if (form) venueId = String(form.get("venueId") || "");
     }
+
+    if (!venueId) venueId = qsVenueId;
 
     if (!venueId) {
-      return NextResponse.json({ ok: false, error: "Missing venueId" }, { status: 400 });
+      return jsonError("Missing venueId", 400);
     }
 
-    // IMPORTANT: supabaseServer() is async in your project — must await it.
-    const supabase = await supabaseServer();
+    // IMPORTANT:
+    // In YOUR codebase, supabaseServer is a client object (not a function).
+    // So we do NOT call it.
+    const supabase = supabaseServer;
 
     // Confirm venue exists
     const { data: v, error: vErr } = await supabase
       .from("venues")
-      .select("id,name")
+      .select("id,name,status")
       .eq("id", venueId)
       .limit(1);
 
-    if (vErr) return NextResponse.json({ ok: false, error: vErr.message }, { status: 500 });
-    if (!v?.[0]) return NextResponse.json({ ok: false, error: "Venue not found" }, { status: 404 });
+    if (vErr) return jsonError("Venue lookup failed", 500, { detail: vErr });
+    const venue = v?.[0];
+    if (!venue) return jsonError("Venue not found", 404, { venueId });
 
+    // Issue a pass (15 minutes default)
+    const minutes = 15;
+    const issued_at = new Date();
+    const expires_at = new Date(issued_at.getTime() + minutes * 60 * 1000);
     const token = randomToken(18);
-    const now = new Date();
-    const expires = new Date(now.getTime() + 15 * 60 * 1000); // 15 minutes
 
     const { data: inserted, error: insErr } = await supabase
       .from("access_passes")
@@ -62,25 +68,23 @@ export async function POST(req: Request) {
           venue_id: venueId,
           token,
           status: "active",
-          issued_at: now.toISOString(),
-          expires_at: expires.toISOString(),
+          issued_at: issued_at.toISOString(),
+          expires_at: expires_at.toISOString(),
         },
       ])
-      .select("token,venue_id,status,issued_at,expires_at,created_at")
+      .select("token,created_at,expires_at,status,venue_id")
       .limit(1);
 
-    if (insErr) return NextResponse.json({ ok: false, error: insErr.message }, { status: 500 });
-
-    const pass = inserted?.[0];
+    if (insErr) return jsonError("Insert failed", 500, { detail: insErr });
 
     return NextResponse.json({
       ok: true,
-      venue: v[0],
-      pass,
-      passUrl: `/pass/${encodeURIComponent(token)}`,
+      venue: { id: venue.id, name: venue.name },
+      pass: inserted?.[0] || null,
+      passUrl: `/pass/${token}`,
       verifyUrl: `/verify?token=${encodeURIComponent(token)}`,
     });
   } catch (e: any) {
-    return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 });
+    return jsonError("Unexpected error", 500, { detail: String(e?.message || e) });
   }
 }
