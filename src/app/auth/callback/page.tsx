@@ -11,18 +11,20 @@ export default function AuthCallbackPage() {
 
   useEffect(() => {
     async function handleCallback() {
-      const supabase = createClientComponentClient();
+      const supabase = createClientComponentClient({
+        supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        supabaseKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      });
 
       const access_token = searchParams.get("access_token");
       const refresh_token = searchParams.get("refresh_token");
 
       if (!access_token || !refresh_token) {
-        setErr("Missing auth parameters");
+        setErr("Missing auth tokens in callback URL.");
         return;
       }
 
-      // Save session to Supabase via URL tokens
-      const { data, error } = await supabase.auth.setSession({
+      const { error } = await supabase.auth.setSession({
         access_token,
         refresh_token,
       });
@@ -45,7 +47,7 @@ export default function AuthCallbackPage() {
           Auth callback error: {err}
         </div>
       ) : (
-        <div>Signing you in…</div>
+        <div>Signing you in...</div>
       )}
     </main>
   );
