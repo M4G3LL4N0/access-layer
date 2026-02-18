@@ -1,79 +1,170 @@
 import { NextResponse } from "next/server";
-import { verifySignedPassToken } from "@/lib/signedToken";
-import { sha256 } from "@/lib/crypto";
+import crypto from "crypto";
 import { supabaseServer } from "@/lib/supabaseServer";
 
-function getIp(req: Request) {
-  const xf = req.headers.get("x-forwarded-for") || "";
-  return (xf.split(",")[0] || "").trim() || "0.0.0.0";
+export const dynamic = "force-dynamic";
+
+/**
+ * Edge verify: verifies an access token is valid (active + not expired),
+ * with a simple rate-limit backed by security_events.
+ *
+ * IMPORTANT: Supabase queries must be awaited BEFORE destructuring.
+ */
+
+// Basic hash (we never store raw IP)
+function sha256(input: string) {
+  return crypto.createHash("sha256").update(input).digest("hex");
 }
 
-// naive in-db rate limit: count events in last N seconds
+// Very small helper to get IP from headers
+function getIp(req: Request) {
+  const xff = req.headers.get("x-forwarded-for");
+  if (xff) return xff.split(",")[0].trim();
+  const xr = req.headers.get("x-real-ip");
+  if (xr) return xr.trim();
+  return "0.0.0.0";
+}
+
 async function rateLimit(ipHash: string) {
+  const supabase = supabaseServer();
+
   const since = new Date(Date.now() - 15_000).toISOString(); // 15s window
-  const { data } = supabaseServer()
+
+  // ✅ MUST await before destructuring
+  const { data, error } = await supabase
     .from("security_events")
     .select("id, created_at")
     .eq("event_type", "edge_verify")
-    .contains("meta", { ip_hash: ipHash })
-    .gte("created_at", since);
+    .eq("ip_hash", ipHash)
+    .gte("created_at", since)
+    .order("created_at", { ascending: false })
+    .limit(50);
 
-  const count = data?.length || 0;
-  return count <= 20; // allow <=20 per 15s per IP hash
+  if (error) {
+    // If the rate-limit table is missing or blocked, fail open (don’t break verify)
+    return { ok: true, remaining: 999, note: "rate-limit unavailable" as const };
+  }
+
+  const count = (data || []).length;
+  const limit = 12; // 12 calls per 15 seconds per IP hash
+  const remaining = Math.max(0, limit - count);
+
+  return { ok: count < limit, remaining };
 }
 
-export async function POST(req: Request) {
+async function logSecurityEvent(opts: {
+  event_type: string;
+  ip_hash: string;
+  token?: string | null;
+  venue_id?: string | null;
+  meta?: any;
+}) {
   try {
+    const supabase = supabaseServer();
+    await supabase.from("security_events").insert([
+      {
+        event_type: opts.event_type,
+        ip_hash: opts.ip_hash,
+        token: opts.token || null,
+        venue_id: opts.venue_id || null,
+        meta: opts.meta ?? null,
+      },
+    ]);
+  } catch {
+    // swallow
+  }
+}
+
+export async function GET(req: Request) {
+  try {
+    const url = new URL(req.url);
+    const token = String(url.searchParams.get("token") || "").trim();
+
+    if (!token) {
+      return NextResponse.json({ ok: false, error: "Missing token" }, { status: 400 });
+    }
+
     const ip = getIp(req);
     const ipHash = sha256(ip);
 
-    const okRate = await rateLimit(ipHash);
-    if (!okRate) {
-      supabaseServer().from("security_events").insert([
-        { event_type: "rate_limit", meta: { ip_hash: ipHash } },
-      ]);
-      return NextResponse.json({ allow: false, reason: "Rate limited" }, { status: 429 });
+    const rl = await rateLimit(ipHash);
+    if (!rl.ok) {
+      await logSecurityEvent({
+        event_type: "edge_verify_rate_limited",
+        ip_hash: ipHash,
+        token,
+        meta: { remaining: rl.remaining },
+      });
+      return NextResponse.json(
+        { ok: false, error: "Rate limited", remaining: rl.remaining },
+        { status: 429 }
+      );
     }
 
-    const body = await req.json().catch(() => ({}));
-    const token = String(body.token || "");
+    const supabase = supabaseServer();
 
-    supabaseServer().from("security_events").insert([
-      { event_type: "edge_verify", meta: { ip_hash: ipHash } },
-    ]);
-
-    if (!token) return NextResponse.json({ allow: false, reason: "Missing token" });
-
-    const v = verifySignedPassToken(token);
-    if (!v.ok) {
-      supabaseServer().from("security_events").insert([
-        { event_type: "invalid_token", meta: { ip_hash: ipHash, reason: v.reason } },
-      ]);
-      return NextResponse.json({ allow: false, reason: v.reason });
-    }
-
-    const { v: venue_id, exp, jti } = v.payload;
-
-    const { data: deny } = supabaseServer()
-      .from("token_denylist")
-      .select("jti")
-      .eq("jti", jti)
+    // ✅ Avoid .single() to prevent "Cannot coerce to a single JSON object"
+    const { data, error } = await supabase
+      .from("access_passes")
+      .select("token, status, issued_at, expires_at, venue_id")
+      .eq("token", token)
+      .order("created_at", { ascending: false })
       .limit(1);
 
-    if (deny && deny.length > 0) {
-      supabaseServer().from("security_events").insert([
-        { venue_id, event_type: "denied", meta: { ip_hash: ipHash, reason: "denylisted", jti } },
-      ]);
-      return NextResponse.json({ allow: false, reason: "Revoked" });
+    if (error) {
+      await logSecurityEvent({
+        event_type: "edge_verify_error",
+        ip_hash: ipHash,
+        token,
+        meta: { message: error.message },
+      });
+      return NextResponse.json({ ok: false, error: error.message }, { status: 400 });
     }
 
+    const row = (data && data[0]) || null;
+    if (!row) {
+      await logSecurityEvent({ event_type: "edge_verify_not_found", ip_hash: ipHash, token });
+      return NextResponse.json({ ok: false, error: "Not found" }, { status: 404 });
+    }
+
+    const now = Date.now();
+    const expiresAt = row.expires_at ? new Date(row.expires_at).getTime() : 0;
+
+    const isActive = String(row.status).toLowerCase() === "active";
+    const isExpired = expiresAt > 0 && expiresAt <= now;
+
+    if (!isActive || isExpired) {
+      await logSecurityEvent({
+        event_type: "edge_verify_denied",
+        ip_hash: ipHash,
+        token,
+        venue_id: row.venue_id,
+        meta: { status: row.status, expires_at: row.expires_at },
+      });
+      return NextResponse.json(
+        { ok: false, error: isExpired ? "Expired" : "Inactive", status: row.status, expires_at: row.expires_at },
+        { status: 403 }
+      );
+    }
+
+    await logSecurityEvent({
+      event_type: "edge_verify_ok",
+      ip_hash: ipHash,
+      token,
+      venue_id: row.venue_id,
+      meta: { expires_at: row.expires_at },
+    });
+
     return NextResponse.json({
-      allow: true,
-      venue_id,
-      expires_at: new Date(exp * 1000).toISOString(),
-      jti,
+      ok: true,
+      token: row.token,
+      venue_id: row.venue_id,
+      status: row.status,
+      issued_at: row.issued_at,
+      expires_at: row.expires_at,
+      remaining: rl.remaining,
     });
   } catch (e: any) {
-    return NextResponse.json({ allow: false, reason: String(e?.message || e) }, { status: 500 });
+    return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 });
   }
 }

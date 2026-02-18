@@ -1,79 +1,82 @@
 import { NextResponse } from "next/server";
-import { sha256 } from "@/lib/crypto";
-import { verifySignedPassToken } from "@/lib/signedToken";
+import crypto from "crypto";
 import { supabaseServer } from "@/lib/supabaseServer";
 
-export async function POST(req: Request) {
-  try {
-    const deviceKey = req.headers.get("x-device-key") || "";
-    const pepper = process.env.DEVICE_KEY_PEPPER || "pepper_missing";
-    const deviceHash = sha256(`${pepper}:${deviceKey}`);
+export const dynamic = "force-dynamic";
 
-    const { data: devices } = supabaseServer()
+/**
+ * Device verify endpoint.
+ *
+ * Accepts:
+ *  - GET /api/device/verify?deviceKey=...&venueId=... (optional venueId)
+ *  - Header "x-device-key: ..."
+ *
+ * Server computes api_key_hash = sha256(`${pepper}:${deviceKey}`)
+ * and looks up devices.api_key_hash.
+ *
+ * Returns:
+ *  { ok: true, device: { id, venue_id, status } } if a matching active device exists.
+ */
+export async function GET(req: Request) {
+  try {
+    const url = new URL(req.url);
+
+    const headerKey =
+      req.headers.get("x-device-key") ||
+      req.headers.get("x-device_token") ||
+      req.headers.get("x-api-key") ||
+      "";
+
+    const deviceKey = String(url.searchParams.get("deviceKey") || headerKey || "").trim();
+    const venueId = String(url.searchParams.get("venueId") || "").trim();
+
+    if (!deviceKey) {
+      return NextResponse.json(
+        { ok: false, error: "Missing deviceKey (query param ?deviceKey=... or header x-device-key)" },
+        { status: 400 }
+      );
+    }
+
+    const pepper = String(process.env.KIOSK_PIN || process.env.DEVICE_PEPPER || "axw");
+    const deviceHash = crypto.createHash("sha256").update(`${pepper}:${deviceKey}`).digest("hex");
+
+    const supabase = supabaseServer();
+
+    // ✅ IMPORTANT: await BEFORE destructuring
+    const { data, error } = await supabase
       .from("devices")
       .select("id, venue_id, status")
       .eq("api_key_hash", deviceHash)
-      .limit(1);
+      .limit(10);
 
-    if (!devices || devices.length === 0) {
-      supabaseServer().from("security_events").insert([
-        { event_type: "device_auth_failed", meta: {} },
-      ]);
-      return NextResponse.json({ allow: false, reason: "Bad device key" }, { status: 401 });
+    if (error) {
+      return NextResponse.json({ ok: false, error: error.message }, { status: 400 });
     }
 
-    const device = devices[0];
-    if (device.status !== "active") {
-      supabaseServer().from("security_events").insert([
-        { venue_id: device.venue_id, device_id: device.id, event_type: "device_disabled", meta: {} },
-      ]);
-      return NextResponse.json({ allow: false, reason: "Device disabled" }, { status: 403 });
+    const devices = data ?? [];
+
+    // Optional: lock verification to a specific venueId if provided
+    const filtered = venueId ? devices.filter((d) => String(d.venue_id) === venueId) : devices;
+
+    if (!filtered.length) {
+      return NextResponse.json(
+        { ok: false, error: "Not found", hint: venueId ? "Device hash not found for venueId" : "Device hash not found" },
+        { status: 404 }
+      );
     }
 
-    const body = await req.json().catch(() => ({}));
-    const token = String(body.token || "");
+    // Prefer active device
+    const active = filtered.find((d) => String(d.status).toLowerCase() === "active") || filtered[0];
 
-    const v = verifySignedPassToken(token);
-    if (!v.ok) {
-      supabaseServer().from("security_events").insert([
-        { venue_id: device.venue_id, device_id: device.id, event_type: "invalid_token", meta: { reason: v.reason } },
-      ]);
-      return NextResponse.json({ allow: false, reason: v.reason });
+    if (String(active.status).toLowerCase() !== "active") {
+      return NextResponse.json(
+        { ok: false, error: "Device is not active", device: active },
+        { status: 403 }
+      );
     }
 
-    // venue match enforcement (device can only verify its venue)
-    if (v.payload.v !== device.venue_id) {
-      supabaseServer().from("security_events").insert([
-        { venue_id: device.venue_id, device_id: device.id, event_type: "venue_mismatch", meta: { tokenVenue: v.payload.v } },
-      ]);
-      return NextResponse.json({ allow: false, reason: "Venue mismatch" });
-    }
-
-    // denylist check
-    const { data: deny } = supabaseServer()
-      .from("token_denylist")
-      .select("jti")
-      .eq("jti", v.payload.jti)
-      .limit(1);
-
-    if (deny && deny.length > 0) {
-      supabaseServer().from("security_events").insert([
-        { venue_id: device.venue_id, device_id: device.id, event_type: "denied", meta: { reason: "denylisted", jti: v.payload.jti } },
-      ]);
-      return NextResponse.json({ allow: false, reason: "Revoked" });
-    }
-
-    supabaseServer().from("security_events").insert([
-      { venue_id: device.venue_id, device_id: device.id, event_type: "verified", meta: { jti: v.payload.jti } },
-    ]);
-
-    return NextResponse.json({
-      allow: true,
-      venue_id: device.venue_id,
-      expires_at: new Date(v.payload.exp * 1000).toISOString(),
-      jti: v.payload.jti,
-    });
+    return NextResponse.json({ ok: true, device: active });
   } catch (e: any) {
-    return NextResponse.json({ allow: false, reason: String(e?.message || e) }, { status: 500 });
+    return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 });
   }
 }

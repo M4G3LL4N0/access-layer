@@ -1,18 +1,43 @@
 import { NextResponse } from "next/server";
-import { supabaseServer } from "@/lib/supabaseServer";
+import { supabaseServer, supabaseServerService } from "@/lib/supabaseServer";
+
+export const dynamic = "force-dynamic";
+
+function unauthorized() {
+  return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+}
 
 export async function POST(req: Request) {
-  const url = new URL(req.url);
-  const token = url.searchParams.get("token") || "";
-  const expected = process.env.ADMIN_SEED_TOKEN || "";
-  if (!expected || token !== expected) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  try {
+    const url = new URL(req.url);
+    const token = url.searchParams.get("token") || "";
 
-  const form = await req.formData();
-  const venueId = String(form.get("venueId") || "");
-  const status = String(form.get("status") || "active");
+    if (!token) return unauthorized();
+    if (process.env.ADMIN_SEED_TOKEN && token !== process.env.ADMIN_SEED_TOKEN) return unauthorized();
 
-  const { error } = supabaseServer().from("venues").update({ status }).eq("id", venueId);
-  if (error) return NextResponse.json({ error: error.message }, { status: 400 });
+    const form = await req.formData();
+    const venueId = String(form.get("venueId") || "");
+    const status = String(form.get("status") || "active");
 
-  return NextResponse.redirect(new URL(`/admin/venues/${venueId}?token=${encodeURIComponent(token)}&ok=1`, req.url));
+    if (!venueId) {
+      return NextResponse.json({ ok: false, error: "Missing venueId" }, { status: 400 });
+    }
+
+    // Use service role if available (avoids RLS issues)
+    const supabase =
+      typeof supabaseServerService === "function" ? supabaseServerService() : supabaseServer();
+
+    // ✅ IMPORTANT: await the update BEFORE destructuring
+    const { error } = await supabase.from("venues").update({ status }).eq("id", venueId);
+
+    if (error) {
+      return NextResponse.json({ ok: false, error: error.message }, { status: 400 });
+    }
+
+    return NextResponse.redirect(
+      new URL(`/admin/venues/${venueId}?token=${encodeURIComponent(token)}&ok=1`, req.url)
+    );
+  } catch (e: any) {
+    return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 });
+  }
 }
