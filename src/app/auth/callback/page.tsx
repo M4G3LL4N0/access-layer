@@ -1,26 +1,26 @@
 "use client";
+export const dynamic = "force-dynamic";
 
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { createClient as createSupabaseClient } from "@supabase/supabase-js";
+import { createClient } from "@supabase/supabase-js";
 
 export default function AuthCallbackPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [status, setStatus] = useState("Signing in…");
+  const [status, setStatus] = useState("Signing you in…");
 
   useEffect(() => {
     async function handleAuthCallback() {
       const access_token = searchParams.get("access_token");
       const refresh_token = searchParams.get("refresh_token");
 
-      // Ensure tokens exist
       if (!access_token || !refresh_token) {
         setStatus("⚠️ Missing auth tokens in callback URL");
         return;
       }
 
-      const supabase = createSupabaseClient(
+      const supabase = createClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
       );
@@ -35,7 +35,6 @@ export default function AuthCallbackPage() {
         return;
       }
 
-      // Redirect to account
       router.replace("/account");
     }
 
@@ -43,7 +42,7 @@ export default function AuthCallbackPage() {
   }, [router, searchParams]);
 
   return (
-    <main style={{ padding: 24, fontFamily: "system-ui" }}>
+    <main style={{ fontFamily: "system-ui", padding: 24 }}>
       <p>{status}</p>
     </main>
   );
