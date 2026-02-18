@@ -15,17 +15,14 @@ export async function POST(req: Request) {
       );
     }
 
-    // Create a server Supabase client
     const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.SUPABASE_SERVICE_ROLE_KEY!
     );
 
-    // Send magic link to email
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
-        // Must exactly match redirect URLs registered in Supabase
         emailRedirectTo: `${process.env.NEXT_PUBLIC_APP_BASE_URL}/auth/callback`,
       },
     });

@@ -1,22 +1,22 @@
 "use client";
-export const dynamic = "force-dynamic";
 
-import { useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
 
 export default function AuthCallbackPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const [status, setStatus] = useState("Signing you in…");
 
   useEffect(() => {
-    async function handleAuthCallback() {
-      const access_token = searchParams.get("access_token");
-      const refresh_token = searchParams.get("refresh_token");
+    async function handleAuth() {
+      const params = new URLSearchParams(window.location.search);
+
+      const access_token = params.get("access_token");
+      const refresh_token = params.get("refresh_token");
 
       if (!access_token || !refresh_token) {
-        setStatus("⚠️ Missing auth tokens in callback URL");
+        console.error("Missing tokens in callback URL");
+        router.push("/login");
         return;
       }
 
@@ -31,19 +31,21 @@ export default function AuthCallbackPage() {
       });
 
       if (error) {
-        setStatus("❌ " + error.message);
+        console.error("Error setting session:", error);
+        router.push("/login");
         return;
       }
 
-      router.replace("/account");
+      router.push("/account");
     }
 
-    handleAuthCallback();
-  }, [router, searchParams]);
+    handleAuth();
+  }, [router]);
 
   return (
-    <main style={{ fontFamily: "system-ui", padding: 24 }}>
-      <p>{status}</p>
+    <main style={{ padding: 40 }}>
+      <h1>Signing you in…</h1>
+      <p>Please wait.</p>
     </main>
   );
 }
