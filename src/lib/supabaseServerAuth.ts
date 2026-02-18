@@ -2,29 +2,31 @@ import { cookies } from "next/headers";
 import { createClient } from "@supabase/supabase-js";
 
 export async function supabaseServerAuth() {
-  // SERVICE ROLE KEY — required to read sessions server-side
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
   const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
-  // Create server supabase client
+  // Create a server supabase client using service role key
   const supabase = createClient(supabaseUrl, supabaseKey, {
-    auth: { persistSession: false },
+    auth: { persistSession: false, detectSessionInUrl: false },
   });
 
-  // Read Supabase auth cookie
-  const cookieStore = cookies();
-  const token = cookieStore.get("sb:token");
+  // Read browser cookies (async)
+  const cookieStore = await cookies();
+  const tokenCookie = cookieStore.get("supabase-auth-token");
 
-  if (!token?.value) {
+  // If no cookie, no session
+  if (!tokenCookie?.value) {
     return { supabase, session: null, user: null };
   }
 
-  // Parse session from cookie manually
-  const { data: { user }, error } = await supabase.auth.getUser(token.value);
+  const token = tokenCookie.value;
 
-  if (error) {
+  // Try to retrieve user
+  const { data, error } = await supabase.auth.getUser(token);
+
+  if (error || !data.user) {
     return { supabase, session: null, user: null };
   }
 
-  return { supabase, session: token.value, user };
+  return { supabase, session: token, user: data.user };
 }
