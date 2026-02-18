@@ -1,75 +1,61 @@
 import { NextResponse } from "next/server";
-import { z } from "zod";
 import { supabaseServer } from "@/lib/supabaseServer";
 
-const Schema = z.object({
-  token: z.string().min(20),
-  name: z.string().min(3),
-  address: z.string().min(3),
-  city: z.string().min(2),
-  region: z.string().min(2),
-  category: z.string().min(2).default("restroom"),
-  status: z.string().default("active"),
-  lat: z.string().optional().or(z.literal("")),
-  lng: z.string().optional().or(z.literal("")),
-});
+export const dynamic = "force-dynamic";
 
-export async function POST(req: Request) {
-  const form = await req.formData();
-  const parsed = Schema.safeParse({
-    token: String(form.get("token") || ""),
-    name: String(form.get("name") || ""),
-    address: String(form.get("address") || ""),
-    city: String(form.get("city") || ""),
-    region: String(form.get("region") || ""),
-    category: String(form.get("category") || "restroom"),
-    status: String(form.get("status") || "active"),
-    lat: String(form.get("lat") || ""),
-    lng: String(form.get("lng") || ""),
-  });
-
-  if (!parsed.success) {
-    return NextResponse.json({ error: "Invalid form" }, { status: 400 });
-  }
-
-  if (parsed.data.token !== process.env.ADMIN_SEED_TOKEN) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  const lat = parsed.data.lat ? Number(parsed.data.lat) : null;
-  const lng = parsed.data.lng ? Number(parsed.data.lng) : null;
-
-  const { data: venue, error: vErr } = supabaseServer()
-    .from("venues")
-    .insert({
-      name: parsed.data.name,
-      address: parsed.data.address,
-      city: parsed.data.city,
-      region: parsed.data.region,
-      category: parsed.data.category,
-      status: parsed.data.status,
-      lat,
-      lng,
-    })
-    .select("id")
-    .single();
-
-  if (vErr) return NextResponse.json({ error: vErr.message }, { status: 500 });
-
-  // Default rule
-  const { error: rErr } = supabaseServer().from("access_rules").insert({
-    venue_id: venue.id,
-    rule_name: "Default Pilot Rule",
-    is_enabled: true,
-    access_mode: "show_pass",
-    start_time: "08:00",
-    end_time: "18:00",
-    max_grants_per_user_per_day: 3,
-    min_minutes_between_grants: 30,
-  });
-
-  if (rErr) return NextResponse.json({ error: rErr.message }, { status: 500 });
-
-  return NextResponse.json({ ok: true, venueId: venue.id });
+function jsonError(msg: string, status = 400, extra?: any) {
+  return NextResponse.json({ ok: false, error: msg, ...(extra || {}) }, { status });
 }
 
+export async function POST(req: Request) {
+  try {
+    const body = await req.json().catch(() => ({} as any));
+
+    const token = String(body?.token || "");
+    if (!token) return jsonError("Missing token");
+
+    if (process.env.ADMIN_SEED_TOKEN && token !== process.env.ADMIN_SEED_TOKEN) {
+      return jsonError("Unauthorized", 401);
+    }
+
+    // Accept either { venue: {...} } or direct fields
+    const v = (body?.venue && typeof body.venue === "object" ? body.venue : body) as any;
+
+    const name = String(v?.name || "Pilot Venue — New Location");
+    const address = v?.address ? String(v.address) : null;
+    const city = String(v?.city || "San Francisco");
+    const region = String(v?.region || "CA");
+    const country = String(v?.country || "US");
+    const category = String(v?.category || "workspace");
+    const status = String(v?.status || "active");
+
+    const lat = v?.lat === null || v?.lat === undefined || v?.lat === "" ? null : Number(v.lat);
+    const lng = v?.lng === null || v?.lng === undefined || v?.lng === "" ? null : Number(v.lng);
+
+    const supabase = supabaseServer();
+
+    // ✅ IMPORTANT: await the insert query BEFORE destructuring
+    const { data: venue, error: vErr } = await supabase
+      .from("venues")
+      .insert({
+        name,
+        address,
+        city,
+        region,
+        country,
+        category,
+        status,
+        lat,
+        lng,
+        created_by: null,
+      })
+      .select("id,name,city,region,country,category,status,created_at")
+      .maybeSingle();
+
+    if (vErr) return jsonError("Seed venue insert failed", 500, { detail: vErr.message });
+
+    return NextResponse.json({ ok: true, venue });
+  } catch (e: any) {
+    return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 });
+  }
+}

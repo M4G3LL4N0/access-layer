@@ -1,60 +1,66 @@
 import { NextResponse } from "next/server";
 import { supabaseServer } from "@/lib/supabaseServer";
 
+export const dynamic = "force-dynamic";
+
+function jsonError(msg: string, status = 400, extra?: any) {
+  return NextResponse.json({ ok: false, error: msg, ...(extra || {}) }, { status });
+}
+
 export async function POST(req: Request) {
-  const url = new URL(req.url);
-  const token = url.searchParams.get("token") || "";
-  const expected = process.env.ADMIN_SEED_TOKEN || "";
-  if (!expected || token !== expected) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  try {
+    const body = await req.json().catch(() => ({} as any));
 
-  const form = await req.formData();
-  const venueId = String(form.get("venueId") || "");
+    const token = String(body?.token || "");
+    const venueId = String(body?.venueId || "");
+    const patch = (body?.patch || {}) as Record<string, any>;
 
-  const rule_name = String(form.get("rule_name") || "Default Pilot Rule");
-  const is_enabled = String(form.get("is_enabled") || "true") === "true";
-  const access_mode = String(form.get("access_mode") || "show_pass");
-  const start_time = String(form.get("start_time") || "08:00");
-  const end_time = String(form.get("end_time") || "18:00");
-  const max_per_day = Number(form.get("max_per_day") || 3);
-  const cooldown_min = Number(form.get("cooldown_min") || 30);
+    if (!token) return jsonError("Missing token");
+    if (!venueId) return jsonError("Missing venueId");
+    if (!patch || typeof patch !== "object") return jsonError("Missing patch object");
 
-  // Update the latest rule if it exists; otherwise insert one
-  const latest = supabaseServer()
-    .from("access_rules")
-    .select("id")
-    .eq("venue_id", venueId)
-    .order("created_at", { ascending: false })
-    .limit(1)
-    .maybeSingle();
+    // Simple admin check using seed token (same pattern as other admin routes)
+    if (process.env.ADMIN_SEED_TOKEN && token !== process.env.ADMIN_SEED_TOKEN) {
+      return jsonError("Unauthorized", 401);
+    }
 
-  if (latest.data?.id) {
-    const { error } = supabaseServer()
+    const supabase = supabaseServer();
+
+    // ✅ 1) Find the latest rule for this venue (optional)
+    const { data: latestRule, error: latestErr } = await supabase
       .from("access_rules")
-      .update({
-        rule_name,
-        is_enabled,
-        access_mode,
-        start_time,
-        end_time,
-        max_grants_per_user_per_day: max_per_day,
-        min_minutes_between_grants: cooldown_min,
-      })
-      .eq("id", latest.data.id);
+      .select("id")
+      .eq("venue_id", venueId)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
 
-    if (error) return NextResponse.json({ error: error.message }, { status: 400 });
-  } else {
-    const { error } = supabaseServer().from("access_rules").insert({
-      venue_id: venueId,
-      rule_name,
-      is_enabled,
-      access_mode,
-      start_time,
-      end_time,
-      max_grants_per_user_per_day: max_per_day,
-      min_minutes_between_grants: cooldown_min,
-    });
-    if (error) return NextResponse.json({ error: error.message }, { status: 400 });
+    if (latestErr) {
+      return jsonError("Failed to lookup latest rule", 500, { detail: latestErr.message });
+    }
+
+    // ✅ 2) If a rule exists, update it. Otherwise create a new one.
+    if (latestRule?.id) {
+      const { error: updErr } = await supabase
+        .from("access_rules")
+        .update({ ...patch })
+        .eq("id", latestRule.id);
+
+      if (updErr) return jsonError("Update failed", 500, { detail: updErr.message });
+
+      return NextResponse.json({ ok: true, mode: "update", id: latestRule.id });
+    }
+
+    const { data: created, error: insErr } = await supabase
+      .from("access_rules")
+      .insert([{ venue_id: venueId, ...patch }])
+      .select("id")
+      .maybeSingle();
+
+    if (insErr) return jsonError("Insert failed", 500, { detail: insErr.message });
+
+    return NextResponse.json({ ok: true, mode: "insert", id: created?.id || null });
+  } catch (e: any) {
+    return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 });
   }
-
-  return NextResponse.redirect(new URL(`/admin/venues/${venueId}?token=${encodeURIComponent(token)}&ok=1`, req.url));
 }

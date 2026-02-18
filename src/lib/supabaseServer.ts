@@ -1,61 +1,62 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
 /**
- * Canonical server-side Supabase clients.
+ * Canonical server-side Supabase clients (App Router).
  *
- * IMPORTANT:
- * - This module exports FUNCTIONS you must CALL to get a client.
- * - Do:   const supabase = supabaseServer();
- * - Do:   const admin = supabaseServerService();
- * - Do NOT do: const supabase = supabaseServer();
- * - Do NOT do: supabaseServer();
+ * IMPORTANT RULES:
+ * - supabaseServer() is a FUNCTION that returns a Supabase client.
+ * - DO:   const supabase = supabaseServer();
+ * - DON'T: const supabase = supabaseServer(); * - DON'T: supabaseServer()
  */
 
-function must(name: string, v?: string) {
-  if (!v) throw new Error(`${name} is required.`);
+function mustEnv(name: string): string {
+  const v = process.env[name];
+  if (!v || !String(v).trim()) {
+    throw new Error(`${name} is required.`);
+  }
   return v;
 }
 
-function supabaseUrl() {
-  // Prefer NEXT_PUBLIC_SUPABASE_URL (works on server too), fallback if you ever add server-only var.
-  return process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL;
-}
-
-function supabaseAnonKey() {
-  return process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY;
-}
-
+/**
+ * Server client using ANON key (safe for reads, and writes when RLS permits).
+ * For admin-only operations, use supabaseServerService().
+ */
 export function supabaseServer(): SupabaseClient {
-  const url = must("NEXT_PUBLIC_SUPABASE_URL", supabaseUrl());
-  const key = must("NEXT_PUBLIC_SUPABASE_ANON_KEY", supabaseAnonKey());
+  const url = mustEnv("NEXT_PUBLIC_SUPABASE_URL");
+  const anon = mustEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY");
 
-  return createClient(url, key, {
+  return createClient(url, anon, {
     auth: {
       persistSession: false,
       autoRefreshToken: false,
       detectSessionInUrl: false,
     },
     global: {
-      // Prevent caching surprises in server routes
-      fetch: (input: RequestInfo | URL, init?: RequestInit) =>
-        fetch(input, { ...init, cache: "no-store" }),
+      headers: {
+        "X-Client-Info": "axw-server",
+      },
     },
   });
 }
 
+/**
+ * Server client using SERVICE ROLE key (bypasses RLS).
+ * ONLY use in API routes that you guard with ADMIN_SEED_TOKEN (or similar).
+ */
 export function supabaseServerService(): SupabaseClient {
-  const url = must("NEXT_PUBLIC_SUPABASE_URL", supabaseUrl());
-  const key = must("SUPABASE_SERVICE_ROLE_KEY", process.env.SUPABASE_SERVICE_ROLE_KEY);
+  const url = mustEnv("NEXT_PUBLIC_SUPABASE_URL");
+  const service = mustEnv("SUPABASE_SERVICE_ROLE_KEY");
 
-  return createClient(url, key, {
+  return createClient(url, service, {
     auth: {
       persistSession: false,
       autoRefreshToken: false,
       detectSessionInUrl: false,
     },
     global: {
-      fetch: (input: RequestInfo | URL, init?: RequestInit) =>
-        fetch(input, { ...init, cache: "no-store" }),
+      headers: {
+        "X-Client-Info": "axw-service",
+      },
     },
   });
 }

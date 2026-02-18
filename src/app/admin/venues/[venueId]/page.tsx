@@ -3,39 +3,17 @@ import { supabaseServer } from "@/lib/supabaseServer";
 
 export const dynamic = "force-dynamic";
 
-const font = 'system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif';
-
-function Btn({ href, label }: { href: string; label: string }) {
-  return (
-    <Link
-      href={href}
-      style={{
-        display: "inline-block",
-        padding: "10px 12px",
-        borderRadius: 12,
-        border: "1px solid rgba(0,0,0,0.14)",
-        textDecoration: "none",
-        fontWeight: 950,
-        color: "#111",
-        background: "white",
-      }}
-    >
-      {label}
-    </Link>
-  );
-}
-
-function Pill({ children }: { children: any }) {
+function Pill({ children }: { children: React.ReactNode }) {
   return (
     <span
       style={{
         display: "inline-block",
         padding: "4px 10px",
         borderRadius: 999,
-        border: "1px solid rgba(0,0,0,0.12)",
+        border: "1px solid rgba(0,0,0,0.14)",
+        background: "rgba(0,0,0,0.03)",
+        fontWeight: 900,
         fontSize: 12,
-        fontWeight: 800,
-        background: "white",
       }}
     >
       {children}
@@ -43,194 +21,248 @@ function Pill({ children }: { children: any }) {
   );
 }
 
+function Card({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div style={{ border: "1px solid rgba(0,0,0,0.12)", borderRadius: 16, padding: 14 }}>
+      <div style={{ fontWeight: 1000, marginBottom: 10 }}>{title}</div>
+      {children}
+    </div>
+  );
+}
+
+function Btn({
+  href,
+  children,
+  solid,
+}: {
+  href: string;
+  children: React.ReactNode;
+  solid?: boolean;
+}) {
+  return (
+    <a
+      href={href}
+      style={{
+        display: "inline-block",
+        padding: "10px 12px",
+        borderRadius: 12,
+        textDecoration: "none",
+        fontWeight: 950,
+        border: solid ? "1px solid black" : "1px solid rgba(0,0,0,0.14)",
+        background: solid ? "black" : "transparent",
+        color: solid ? "white" : "inherit",
+      }}
+    >
+      {children}
+    </a>
+  );
+}
+
 export default async function AdminVenueDetailPage({
   params,
   searchParams,
 }: {
-  params: { venueId: string } | Promise<{ venueId: string }>;
-  searchParams: { ok?: string } | Promise<{ ok?: string }>;
+  params: Promise<{ venueId: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  const p = await params;
+  const { venueId } = await params;
   const sp = await searchParams;
-  const ok = sp?.ok === "1";
-  const venueId = p?.venueId || "";
+  const token = (sp.token as string) || "";
 
-  if (!venueId) {
-    return (
-      <main style={{ fontFamily: font, background: "white", color: "#111" }}>
-        <div style={{ maxWidth: 980, margin: "0 auto", padding: 28 }}>
-          <div style={{ fontWeight: 950, fontSize: 22 }}>Admin — Venue</div>
-          <div style={{ marginTop: 10 }}>Missing venueId param.</div>
-          <div style={{ marginTop: 14 }}>
-            <Btn href="/admin/venues" label="← Back to venues" />
-          </div>
-        </div>
-      </main>
-    );
-  }
+  const supabase = supabaseServer();
 
-  // ✅ IMPORTANT: await the query then destructure
-  const { data: venue, error: vErr } = await supabaseServer()
+  // ✅ MUST await query then destructure.
+  const { data: venue, error: vErr } = await supabase
     .from("venues")
     .select("id,name,status,category,city,region,address,created_at")
     .eq("id", venueId)
     .maybeSingle();
 
-  // Pull latest rule + recent pass activity (optional, safe if tables exist)
-  const { data: rules, error: rErr } = await supabaseServer()
+  // Pull rule(s) if present (safe even if none exist).
+  const { data: rules } = await supabase
     .from("access_rules")
-    .select("id,rule_name,is_enabled,access_mode,start_time,end_time,days_of_week,require_login,requires_payment,price_cents")
+    .select("id,rule_name,is_enabled,start_time,end_time,days_of_week,access_mode,requires_payment,price_cents,require_login,created_at")
     .eq("venue_id", venueId)
     .order("created_at", { ascending: false })
     .limit(25);
 
-  const { data: latestPass, error: pErr } = await supabaseServer()
-    .from("access_passes")
-    .select("token,status,issued_at,expires_at,created_at")
+  // Owners (may be empty)
+  const { data: owners } = await supabase
+    .from("venue_owners")
+    .select("id,user_id,role,created_at")
     .eq("venue_id", venueId)
     .order("created_at", { ascending: false })
-    .limit(1);
+    .limit(25);
 
-  const pass = (latestPass || [])[0] || null;
+  // Latest passes (may be empty)
+  const { data: passes } = await supabase
+    .from("access_passes")
+    .select("token,status,issued_at,expires_at,created_at,requester_id")
+    .eq("venue_id", venueId)
+    .order("created_at", { ascending: false })
+    .limit(10);
+
+  const backHref = `/admin/venues${token ? `?token=${encodeURIComponent(token)}` : ""}`;
 
   return (
-    <main style={{ fontFamily: font, background: "white", color: "#111" }}>
-      <div style={{ maxWidth: 980, margin: "0 auto", padding: "28px 16px 64px" }}>
-        <header style={{ display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+    <main style={{ padding: 20, fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif" }}>
+      <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
           <div>
-            <div style={{ fontSize: 22, fontWeight: 950 }}>Admin — Venue</div>
-            <div style={{ fontSize: 12, opacity: 0.75 }}>Detail view + quick links for operators.</div>
+            <h1 style={{ margin: 0, fontSize: 22 }}>Admin — Venue Detail</h1>
+            <div style={{ opacity: 0.7, marginTop: 4, fontSize: 13 }}>
+              Inspect venue, rules, owners, and recent passes.
+            </div>
           </div>
-          <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-            <Btn href="/admin/venues" label="← Back to venues" />
-            <Btn href="/admin" label="Admin home" />
-          </div>
-        </header>
 
-        {ok && (
+          <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+            <Link
+              href={backHref}
+              style={{
+                padding: "10px 12px",
+                borderRadius: 12,
+                border: "1px solid rgba(0,0,0,0.14)",
+                textDecoration: "none",
+                color: "inherit",
+                fontWeight: 950,
+              }}
+            >
+              ← Back to Venues
+            </Link>
+
+            <Btn href={`/v/${encodeURIComponent(venueId)}`} solid>
+              Public venue page
+            </Btn>
+
+            <Btn href={`/kiosk/${encodeURIComponent(venueId)}`}>Kiosk</Btn>
+            <Btn href={`/kiosk/parking/${encodeURIComponent(venueId)}`}>Parking kiosk</Btn>
+            <Btn href={`/pilot-pack/${encodeURIComponent(venueId)}`}>Pilot pack</Btn>
+            <Btn href={`/signage/${encodeURIComponent(venueId)}`}>Signage</Btn>
+          </div>
+        </div>
+
+        <div style={{ marginTop: 14, display: "flex", gap: 10, flexWrap: "wrap" }}>
+          <Pill>venueId: {venueId}</Pill>
+          <Pill>token: {token ? "present" : "missing"}</Pill>
+          {venue?.status ? <Pill>status: {venue.status}</Pill> : null}
+          {venue?.category ? <Pill>category: {venue.category}</Pill> : null}
+        </div>
+
+        {vErr ? (
           <div
             style={{
-              marginTop: 14,
-              border: "1px solid rgba(0,0,0,0.12)",
-              background: "white",
-              borderRadius: 16,
+              marginTop: 16,
               padding: 12,
+              borderRadius: 12,
+              border: "1px solid rgba(255,0,0,0.25)",
+              background: "rgba(255,0,0,0.06)",
+              color: "#7a1a1a",
               fontWeight: 900,
             }}
           >
-            ✅ Updated.
+            Error loading venue: {vErr.message}
+          </div>
+        ) : null}
+
+        {!venue ? (
+          <div style={{ marginTop: 16, padding: 14, borderRadius: 14, border: "1px solid rgba(0,0,0,0.12)" }}>
+            Venue not found.
+          </div>
+        ) : (
+          <div style={{ marginTop: 16, display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: 14 }}>
+            <Card title="Venue">
+              <div style={{ fontWeight: 1000, fontSize: 16 }}>{venue.name}</div>
+              <div style={{ marginTop: 6, opacity: 0.75, lineHeight: 1.45 }}>
+                <div>
+                  Location: <b>{venue.city || "—"}</b>, <b>{venue.region || "—"}</b>
+                </div>
+                <div>Address: {venue.address || "—"}</div>
+                <div>Created: {venue.created_at ? new Date(venue.created_at).toLocaleString() : "—"}</div>
+              </div>
+            </Card>
+
+            <Card title="Quick actions">
+              <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+                <Btn href={`/api/kiosk/stats?venueId=${encodeURIComponent(venueId)}`}>Kiosk stats JSON</Btn>
+                <Btn href={`/api/debug/latest-pass?venueId=${encodeURIComponent(venueId)}`}>Latest pass JSON</Btn>
+                <Btn href={`/api/debug/passes?venueId=${encodeURIComponent(venueId)}`}>Passes JSON</Btn>
+              </div>
+
+              <div style={{ marginTop: 12, fontSize: 12, opacity: 0.75 }}>
+                Tip: open JSON in a new tab so it displays cleanly.
+              </div>
+            </Card>
+
+            <Card title={`Access rules (${(rules || []).length})`}>
+              {(rules || []).length === 0 ? (
+                <div style={{ opacity: 0.7 }}>No rules found.</div>
+              ) : (
+                <div style={{ display: "grid", gap: 10 }}>
+                  {(rules || []).map((r) => (
+                    <div key={r.id} style={{ border: "1px solid rgba(0,0,0,0.10)", borderRadius: 14, padding: 12 }}>
+                      <div style={{ fontWeight: 950 }}>{r.rule_name}</div>
+                      <div style={{ marginTop: 6, fontSize: 13, opacity: 0.85, lineHeight: 1.45 }}>
+                        <div>Enabled: <b>{r.is_enabled ? "yes" : "no"}</b></div>
+                        <div>Hours: <b>{r.start_time}</b>–<b>{r.end_time}</b> · Days: <b>{JSON.stringify(r.days_of_week)}</b></div>
+                        <div>Mode: <b>{r.access_mode}</b></div>
+                        <div>Requires login: <b>{r.require_login ? "yes" : "no"}</b></div>
+                        <div>Requires payment: <b>{r.requires_payment ? "yes" : "no"}</b> · Price: <b>{r.price_cents ?? 0}</b> cents</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </Card>
+
+            <Card title={`Venue owners (${(owners || []).length})`}>
+              {(owners || []).length === 0 ? (
+                <div style={{ opacity: 0.7 }}>No owners found.</div>
+              ) : (
+                <div style={{ display: "grid", gap: 10 }}>
+                  {(owners || []).map((o) => (
+                    <div key={o.id} style={{ border: "1px solid rgba(0,0,0,0.10)", borderRadius: 14, padding: 12 }}>
+                      <div style={{ fontWeight: 950 }}>role: {o.role}</div>
+                      <div style={{ marginTop: 6, fontSize: 13, opacity: 0.85 }}>
+                        <div>user_id: {o.user_id}</div>
+                        <div>created: {o.created_at ? new Date(o.created_at).toLocaleString() : "—"}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </Card>
+
+            <Card title={`Recent passes (${(passes || []).length})`}>
+              {(passes || []).length === 0 ? (
+                <div style={{ opacity: 0.7 }}>No passes found.</div>
+              ) : (
+                <div style={{ display: "grid", gap: 10 }}>
+                  {(passes || []).map((p) => (
+                    <div key={p.token} style={{ border: "1px solid rgba(0,0,0,0.10)", borderRadius: 14, padding: 12 }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", gap: 10, flexWrap: "wrap" }}>
+                        <div style={{ fontWeight: 950 }}>token: {p.token}</div>
+                        <Pill>{p.status}</Pill>
+                      </div>
+                      <div style={{ marginTop: 6, fontSize: 13, opacity: 0.85, lineHeight: 1.45 }}>
+                        <div>Issued: {p.issued_at ? new Date(p.issued_at).toLocaleString() : "—"}</div>
+                        <div>Expires: {p.expires_at ? new Date(p.expires_at).toLocaleString() : "—"}</div>
+                        <div>
+                          <a href={`/pass/${encodeURIComponent(p.token)}`} style={{ fontWeight: 950 }}>
+                            View pass →
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </Card>
           </div>
         )}
 
-        <section style={{ marginTop: 16, border: "1px solid rgba(0,0,0,0.12)", borderRadius: 16, padding: 16 }}>
-          <div style={{ fontWeight: 950, marginBottom: 10 }}>Venue</div>
-
-          {vErr ? (
-            <div>
-              <div style={{ fontWeight: 900 }}>Error loading venue</div>
-              <pre style={{ fontSize: 12, overflowX: "auto", marginTop: 8 }}>{String(vErr.message || vErr)}</pre>
-            </div>
-          ) : !venue ? (
-            <div>
-              <div style={{ fontWeight: 900 }}>Venue not found</div>
-              <div style={{ marginTop: 6, opacity: 0.75, fontSize: 13 }}>
-                ID: <code>{venueId}</code>
-              </div>
-            </div>
-          ) : (
-            <div style={{ display: "grid", gap: 10 }}>
-              <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
-                <div style={{ fontSize: 18, fontWeight: 950 }}>{venue.name}</div>
-                <Pill>{venue.status}</Pill>
-                {venue.category ? <Pill>{venue.category}</Pill> : null}
-                {venue.city ? <Pill>{venue.city}</Pill> : null}
-                {venue.region ? <Pill>{venue.region}</Pill> : null}
-              </div>
-
-              <div style={{ fontSize: 13, opacity: 0.75 }}>
-                <div>
-                  <b>ID:</b> <code>{venue.id}</code>
-                </div>
-                {venue.address ? (
-                  <div>
-                    <b>Address:</b> {venue.address}
-                  </div>
-                ) : null}
-              </div>
-
-              <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 6 }}>
-                <Btn href={`/v/${venue.id}`} label="Public venue page" />
-                <Btn href={`/kiosk/${venue.id}`} label="Kiosk" />
-                <Btn href={`/kiosk/parking/${venue.id}`} label="Parking kiosk" />
-                <Btn href={`/signage/${venue.id}`} label="Signage" />
-                <Btn href={`/pilot-pack/${venue.id}`} label="Pilot pack" />
-                <Btn href={`/ops/${venue.id}`} label="Ops console" />
-              </div>
-            </div>
-          )}
-        </section>
-
-        <section style={{ marginTop: 16, border: "1px solid rgba(0,0,0,0.12)", borderRadius: 16, padding: 16 }}>
-          <div style={{ fontWeight: 950, marginBottom: 10 }}>Rules</div>
-
-          {rErr ? (
-            <pre style={{ fontSize: 12, overflowX: "auto" }}>{String(rErr.message || rErr)}</pre>
-          ) : (rules || []).length === 0 ? (
-            <div style={{ opacity: 0.75 }}>No rules found for this venue yet.</div>
-          ) : (
-            <div style={{ display: "grid", gap: 10 }}>
-              {(rules || []).map((r: any) => (
-                <div key={r.id} style={{ border: "1px solid rgba(0,0,0,0.10)", borderRadius: 14, padding: 12 }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", gap: 10, flexWrap: "wrap" }}>
-                    <div style={{ fontWeight: 950 }}>{r.rule_name || "Rule"}</div>
-                    <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                      <Pill>{r.is_enabled ? "enabled" : "disabled"}</Pill>
-                      {r.access_mode ? <Pill>{r.access_mode}</Pill> : null}
-                      {r.require_login ? <Pill>login</Pill> : <Pill>no-login</Pill>}
-                      {r.requires_payment ? <Pill>${(Number(r.price_cents || 0) / 100).toFixed(2)}</Pill> : <Pill>free</Pill>}
-                    </div>
-                  </div>
-
-                  <div style={{ fontSize: 13, opacity: 0.8, marginTop: 6, lineHeight: 1.6 }}>
-                    <div>
-                      <b>Window:</b> {r.start_time || "—"} → {r.end_time || "—"}
-                    </div>
-                    <div>
-                      <b>Days:</b> {Array.isArray(r.days_of_week) ? r.days_of_week.join(", ") : "—"}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </section>
-
-        <section style={{ marginTop: 16, border: "1px solid rgba(0,0,0,0.12)", borderRadius: 16, padding: 16 }}>
-          <div style={{ fontWeight: 950, marginBottom: 10 }}>Latest access pass</div>
-
-          {pErr ? (
-            <pre style={{ fontSize: 12, overflowX: "auto" }}>{String(pErr.message || pErr)}</pre>
-          ) : !pass ? (
-            <div style={{ opacity: 0.75 }}>No access passes yet.</div>
-          ) : (
-            <div style={{ display: "grid", gap: 8 }}>
-              <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
-                <Pill>{pass.status}</Pill>
-                <Pill>expires {new Date(pass.expires_at).toLocaleString()}</Pill>
-              </div>
-
-              <div style={{ fontSize: 13 }}>
-                <div>
-                  <b>Token:</b> <code>{pass.token}</code>
-                </div>
-                <div style={{ marginTop: 8, display: "flex", gap: 10, flexWrap: "wrap" }}>
-                  <Btn href={`/pass/${pass.token}`} label="View pass" />
-                  <Btn href={`/verify?token=${pass.token}`} label="Verify" />
-                </div>
-              </div>
-            </div>
-          )}
-        </section>
+        <div style={{ marginTop: 18, fontSize: 12, opacity: 0.7 }}>
+          Admin seed token you use: <b>everythingchangesatsomepoint</b>
+        </div>
       </div>
     </main>
   );

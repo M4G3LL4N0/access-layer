@@ -3,145 +3,187 @@ import { supabaseServer } from "@/lib/supabaseServer";
 
 export const dynamic = "force-dynamic";
 
-const font = 'system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif';
-
-function Btn({ href, label }: { href: string; label: string }) {
+function Btn({
+  href,
+  children,
+  solid,
+}: {
+  href: string;
+  children: React.ReactNode;
+  solid?: boolean;
+}) {
   return (
-    <Link
+    <a
       href={href}
       style={{
         display: "inline-block",
         padding: "10px 12px",
         borderRadius: 12,
-        border: "1px solid rgba(0,0,0,0.14)",
         textDecoration: "none",
         fontWeight: 900,
-        color: "#111",
-        background: "white",
+        border: solid ? "1px solid black" : "1px solid rgba(0,0,0,0.14)",
+        background: solid ? "black" : "transparent",
+        color: solid ? "white" : "inherit",
       }}
     >
-      {label}
-    </Link>
+      {children}
+    </a>
+  );
+}
+
+function Card({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div style={{ border: "1px solid rgba(0,0,0,0.12)", borderRadius: 16, padding: 14 }}>
+      <div style={{ fontWeight: 1000, marginBottom: 10 }}>{title}</div>
+      {children}
+    </div>
   );
 }
 
 export default async function AdminSeedPage({
   searchParams,
 }: {
-  searchParams: { token?: string; ok?: string } | Promise<{ token?: string; ok?: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const sp = await searchParams;
-  const ok = sp?.ok === "1";
+  const token = (sp.token as string) || "";
+  const ok = sp.ok === "1";
 
-  // Always await the query, then destructure.
-  const { data: recent, error: recentErr } = await supabaseServer()
+  // ✅ supabaseServer() returns a client (function). Call it once.
+  const supabase = supabaseServer();
+
+  // ✅ ALWAYS await the query, THEN destructure { data, error }.
+  const { data: recent, error: recentErr } = await supabase
     .from("venues")
     .select("id,name,city,region,status,created_at")
     .order("created_at", { ascending: false })
     .limit(10);
 
   return (
-    <main style={{ fontFamily: font, background: "white", color: "#111" }}>
-      <div style={{ maxWidth: 980, margin: "0 auto", padding: "28px 16px 64px" }}>
-        <header style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+    <main style={{ padding: 20, fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif" }}>
+      <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
           <div>
-            <div style={{ fontSize: 22, fontWeight: 950 }}>Admin — Seed</div>
-            <div style={{ fontSize: 12, opacity: 0.75 }}>
-              Use the seed endpoint to create demo venues/rules. This page just confirms state + shows recent venues.
+            <h1 style={{ margin: 0, fontSize: 22 }}>Admin — Seed</h1>
+            <div style={{ opacity: 0.7, marginTop: 4, fontSize: 13 }}>
+              Seed demo venues and rules (admin-only). Token required.
             </div>
           </div>
+
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-            <Btn href="/admin" label="← Back to Admin" />
-            <Btn href="/venues" label="Directory" />
-          </div>
-        </header>
-
-        <section
-          style={{
-            marginTop: 16,
-            border: "1px solid rgba(0,0,0,0.12)",
-            borderRadius: 16,
-            padding: 16,
-            background: "white",
-          }}
-        >
-          <div style={{ fontWeight: 950, marginBottom: 6 }}>Status</div>
-          {ok ? (
-            <div style={{ fontWeight: 900 }}>✅ Seed request completed.</div>
-          ) : (
-            <div style={{ opacity: 0.85 }}>
-              Run seeding from the API (recommended) using your admin token.
-            </div>
-          )}
-
-          <div style={{ marginTop: 12, fontSize: 13, opacity: 0.85, lineHeight: 1.6 }}>
-            <div style={{ fontWeight: 900, marginBottom: 6 }}>Common endpoints:</div>
-
-            <div>
-              <span style={{ fontWeight: 800 }}>/api/admin/seed</span>
-              <span style={{ opacity: 0.75 }}> — seeds demo venues + rules</span>
-            </div>
-
-            <div>
-              <span style={{ fontWeight: 800 }}>/api/admin/seed-venue</span>
-              <span style={{ opacity: 0.75 }}> — seed one venue</span>
-            </div>
-
-            <div style={{ marginTop: 8, opacity: 0.75 }}>
-              Tip: Use query params like <code>?token=YOUR_ADMIN_TOKEN</code> when calling the seed APIs.
-            </div>
-          </div>
-        </section>
-
-        <section style={{ marginTop: 16 }}>
-          <div style={{ fontWeight: 950, marginBottom: 8 }}>Recent venues</div>
-
-          {recentErr ? (
-            <div
+            <Link
+              href={`/admin${token ? `?token=${encodeURIComponent(token)}` : ""}`}
               style={{
-                border: "1px solid rgba(0,0,0,0.12)",
-                borderRadius: 16,
-                padding: 14,
-                background: "white",
+                padding: "10px 12px",
+                borderRadius: 12,
+                border: "1px solid rgba(0,0,0,0.14)",
+                textDecoration: "none",
+                color: "inherit",
+                fontWeight: 900,
               }}
             >
-              <div style={{ fontWeight: 900 }}>Error loading venues</div>
-              <pre style={{ marginTop: 8, fontSize: 12, overflowX: "auto" }}>{String(recentErr.message || recentErr)}</pre>
+              ← Back to Admin
+            </Link>
+
+            <Btn href={`/admin/seed${token ? `?token=${encodeURIComponent(token)}` : ""}`} solid>
+              Refresh
+            </Btn>
+          </div>
+        </div>
+
+        <div style={{ marginTop: 14, display: "flex", gap: 10, flexWrap: "wrap", fontSize: 13 }}>
+          <div style={{ padding: "6px 10px", borderRadius: 999, border: "1px solid rgba(0,0,0,0.14)" }}>
+            Token: {token ? "present" : "missing"}
+          </div>
+          <div style={{ padding: "6px 10px", borderRadius: 999, border: "1px solid rgba(0,0,0,0.14)" }}>
+            Result: {ok ? "ok=1" : "—"}
+          </div>
+        </div>
+
+        <div style={{ marginTop: 18, display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 14 }}>
+          <Card title="Seed actions">
+            <div style={{ opacity: 0.75, fontSize: 13, lineHeight: 1.5 }}>
+              These hit admin API routes. If token is missing, they should fail safely.
             </div>
-          ) : (
-            <div style={{ display: "grid", gap: 10 }}>
+
+            <div style={{ marginTop: 12, display: "flex", gap: 10, flexWrap: "wrap" }}>
+              <Btn href={`/api/admin/seed?token=${encodeURIComponent(token)}`}>Seed default dataset</Btn>
+              <Btn href={`/api/admin/seed-venue?token=${encodeURIComponent(token)}`}>Seed 1 venue</Btn>
+              <Btn href={`/admin/venues${token ? `?token=${encodeURIComponent(token)}` : ""}`}>Open venues admin</Btn>
+            </div>
+
+            <div style={{ marginTop: 12, fontSize: 12, opacity: 0.75 }}>
+              Tip: If you want a clean URL result, open the API links in a browser tab.
+            </div>
+          </Card>
+
+          <Card title="Recent venues">
+            {recentErr ? (
+              <div
+                style={{
+                  padding: 12,
+                  borderRadius: 12,
+                  border: "1px solid rgba(255,0,0,0.25)",
+                  background: "rgba(255,0,0,0.06)",
+                  color: "#7a1a1a",
+                  fontWeight: 800,
+                }}
+              >
+                Error: {recentErr.message}
+              </div>
+            ) : null}
+
+            <div style={{ marginTop: 8, border: "1px solid rgba(0,0,0,0.10)", borderRadius: 14, overflow: "hidden" }}>
+              <div style={{ display: "grid", gridTemplateColumns: "1.2fr 0.6fr 0.4fr 0.6fr", padding: 10, background: "rgba(0,0,0,0.03)", fontWeight: 1000, fontSize: 12 }}>
+                <div>Name</div>
+                <div>City</div>
+                <div>Region</div>
+                <div>Status</div>
+              </div>
+
               {(recent || []).map((v) => (
                 <div
                   key={v.id}
                   style={{
-                    border: "1px solid rgba(0,0,0,0.12)",
-                    borderRadius: 16,
-                    padding: 14,
-                    background: "white",
-                    display: "flex",
-                    justifyContent: "space-between",
-                    gap: 12,
-                    flexWrap: "wrap",
+                    display: "grid",
+                    gridTemplateColumns: "1.2fr 0.6fr 0.4fr 0.6fr",
+                    padding: 10,
+                    borderTop: "1px solid rgba(0,0,0,0.08)",
+                    fontSize: 13,
+                    alignItems: "center",
+                    gap: 6,
                   }}
                 >
-                  <div>
-                    <div style={{ fontWeight: 950 }}>{v.name}</div>
-                    <div style={{ fontSize: 12, opacity: 0.75 }}>
-                      {v.city}, {v.region} · {v.status} · {new Date(v.created_at).toLocaleString()}
+                  <div style={{ fontWeight: 900, lineHeight: 1.2 }}>
+                    {v.name}
+                    <div style={{ fontWeight: 700, opacity: 0.65, fontSize: 12, marginTop: 4 }}>
+                      {new Date(v.created_at).toLocaleString()}
                     </div>
-                    <div style={{ fontSize: 12, opacity: 0.6, marginTop: 6 }}>{v.id}</div>
                   </div>
-
-                  <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
-                    <Btn href={`/v/${v.id}`} label="Venue page" />
-                    <Btn href={`/kiosk/${v.id}`} label="Kiosk" />
-                    <Btn href={`/signage/${v.id}`} label="Signage" />
+                  <div style={{ fontWeight: 800 }}>{v.city || "—"}</div>
+                  <div style={{ fontWeight: 800 }}>{v.region || "—"}</div>
+                  <div style={{ fontWeight: 900 }}>
+                    <span style={{ padding: "3px 8px", borderRadius: 999, border: "1px solid rgba(0,0,0,0.14)", background: "rgba(0,0,0,0.03)" }}>
+                      {String(v.status || "—")}
+                    </span>
                   </div>
                 </div>
               ))}
+
+              {(recent || []).length === 0 ? <div style={{ padding: 12, opacity: 0.7 }}>No venues found.</div> : null}
             </div>
-          )}
-        </section>
+          </Card>
+        </div>
+
+        <div style={{ marginTop: 18, fontSize: 12, opacity: 0.7 }}>
+          Admin seed token you use: <b>everythingchangesatsomepoint</b>
+        </div>
       </div>
     </main>
   );
