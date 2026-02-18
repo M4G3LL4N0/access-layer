@@ -11,7 +11,7 @@ function getIp(req: Request) {
 // naive in-db rate limit: count events in last N seconds
 async function rateLimit(ipHash: string) {
   const since = new Date(Date.now() - 15_000).toISOString(); // 15s window
-  const { data } = await supabaseServer
+  const { data } = supabaseServer()
     .from("security_events")
     .select("id, created_at")
     .eq("event_type", "edge_verify")
@@ -29,7 +29,7 @@ export async function POST(req: Request) {
 
     const okRate = await rateLimit(ipHash);
     if (!okRate) {
-      await supabaseServer.from("security_events").insert([
+      supabaseServer().from("security_events").insert([
         { event_type: "rate_limit", meta: { ip_hash: ipHash } },
       ]);
       return NextResponse.json({ allow: false, reason: "Rate limited" }, { status: 429 });
@@ -38,7 +38,7 @@ export async function POST(req: Request) {
     const body = await req.json().catch(() => ({}));
     const token = String(body.token || "");
 
-    await supabaseServer.from("security_events").insert([
+    supabaseServer().from("security_events").insert([
       { event_type: "edge_verify", meta: { ip_hash: ipHash } },
     ]);
 
@@ -46,7 +46,7 @@ export async function POST(req: Request) {
 
     const v = verifySignedPassToken(token);
     if (!v.ok) {
-      await supabaseServer.from("security_events").insert([
+      supabaseServer().from("security_events").insert([
         { event_type: "invalid_token", meta: { ip_hash: ipHash, reason: v.reason } },
       ]);
       return NextResponse.json({ allow: false, reason: v.reason });
@@ -54,14 +54,14 @@ export async function POST(req: Request) {
 
     const { v: venue_id, exp, jti } = v.payload;
 
-    const { data: deny } = await supabaseServer
+    const { data: deny } = supabaseServer()
       .from("token_denylist")
       .select("jti")
       .eq("jti", jti)
       .limit(1);
 
     if (deny && deny.length > 0) {
-      await supabaseServer.from("security_events").insert([
+      supabaseServer().from("security_events").insert([
         { venue_id, event_type: "denied", meta: { ip_hash: ipHash, reason: "denylisted", jti } },
       ]);
       return NextResponse.json({ allow: false, reason: "Revoked" });

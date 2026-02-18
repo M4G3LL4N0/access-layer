@@ -21,7 +21,7 @@ type Venue = {
 };
 
 export default async function VenuesPage() {
-  const supabase = supabaseServer;
+  const supabase = supabaseServer();
 
   const { data, error } = await supabase
     .from("venues")

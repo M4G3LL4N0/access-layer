@@ -1,73 +1,56 @@
-export const dynamic = "force-dynamic";
-
 import Link from "next/link";
 import { supabaseServer } from "@/lib/supabaseServer";
 
-function num(n?: number | null) {
-  return typeof n === "number" ? n : 0;
-}
-
-function Card({ title, value, sub }: { title: string; value: string; sub?: string }) {
-  return (
-    <div style={{ padding: 16, borderRadius: 14, border: "1px solid #e5e7eb", background: "white" }}>
-      <div style={{ fontWeight: 900, opacity: 0.7 }}>{title}</div>
-      <div style={{ fontSize: 34, fontWeight: 900, marginTop: 6 }}>{value}</div>
-      {sub ? <div style={{ marginTop: 6, opacity: 0.7 }}>{sub}</div> : null}
-    </div>
-  );
-}
+export const dynamic = "force-dynamic";
 
 export default async function AdminMetricsPage() {
-  const supabase = supabaseServer;
+  const supabase = supabaseServer();
 
-  const today = new Date();
-  const start = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate(), 0, 0, 0));
-  const startIso = start.toISOString();
-
-  const [{ count: leadsCount }, { count: venuesCount }] = await Promise.all([
+  const [{ count: leadsCount }, { count: venuesCount }, { count: passesCount }] = await Promise.all([
     supabase.from("leads").select("*", { count: "exact", head: true }),
     supabase.from("venues").select("*", { count: "exact", head: true }),
+    supabase.from("access_passes").select("*", { count: "exact", head: true }),
   ]);
 
-  const { count: passesToday } = await supabase
-    .from("access_passes")
-    .select("*", { count: "exact", head: true })
-    .gte("created_at", startIso);
-
-  const { data: reqRows } = await supabase
-    .from("access_passes")
-    .select("requester_id")
-    .gte("created_at", startIso)
-    .limit(5000);
-
-  const uniqueRequesters = new Set((reqRows || []).map((r: any) => r.requester_id).filter(Boolean)).size;
-
   return (
-    <main style={{ padding: 30, fontFamily: "system-ui", background: "#f6f7fb", minHeight: "100vh" }}>
-      <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-        <h1 style={{ fontSize: 34, fontWeight: 900 }}>Admin — Metrics</h1>
-        <p style={{ opacity: 0.75 }}>Traction counters for demo and pilot reporting.</p>
+    <main style={{ background: "#fff", color: "#111", minHeight: "100vh", fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif" }}>
+      <div style={{ maxWidth: 1100, margin: "0 auto", padding: "28px 18px 64px" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "center", flexWrap: "wrap" }}>
+          <div>
+            <div style={{ fontSize: 12, opacity: 0.75, marginBottom: 6 }}>Admin</div>
+            <h1 style={{ margin: 0, fontSize: 26, letterSpacing: -0.4 }}>Admin — Metrics</h1>
+            <div style={{ marginTop: 6, fontSize: 13, opacity: 0.75 }}>Live counts pulled from Supabase (server-rendered).</div>
+          </div>
 
-        <div style={{ marginTop: 14 }}>
-          <Link href="/admin" style={{ textDecoration: "underline" }}>
+          <Link href="/admin" style={{ textDecoration: "none", fontWeight: 900, color: "#111" }}>
             ← Back to Admin
           </Link>
         </div>
 
-        <div style={{ marginTop: 18, display: "grid", gap: 12, gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))" }}>
-          <Card title="Leads (total)" value={String(num(leadsCount))} />
-          <Card title="Venues (total)" value={String(num(venuesCount))} />
-          <Card title="Passes issued (today)" value={String(num(passesToday))} sub="Count created since 00:00 UTC." />
-          <Card title="Unique requesters (today)" value={String(uniqueRequesters)} sub="Distinct requester_id values." />
+        <div style={{ height: 16 }} />
+
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+            gap: 12,
+          }}
+        >
+          {[
+            { k: "Venues", v: venuesCount ?? 0 },
+            { k: "Leads", v: leadsCount ?? 0 },
+            { k: "Access passes", v: passesCount ?? 0 },
+          ].map((m) => (
+            <div key={m.k} style={{ border: "1px solid rgba(0,0,0,0.12)", borderRadius: 16, padding: 14 }}>
+              <div style={{ fontSize: 12, opacity: 0.7, marginBottom: 8 }}>{m.k}</div>
+              <div style={{ fontSize: 34, fontWeight: 950, letterSpacing: -0.6 }}>{m.v}</div>
+              <div style={{ fontSize: 12, opacity: 0.6, marginTop: 6 }}>Exact count (server query)</div>
+            </div>
+          ))}
         </div>
 
-        <div style={{ marginTop: 18, padding: 16, borderRadius: 14, background: "white", border: "1px solid #e5e7eb" }}>
-          <div style={{ fontWeight: 900 }}>Demo script (60 seconds)</div>
-          <ol style={{ marginTop: 10, lineHeight: 1.8 }}>
-            <li>Open /venues, click a venue, request an access pass.</li>
-            <li>Open /verify, paste token, show “valid”.</li>
-            <li>Refresh this page — “passes today” increments.</li>
-          </ol>
+        <div style={{ marginTop: 14, fontSize: 12, opacity: 0.65 }}>
+          Tip: If a count shows 0 unexpectedly, confirm the table exists (you already have /api/debug/schema).
         </div>
       </div>
     </main>

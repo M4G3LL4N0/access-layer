@@ -11,7 +11,7 @@ export default async function AdminVenues({
   const sp = (await searchParams) || {};
   const token = sp.token || "";
 
-  const { data: venues, error } = await supabaseServer
+  const { data: venues, error } = supabaseServer()
     .from("venues")
     .select("id,name,city,region,status,category,created_at")
     .order("created_at", { ascending: false })

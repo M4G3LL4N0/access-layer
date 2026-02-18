@@ -42,7 +42,7 @@ export default async function PilotPackPage({
   const ok = sp.ok === "1";
   const venueId = sp.venueId || "";
 
-  const supabase = supabaseServer;
+  const supabase = supabaseServer();
 
   let lead: Lead | null = null;
   if (leadId) {

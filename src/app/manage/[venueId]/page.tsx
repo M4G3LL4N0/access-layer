@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 export default async function ManageVenue({ params }: any) {
   const { venueId } = params;
 
-  const supabase = supabaseServer;
+  const supabase = supabaseServer();
 
   const { data: venue, error } = await supabase
     .from("venues")

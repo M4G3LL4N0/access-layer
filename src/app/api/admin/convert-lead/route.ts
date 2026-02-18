@@ -37,7 +37,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ ok: false, error: "Invalid payload" }, { status: 400 });
     }
 
-    const supabase = supabaseServer;
+    const supabase = supabaseServer();
 
     const { data: leadRows, error: leadErr } = await supabase
       .from("leads")

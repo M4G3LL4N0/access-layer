@@ -15,7 +15,7 @@ type Venue = {
 
 export default async function HardwareConsolePage() {
   // IMPORTANT: in this repo, supabaseServer is a client instance (NOT a function)
-  const supabase = supabaseServer;
+  const supabase = supabaseServer();
 
   const { data: venues, error } = await supabase
     .from("venues")

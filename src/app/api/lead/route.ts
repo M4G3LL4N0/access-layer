@@ -50,7 +50,7 @@ export async function POST(req: Request) {
     void ip_hash;
 
     // NOTE: In this codebase supabaseServer is a client instance (NOT a function).
-    const supabase = supabaseServer;
+    const supabase = supabaseServer();
 
     const { data, error } = await supabase
       .from("leads")

@@ -18,7 +18,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const supabase = supabaseServer;
+    const supabase = supabaseServer();
 
     const { data, error } = await supabase
       .from("leads")

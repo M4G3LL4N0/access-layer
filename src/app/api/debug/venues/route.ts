@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { supabaseServer } from "@/lib/supabaseServer";
 
 export async function GET() {
-  const { data, error } = await supabaseServer
+  const { data, error } = supabaseServer()
     .from("venues")
     .select("id,name,city,region,status,created_at")
     .order("created_at", { ascending: false })

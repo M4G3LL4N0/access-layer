@@ -42,7 +42,7 @@ export async function POST(req: Request) {
     // IMPORTANT:
     // In YOUR codebase, supabaseServer is a client object (not a function).
     // So we do NOT call it.
-    const supabase = supabaseServer;
+    const supabase = supabaseServer();
 
     // Confirm venue exists
     const { data: v, error: vErr } = await supabase

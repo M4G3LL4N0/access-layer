@@ -20,7 +20,7 @@ function supabaseRefFromUrl(u: string) {
 }
 
 async function sampleVenues() {
-  const { data } = await supabaseServer
+  const { data } = supabaseServer()
     .from("venues")
     .select("id,name,created_at")
     .order("created_at", { ascending: false })
@@ -76,7 +76,7 @@ export async function POST(req: Request) {
   }
 
   // Check venue exists in THIS DB
-  const { data: venue, error: vErr } = await supabaseServer
+  const { data: venue, error: vErr } = supabaseServer()
     .from("venues")
     .select("id,name,created_at")
     .eq("id", venueId)
@@ -105,7 +105,7 @@ export async function POST(req: Request) {
   const inviteToken = token32();
   const expires = new Date(Date.now() + 7 * 24 * 3600 * 1000).toISOString();
 
-  const { error } = await supabaseServer.from("venue_owner_invites").insert({
+  const { error } = supabaseServer().from("venue_owner_invites").insert({
     venue_id: venueId,
     email,
     token: inviteToken,

@@ -19,7 +19,7 @@ export async function POST(req: Request) {
   const cooldown_min = Number(form.get("cooldown_min") || 30);
 
   // Update the latest rule if it exists; otherwise insert one
-  const latest = await supabaseServer
+  const latest = supabaseServer()
     .from("access_rules")
     .select("id")
     .eq("venue_id", venueId)
@@ -28,7 +28,7 @@ export async function POST(req: Request) {
     .maybeSingle();
 
   if (latest.data?.id) {
-    const { error } = await supabaseServer
+    const { error } = supabaseServer()
       .from("access_rules")
       .update({
         rule_name,
@@ -43,7 +43,7 @@ export async function POST(req: Request) {
 
     if (error) return NextResponse.json({ error: error.message }, { status: 400 });
   } else {
-    const { error } = await supabaseServer.from("access_rules").insert({
+    const { error } = supabaseServer().from("access_rules").insert({
       venue_id: venueId,
       rule_name,
       is_enabled,

@@ -23,7 +23,7 @@ export async function POST(req: Request) {
 
   const { venueId, email, note } = parsed.data;
 
-  const { error } = await supabaseServer.from("owner_leads").insert({
+  const { error } = supabaseServer().from("owner_leads").insert({
     venue_id: venueId,
     email,
     note: note || null,

@@ -16,7 +16,7 @@ export async function POST(req: Request) {
     const { token, payload } = issueSignedPassToken(venueId, expiresAt);
 
     // optional: persist record for analytics + correlation (but verification is stateless)
-    await supabaseServer.from("access_passes").insert([
+    supabaseServer().from("access_passes").insert([
       {
         venue_id: venueId,
         token,

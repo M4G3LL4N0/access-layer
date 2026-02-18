@@ -16,7 +16,7 @@ export async function POST(req: Request) {
     const v = verifySignedPassToken(token);
     if (!v.ok) return NextResponse.json({ ok: false, error: "Invalid token" }, { status: 400 });
 
-    await supabaseServer.from("token_denylist").insert([{ jti: v.payload.jti, reason }]);
+    supabaseServer().from("token_denylist").insert([{ jti: v.payload.jti, reason }]);
 
     return NextResponse.json({ ok: true, jti: v.payload.jti, reason });
   } catch (e: any) {

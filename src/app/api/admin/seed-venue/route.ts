@@ -39,7 +39,7 @@ export async function POST(req: Request) {
   const lat = parsed.data.lat ? Number(parsed.data.lat) : null;
   const lng = parsed.data.lng ? Number(parsed.data.lng) : null;
 
-  const { data: venue, error: vErr } = await supabaseServer
+  const { data: venue, error: vErr } = supabaseServer()
     .from("venues")
     .insert({
       name: parsed.data.name,
@@ -57,7 +57,7 @@ export async function POST(req: Request) {
   if (vErr) return NextResponse.json({ error: vErr.message }, { status: 500 });
 
   // Default rule
-  const { error: rErr } = await supabaseServer.from("access_rules").insert({
+  const { error: rErr } = supabaseServer().from("access_rules").insert({
     venue_id: venue.id,
     rule_name: "Default Pilot Rule",
     is_enabled: true,

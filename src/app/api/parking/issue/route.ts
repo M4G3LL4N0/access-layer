@@ -20,7 +20,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ ok: false, error: "Missing venueId" }, { status: 400 });
     }
 
-    const supabase = supabaseServer;
+    const supabase = supabaseServer();
 
     // Confirm venue exists
     const { data: venue } = await supabase

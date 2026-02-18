@@ -11,7 +11,7 @@ export async function POST(req: Request) {
   const venueId = String(form.get("venueId") || "");
   const status = String(form.get("status") || "active");
 
-  const { error } = await supabaseServer.from("venues").update({ status }).eq("id", venueId);
+  const { error } = supabaseServer().from("venues").update({ status }).eq("id", venueId);
   if (error) return NextResponse.json({ error: error.message }, { status: 400 });
 
   return NextResponse.redirect(new URL(`/admin/venues/${venueId}?token=${encodeURIComponent(token)}&ok=1`, req.url));

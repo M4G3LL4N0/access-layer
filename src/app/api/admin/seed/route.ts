@@ -29,7 +29,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "No lines provided" }, { status: 400 });
   }
 
-  const { error } = await supabaseServer.from("venues").insert(rows);
+  const { error } = supabaseServer().from("venues").insert(rows);
   if (error) return NextResponse.json({ error: error.message }, { status: 400 });
 
   return NextResponse.redirect(new URL(`/admin/seed?token=${encodeURIComponent(token)}&ok=1`, req.url));
