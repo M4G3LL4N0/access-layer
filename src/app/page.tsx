@@ -1,514 +1,270 @@
-export default function Home() {
-  const year = new Date().getFullYear();
+import LiveMetrics from "@/components/LiveMetrics";
 
+export default function Home() {
   return (
     <main
       style={{
-        fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif",
-        background: "#fff",
-        color: "#000",
+        fontFamily:
+          "system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif",
+        background: "#ffffff",
+        color: "#111",
+        minHeight: "100vh",
       }}
     >
-      <div style={{ maxWidth: 1120, margin: "0 auto", padding: "56px 16px" }}>
-        {/* Top bar */}
+      <div
+        style={{
+          maxWidth: 1100,
+          margin: "0 auto",
+          padding: "60px 20px",
+        }}
+      >
+        {/* HEADER */}
         <header
           style={{
             display: "flex",
+            flexWrap: "wrap",
             alignItems: "center",
             justifyContent: "space-between",
-            gap: 12,
-            flexWrap: "wrap",
-            marginBottom: 34,
+            gap: 20,
+            marginBottom: 60,
           }}
         >
-          <a
-            href="/"
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 12,
-              textDecoration: "none",
-              color: "inherit",
-            }}
-          >
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
             <img
               src="/favicon.ico"
               alt="AXW"
               style={{
-                width: 38,
-                height: 38,
-                borderRadius: 12,
+                width: 36,
+                height: 36,
+                borderRadius: 10,
                 border: "1px solid rgba(0,0,0,0.12)",
               }}
             />
-            <div style={{ lineHeight: 1.1 }}>
-              <div style={{ fontWeight: 950, letterSpacing: -0.3 }}>AXW</div>
-              <div style={{ fontSize: 12, opacity: 0.7 }}>Access × World</div>
+            <div>
+              <div style={{ fontWeight: 700 }}>AXW</div>
+              <div style={{ fontSize: 12, opacity: 0.7 }}>
+                Access × World
+              </div>
             </div>
-          </a>
+          </div>
 
           <nav
             style={{
               display: "flex",
-              gap: 14,
               flexWrap: "wrap",
-              alignItems: "center",
+              gap: 16,
               fontSize: 14,
             }}
           >
-            <a href="#what" style={navLink()}>
-              What
-            </a>
-            <a href="#how" style={navLink()}>
-              How
-            </a>
-            <a href="#proof" style={navLink()}>
-              Proof
-            </a>
-            <a href="#pilot" style={navLink()}>
-              Pilot
-            </a>
-            <a href="/investors" style={navLinkStrong()}>
-              Investors
-            </a>
+            <a href="#what" style={navLink}>What</a>
+            <a href="#how" style={navLink}>How</a>
+            <a href="#network" style={navLink}>Network</a>
+            <a href="#investors" style={navLink}>Investors</a>
           </nav>
         </header>
 
-        {/* Hero + Right rail (responsive grid, no overlap) */}
+        {/* HERO */}
+        <section style={{ marginBottom: 80 }}>
+          <h1
+            style={{
+              fontSize: "clamp(32px, 5vw, 54px)",
+              letterSpacing: -1,
+              marginBottom: 20,
+              lineHeight: 1.1,
+            }}
+          >
+            The Universal Access Layer for the Physical World.
+          </h1>
+
+          <p
+            style={{
+              fontSize: 18,
+              maxWidth: 800,
+              opacity: 0.85,
+              marginBottom: 30,
+              lineHeight: 1.6,
+            }}
+          >
+            AXW transforms how access is granted, verified, and logged.
+            From venues and offices to parking garages and government
+            facilities — access becomes programmable infrastructure.
+          </p>
+
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: 16,
+            }}
+          >
+            <a
+              href="https://app.accessxworld.com"
+              style={btnPrimary}
+            >
+              Open App
+            </a>
+
+            <a
+              href="/contact"
+              style={btnSecondary}
+            >
+              Run a Pilot
+            </a>
+          </div>
+
+          {/* LIVE METRICS */}
+          <div style={{ marginTop: 60 }}>
+            <h3 style={{ fontSize: 22, marginBottom: 12 }}>
+              Live Network Activity
+            </h3>
+            <LiveMetrics />
+          </div>
+        </section>
+
+        {/* VALUE PROPS */}
         <section
+          id="what"
           style={{
             display: "grid",
-            gridTemplateColumns: "minmax(0, 1fr)",
-            gap: 14,
-            alignItems: "start",
+            gridTemplateColumns:
+              "repeat(auto-fit, minmax(260px, 1fr))",
+            gap: 20,
+            marginBottom: 80,
           }}
         >
-          {/* Left: hero */}
-          <div
-            style={{
-              border: "1px solid rgba(0,0,0,0.10)",
-              borderRadius: 18,
-              padding: 18,
-              background: "white",
-            }}
-          >
-            <h1
-              style={{
-                margin: "2px 0 10px",
-                fontWeight: 950,
-                letterSpacing: -1.4,
-                lineHeight: 0.98,
-                fontSize: "clamp(40px, 7.5vw, 62px)",
-                wordBreak: "break-word",
-              }}
-            >
-              Programmable access,
-              <br />
-              everywhere.
-            </h1>
-
-            <p
-              style={{
-                margin: "0 0 14px",
-                fontSize: "clamp(15px, 2.8vw, 18px)",
-                lineHeight: 1.6,
-                opacity: 0.82,
-                maxWidth: 840,
-              }}
-            >
-              AXW is the coordination layer for access: policy-defined permissions, time-bounded tokens, and auditable logs —
-              designed to integrate with real systems without publishing sensitive codes.
-            </p>
-
-            <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 10 }}>
-              <a href="https://app.accessxworld.com" style={btnPrimary()}>
-                Open the app
-              </a>
-              <a href="/contact" style={btnGhost()}>
-                Talk to us
-              </a>
-              <a href="#pilot" style={btnGhost()}>
-                Run a 7-day pilot
-              </a>
-            </div>
-
-            <div style={{ marginTop: 12, fontSize: 12, opacity: 0.65 }}>
-              Built for: venues • property ops • enterprise access • infrastructure partners
-            </div>
-          </div>
-
-          {/* Right: demo tiles */}
-          <aside
-            style={{
-              border: "1px solid rgba(0,0,0,0.10)",
-              borderRadius: 18,
-              padding: 18,
-              background: "white",
-            }}
-          >
-            <div style={{ fontWeight: 950, letterSpacing: -0.3, marginBottom: 10 }}>
-              Demo in minutes
-            </div>
-
-            <div style={{ display: "grid", gap: 10 }}>
-              <a href="/venues" style={tile()}>
-                <div>Public Venue Directory →</div>
-                <div style={tileSub()}>Map + list + request flows</div>
-              </a>
-
-              <a href="/sf-pilot" style={tile()}>
-                <div>SF Pilot Brief →</div>
-                <div style={tileSub()}>Proof-of-work story</div>
-              </a>
-
-              <a href="/onboarding" style={tile()}>
-                <div>Onboarding (7 days) →</div>
-                <div style={tileSub()}>Operator checklist</div>
-              </a>
-
-              <a href="/outreach" style={tile()}>
-                <div>Outreach kit →</div>
-                <div style={tileSub()}>Email + scripts + pitch</div>
-              </a>
-
-              <a href="/investors" style={tile()}>
-                <div>Investor page →</div>
-                <div style={tileSub()}>Interactive model + scenarios</div>
-              </a>
-
-              <a href="/demo" style={tile()}>
-                <div>VC demo page →</div>
-                <div style={tileSub()}>Everything clickable</div>
-              </a>
-            </div>
-
-            <div style={{ marginTop: 12, fontSize: 12, opacity: 0.65, lineHeight: 1.35 }}>
-              No fluff — everything above is intended to be demoable quickly.
-            </div>
-          </aside>
-        </section>
-
-        {/* What */}
-        <section id="what" style={{ marginTop: 18 }}>
-          <div
-            style={{
-              border: "1px solid rgba(0,0,0,0.10)",
-              borderRadius: 18,
-              padding: 18,
-              background: "white",
-            }}
-          >
-            <h2 style={{ margin: "0 0 10px", fontSize: 26, letterSpacing: -0.7 }}>What we are building</h2>
-
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
-                gap: 12,
-              }}
-            >
-              {[
-                {
-                  t: "Universal access primitive",
-                  d: "A common layer across doors, staff checkpoints, kiosks, reservations, and verification flows.",
-                },
-                {
-                  t: "Tokenized permissions",
-                  d: "Issue scoped, time-bounded passes with explicit rules and enforcement.",
-                },
-                {
-                  t: "Policy engine",
-                  d: "Define rules once. Apply consistently across venues and verticals.",
-                },
-                {
-                  t: "Auditable logs",
-                  d: "Every request, grant, verification, and denial is logged for compliance and analytics.",
-                },
-                {
-                  t: "Pilot-to-rollout pipeline",
-                  d: "7-day pilot pack: signage + kiosk + staff verification + onboarding + outreach.",
-                },
-                {
-                  t: "Conversion-ready",
-                  d: "Start with one location, then scale to clusters, portfolios, and integrations.",
-                },
-              ].map((x) => (
-                <div
-                  key={x.t}
-                  style={{
-                    border: "1px solid rgba(0,0,0,0.10)",
-                    borderRadius: 16,
-                    padding: 14,
-                    background: "white",
-                  }}
-                >
-                  <div style={{ fontWeight: 950, marginBottom: 6 }}>{x.t}</div>
-                  <div style={{ fontSize: 14, opacity: 0.82, lineHeight: 1.45 }}>{x.d}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* How */}
-        <section id="how" style={{ marginTop: 14 }}>
-          <div
-            style={{
-              border: "1px solid rgba(0,0,0,0.10)",
-              borderRadius: 18,
-              padding: 18,
-              background: "white",
-            }}
-          >
-            <h2 style={{ margin: "0 0 10px", fontSize: 26, letterSpacing: -0.7 }}>How it works</h2>
-
-            <ol style={{ margin: 0, paddingLeft: 18, opacity: 0.9, lineHeight: 1.75, maxWidth: 920 }}>
-              <li>
-                <b>Define policies</b> (who/what/when/where) once.
-              </li>
-              <li>
-                <b>Issue passes</b> that encode scope + expiry + constraints.
-              </li>
-              <li>
-                <b>Verify at the edge</b> (staff scanner, kiosk, check-in, controller).
-              </li>
-              <li>
-                <b>Log events</b> for audit, analytics, and enforcement.
-              </li>
-            </ol>
-
-            <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 14 }}>
-              <a href="/verify" style={btnGhost()}>
-                Staff verify →
-              </a>
-              <a href="/scan" style={btnGhost()}>
-                QR scan →
-              </a>
-              <a href="/kiosk/0fc330aa-5c3d-4f7f-a74f-7de10c2b56b6" style={btnGhost()}>
-                Kiosk demo →
-              </a>
-            </div>
-
-            <div style={{ marginTop: 10, fontSize: 12, opacity: 0.65 }}>
-              (Kiosk demo uses a seeded venue ID — you can swap this to any venue ID from your directory.)
-            </div>
-          </div>
-        </section>
-
-        {/* Proof */}
-        <section id="proof" style={{ marginTop: 14 }}>
-          <div
-            style={{
-              border: "1px solid rgba(0,0,0,0.10)",
-              borderRadius: 18,
-              padding: 18,
-              background: "white",
-            }}
-          >
-            <h2 style={{ margin: "0 0 10px", fontSize: 26, letterSpacing: -0.7 }}>Proof of work (demo pathways)</h2>
-
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
-                gap: 12,
-              }}
-            >
-              <div style={proofCard()}>
-                <div style={{ fontWeight: 950 }}>Guest flow</div>
-                <div style={proofSub()}>
-                  Directory → Venue page → Request access → Pass token → Verify
-                </div>
-                <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 10 }}>
-                  <a href="/venues" style={btnPrimarySm()}>
-                    Start →
-                  </a>
-                  <a href="/verify" style={btnGhostSm()}>
-                    Verify →
-                  </a>
-                </div>
+          {[
+            {
+              title: "Tokenized Access",
+              desc: "Time-bounded, policy-enforced access tokens instead of static codes.",
+            },
+            {
+              title: "Auditable Infrastructure",
+              desc: "Every access event is logged and verifiable.",
+            },
+            {
+              title: "Multi-Sector Deployment",
+              desc: "Venues, enterprise, parking, government, events.",
+            },
+            {
+              title: "Blitz-Expandable",
+              desc: "Pilot one location. Expand to cities. Then industries.",
+            },
+          ].map((c) => (
+            <div key={c.title} style={card}>
+              <div style={{ fontWeight: 800, marginBottom: 8 }}>
+                {c.title}
               </div>
-
-              <div style={proofCard()}>
-                <div style={{ fontWeight: 950 }}>Operator flow</div>
-                <div style={proofSub()}>
-                  Lead capture → Onboarding checklist → Pilot pack routes (signage, kiosk, staff tools)
-                </div>
-                <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 10 }}>
-                  <a href="/contact" style={btnPrimarySm()}>
-                    Start pilot →
-                  </a>
-                  <a href="/onboarding" style={btnGhostSm()}>
-                    Onboarding →
-                  </a>
-                </div>
-              </div>
-
-              <div style={proofCard()}>
-                <div style={{ fontWeight: 950 }}>Investor flow</div>
-                <div style={proofSub()}>
-                  Interactive scenario model → VC demo page → SF pilot brief
-                </div>
-                <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 10 }}>
-                  <a href="/investors" style={btnPrimarySm()}>
-                    Model →
-                  </a>
-                  <a href="/demo" style={btnGhostSm()}>
-                    Demo →
-                  </a>
-                </div>
+              <div style={{ fontSize: 14, opacity: 0.8 }}>
+                {c.desc}
               </div>
             </div>
-          </div>
+          ))}
         </section>
 
-        {/* Pilot CTA */}
-        <section id="pilot" style={{ marginTop: 14 }}>
-          <div
+        {/* HOW IT WORKS */}
+        <section id="how" style={{ marginBottom: 80 }}>
+          <h2 style={{ fontSize: 28, marginBottom: 16 }}>
+            How It Works
+          </h2>
+          <ol
             style={{
-              borderRadius: 18,
-              padding: 18,
-              border: "1px solid rgba(0,0,0,0.10)",
-              background: "white",
+              paddingLeft: 18,
+              lineHeight: 1.7,
+              maxWidth: 800,
+              opacity: 0.9,
             }}
           >
-            <h3 style={{ margin: "0 0 6px", fontSize: 18, letterSpacing: -0.2, fontWeight: 950 }}>Pilot in 7 days</h3>
-            <p style={{ margin: "0 0 12px", opacity: 0.82, maxWidth: 900, lineHeight: 1.5 }}>
-              Start with one location or one workflow. Define the rules, issue passes, verify at the edge, and log everything.
-              Expand after the first proof of value.
-            </p>
+            <li>Define access rules (who, where, when).</li>
+            <li>Issue secure, scoped tokens.</li>
+            <li>Verify instantly via QR, kiosk, or API.</li>
+            <li>Log events across the network.</li>
+          </ol>
+        </section>
 
-            <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-              <a href="/contact" style={btnPrimary()}>
-                Start a pilot
-              </a>
-              <a href="/outreach" style={btnGhost()}>
-                Outreach kit
-              </a>
-              <a href="/investors" style={btnGhost()}>
-                Investor model
-              </a>
-            </div>
+        {/* NETWORK EXPANSION */}
+        <section id="network" style={{ marginBottom: 80 }}>
+          <h2 style={{ fontSize: 28, marginBottom: 16 }}>
+            Expanding the Access Layer
+          </h2>
+          <p style={{ maxWidth: 800, opacity: 0.85 }}>
+            Parking validation. Event credentials. Office entry.
+            Government clearance. Smart building systems.
+            AXW unifies every point-of-access into one programmable layer.
+          </p>
+        </section>
+
+        {/* INVESTOR SECTION */}
+        <section
+          id="investors"
+          style={{
+            padding: 30,
+            borderRadius: 20,
+            border: "1px solid rgba(0,0,0,0.1)",
+            background: "#f9fafb",
+            marginBottom: 60,
+          }}
+        >
+          <h2 style={{ fontSize: 28, marginBottom: 12 }}>
+            Building Toward Network Dominance
+          </h2>
+
+          <p style={{ maxWidth: 800, opacity: 0.85 }}>
+            Phase 1: Venue pilots.  
+            Phase 2: Parking & enterprise expansion.  
+            Phase 3: Multi-city rollout.  
+            Phase 4: National infrastructure layer.
+          </p>
+
+          <div style={{ marginTop: 20 }}>
+            <a href="/investors" style={btnPrimary}>
+              Investor Overview
+            </a>
           </div>
         </section>
 
-        <footer style={{ marginTop: 26, opacity: 0.65, fontSize: 12, lineHeight: 1.4 }}>
-          © {year} AXW — Access × World •{" "}
-          <a href="/legal/terms" style={{ color: "inherit" }}>
-            Terms
-          </a>{" "}
-          •{" "}
-          <a href="/legal/privacy" style={{ color: "inherit" }}>
-            Privacy
-          </a>
+        <footer
+          style={{
+            marginTop: 80,
+            fontSize: 12,
+            opacity: 0.6,
+          }}
+        >
+          © {new Date().getFullYear()} AXW — Access × World
         </footer>
       </div>
-
-      {/* Responsive layout rules */}
-      <style>{`
-        /* Wide screens: hero + rail side-by-side */
-        @media (min-width: 980px) {
-          main > div > section {
-            grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
-          }
-        }
-
-        /* Prevent any weird iOS zoom/overlap behavior */
-        * { box-sizing: border-box; }
-        img { max-width: 100%; height: auto; }
-      `}</style>
     </main>
   );
 }
 
-function navLink() {
-  return { color: "inherit", textDecoration: "none", opacity: 0.78, fontWeight: 850 };
-}
-function navLinkStrong() {
-  return {
-    color: "inherit",
-    textDecoration: "none",
-    opacity: 0.95,
-    fontWeight: 950 as const,
-    border: "1px solid rgba(0,0,0,0.14)",
-    padding: "8px 10px",
-    borderRadius: 12,
-  };
-}
-function btnPrimary() {
-  return {
-    padding: "12px 16px",
-    borderRadius: 14,
-    background: "black",
-    color: "white",
-    textDecoration: "none",
-    fontWeight: 950 as const,
-    display: "inline-flex",
-    alignItems: "center",
-    justifyContent: "center",
-    border: "1px solid rgba(0,0,0,0.14)",
-  };
-}
-function btnGhost() {
-  return {
-    padding: "12px 16px",
-    borderRadius: 14,
-    background: "white",
-    color: "black",
-    textDecoration: "none",
-    fontWeight: 950 as const,
-    border: "1px solid rgba(0,0,0,0.14)",
-    display: "inline-flex",
-    alignItems: "center",
-    justifyContent: "center",
-  };
-}
-function btnPrimarySm() {
-  return {
-    padding: "10px 12px",
-    borderRadius: 12,
-    background: "black",
-    color: "white",
-    textDecoration: "none",
-    fontWeight: 950 as const,
-    border: "1px solid rgba(0,0,0,0.14)",
-    display: "inline-flex",
-    alignItems: "center",
-    justifyContent: "center",
-  };
-}
-function btnGhostSm() {
-  return {
-    padding: "10px 12px",
-    borderRadius: 12,
-    background: "white",
-    color: "black",
-    textDecoration: "none",
-    fontWeight: 950 as const,
-    border: "1px solid rgba(0,0,0,0.14)",
-    display: "inline-flex",
-    alignItems: "center",
-    justifyContent: "center",
-  };
-}
-function tile() {
-  return {
-    textDecoration: "none",
-    color: "inherit",
-    border: "1px solid rgba(0,0,0,0.10)",
-    borderRadius: 16,
-    padding: 12,
-    background: "white",
-    fontWeight: 950 as const,
-    lineHeight: 1.25,
-  };
-}
-function tileSub() {
-  return { fontSize: 12, opacity: 0.65, fontWeight: 850 as const, marginTop: 4, lineHeight: 1.25 };
-}
-function proofCard() {
-  return { border: "1px solid rgba(0,0,0,0.10)", borderRadius: 16, padding: 14, background: "white" };
-}
-function proofSub() {
-  return { fontSize: 13, opacity: 0.8, lineHeight: 1.4, marginTop: 6 };
-}
+/* ------------------ STYLES ------------------ */
+
+const navLink = {
+  textDecoration: "none",
+  color: "#111",
+  opacity: 0.8,
+};
+
+const btnPrimary = {
+  padding: "12px 18px",
+  borderRadius: 12,
+  background: "#000",
+  color: "#fff",
+  textDecoration: "none",
+  fontWeight: 700,
+};
+
+const btnSecondary = {
+  padding: "12px 18px",
+  borderRadius: 12,
+  border: "1px solid rgba(0,0,0,0.2)",
+  color: "#111",
+  textDecoration: "none",
+  fontWeight: 700,
+};
+
+const card = {
+  border: "1px solid rgba(0,0,0,0.12)",
+  borderRadius: 16,
+  padding: 20,
+  background: "#fff",
+};
