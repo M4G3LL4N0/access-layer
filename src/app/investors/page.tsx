@@ -1,135 +1,147 @@
-export const metadata = {
-  title: "Investors — AXW",
-  description: "Programmable access across every space, every access point, every sector.",
-};
+"use client";
 
-function fmt(n: number) {
-  if (n >= 1e12) return `$${(n / 1e12).toFixed(2)}T`;
-  if (n >= 1e9) return `$${(n / 1e9).toFixed(2)}B`;
-  if (n >= 1e6) return `$${(n / 1e6).toFixed(2)}M`;
-  if (n >= 1e3) return `$${(n / 1e3).toFixed(2)}K`;
-  return `$${n.toFixed(0)}`;
+import { useMemo, useState } from "react";
+
+type Scenario = "Conservative" | "Base" | "Aggressive";
+
+function Pill({ active, onClick, children }: any) {
+  return (
+    <button
+      onClick={onClick}
+      className="axw-btn"
+      style={{
+        background: active ? "#111" : "#fff",
+        color: active ? "#fff" : "#111",
+        borderColor: active ? "#111" : "rgba(0,0,0,0.14)",
+      }}
+      type="button"
+    >
+      {children}
+    </button>
+  );
+}
+
+function Stat({ label, value, hint }: { label: string; value: string; hint?: string }) {
+  return (
+    <div className="axw-card" style={{ minWidth: 240 }}>
+      <div style={{ fontSize: 12, fontWeight: 900, opacity: 0.75 }}>{label}</div>
+      <div style={{ fontSize: 28, fontWeight: 950, marginTop: 6 }}>{value}</div>
+      {hint ? <div className="axw-muted" style={{ marginTop: 6, fontSize: 13 }}>{hint}</div> : null}
+    </div>
+  );
 }
 
 export default function InvestorsPage() {
-  // Defaults that “feel insane but coherent”
-  const venues = 250_000;          // scaled network
-  const accessPointsPerVenue = 6;  // doors/garage/gates/turnstiles/etc
-  const mrrPerVenue = 149;         // base SaaS per venue
-  const mrrPerAccessPoint = 12;    // per access point add-on
-  const tokenFee = 0.02;           // per token issued
-  const tokensPerVenuePerDay = 120;
+  const [scenario, setScenario] = useState<Scenario>("Base");
 
-  const annualRevenue =
-    (venues * (mrrPerVenue + accessPointsPerVenue * mrrPerAccessPoint) * 12) +
-    (venues * tokensPerVenuePerDay * 365 * tokenFee);
+  const model = useMemo(() => {
+    // These are “story numbers” that make the page feel alive.
+    // We’ll later wire them to real metrics + pricing once Stripe is live.
+    const base = {
+      venues: 100,
+      accessPointsPerVenue: 14,
+      monthlyTokensPerVenue: 3200,
+      takeRate: 0.12,
+      arpa: 450,
+    };
 
-  const impliedVal = annualRevenue * 20; // crude 20x ARR multiple
+    const mult =
+      scenario === "Conservative" ? 0.6 : scenario === "Aggressive" ? 1.8 : 1.0;
+
+    const venues = Math.round(base.venues * mult);
+    const accessPoints = Math.round(venues * base.accessPointsPerVenue);
+    const tokens = Math.round(venues * base.monthlyTokensPerVenue);
+    const gross = Math.round(venues * base.arpa);
+    const rev = Math.round(gross * base.takeRate);
+
+    return { venues, accessPoints, tokens, gross, rev };
+  }, [scenario]);
 
   return (
-    <main style={{ fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif", background: "#fff", color: "#111" }}>
-      <div style={{ maxWidth: 1100, margin: "0 auto", padding: "56px 16px" }}>
-        <header style={{ display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap", alignItems: "center" }}>
-          <div>
-            <div style={{ fontWeight: 950, fontSize: 28, letterSpacing: -0.6 }}>AXW Investor Model</div>
-            <div style={{ opacity: 0.75, marginTop: 6 }}>
-              The universal access ↔ space coordination layer (tokens, policies, audit logs, operators, devices).
-            </div>
+    <main className="axw-container">
+      <div className="axw-row" style={{ justifyContent: "space-between" }}>
+        <div>
+          <div className="axw-title" style={{ fontSize: 26 }}>Investors</div>
+          <div className="axw-muted" style={{ marginTop: 6, lineHeight: 1.6, maxWidth: 860 }}>
+            AXW is the universal coordination layer between <b>access</b> and <b>space</b>.
+            One set of primitives works across doors, garages, gates, elevators, turnstiles, lockers,
+            Wi-Fi, and API access — enforced by policy, issued as tokens, verified at the edge, and logged.
           </div>
-          <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-            <a href="/vc/packet" style={{ textDecoration: "none", fontWeight: 900, color: "#111", border: "1px solid rgba(0,0,0,0.14)", borderRadius: 12, padding: "10px 12px" }}>
-              VC Packet
-            </a>
-            <a href="/demo" style={{ textDecoration: "none", fontWeight: 900, color: "#fff", background: "#111", borderRadius: 12, padding: "10px 12px" }}>
-              Live Demo
-            </a>
+        </div>
+
+        <div className="axw-row">
+          <a className="axw-btn" href="/">Home</a>
+          <a className="axw-btn" href="/demo">Demo</a>
+          <a className="axw-btn axw-btn-primary" href="/contact">Contact</a>
+        </div>
+      </div>
+
+      <div className="axw-card" style={{ marginTop: 16 }}>
+        <div style={{ fontWeight: 950 }}>Interactive Model</div>
+        <div className="axw-muted" style={{ marginTop: 6 }}>
+          Toggle the scenario to show growth outcomes. This keeps your investor narrative punchy and visual.
+        </div>
+
+        <div className="axw-row" style={{ marginTop: 12 }}>
+          <Pill active={scenario === "Conservative"} onClick={() => setScenario("Conservative")}>Conservative</Pill>
+          <Pill active={scenario === "Base"} onClick={() => setScenario("Base")}>Base</Pill>
+          <Pill active={scenario === "Aggressive"} onClick={() => setScenario("Aggressive")}>Aggressive</Pill>
+        </div>
+
+        <div className="axw-row" style={{ marginTop: 12 }}>
+          <Stat label="Venues onboarded" value={model.venues.toLocaleString()} hint="Locations using AXW policy + tokens" />
+          <Stat label="Access points" value={model.accessPoints.toLocaleString()} hint="Doors/garages/gates/turnstiles/etc" />
+          <Stat label="Monthly token events" value={model.tokens.toLocaleString()} hint="Issuance + verification volume" />
+        </div>
+
+        <div className="axw-row" style={{ marginTop: 12 }}>
+          <Stat label="Monthly gross (operator spend)" value={`$${model.gross.toLocaleString()}`} hint="Estimated monthly value captured at venues" />
+          <Stat label="Monthly platform revenue" value={`$${model.rev.toLocaleString()}`} hint="Illustrative take-rate on flows" />
+        </div>
+      </div>
+
+      <div className="axw-grid" style={{ marginTop: 14 }}>
+        <div className="axw-card">
+          <div style={{ fontWeight: 950 }}>Why Now</div>
+          <div className="axw-muted" style={{ marginTop: 6, lineHeight: 1.6 }}>
+            Access is fragmented: different vendors, codes, workflows, and no unified audit trail.
+            AXW unifies authorization into a policy + token + verify + log system that works across sectors.
           </div>
-        </header>
+        </div>
 
-        <section style={{ marginTop: 24, display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 14 }}>
-          {[
-            { t: "What we replace", d: "Fragmented controllers, ad-hoc validations, siloed access apps, un-auditable keys/codes." },
-            { t: "What we become", d: "A programmable policy layer spanning all access points: doors, garages, gates, elevators, turnstiles, wifi, APIs." },
-            { t: "Why we win", d: "Tokens + policy + audit + edge verification = infrastructure moat. Expand horizontally into every sector." },
-          ].map((x) => (
-            <div key={x.t} style={{ border: "1px solid rgba(0,0,0,0.12)", borderRadius: 16, padding: 16 }}>
-              <div style={{ fontWeight: 900 }}>{x.t}</div>
-              <div style={{ opacity: 0.78, marginTop: 8, fontSize: 14, lineHeight: 1.5 }}>{x.d}</div>
-            </div>
-          ))}
-        </section>
-
-        <section style={{ marginTop: 22, border: "1px solid rgba(0,0,0,0.12)", borderRadius: 18, padding: 16 }}>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 14 }}>
-            <div>
-              <div style={{ fontWeight: 900 }}>Model snapshot (fixed demo numbers)</div>
-              <div style={{ opacity: 0.75, marginTop: 6, fontSize: 14 }}>
-                Venues: <b>{venues.toLocaleString()}</b><br />
-                Access points/venue: <b>{accessPointsPerVenue}</b><br />
-                Tokens/venue/day: <b>{tokensPerVenuePerDay}</b>
-              </div>
-            </div>
-
-            <div>
-              <div style={{ fontWeight: 900 }}>Revenue</div>
-              <div style={{ opacity: 0.75, marginTop: 6, fontSize: 14 }}>
-                Annual revenue: <b>{fmt(annualRevenue)}</b><br />
-                Implied valuation (20×): <b>{fmt(impliedVal)}</b>
-              </div>
-            </div>
-
-            <div>
-              <div style={{ fontWeight: 900 }}>Path to scale</div>
-              <div style={{ opacity: 0.75, marginTop: 6, fontSize: 14 }}>
-                1) Parking validation<br />
-                2) Venue kiosks + passes<br />
-                3) Operators + devices<br />
-                4) Access points abstraction<br />
-                5) Enterprise rollups
-              </div>
-            </div>
+        <div className="axw-card">
+          <div style={{ fontWeight: 950 }}>Wedge</div>
+          <div className="axw-muted" style={{ marginTop: 6, lineHeight: 1.6 }}>
+            Start with kiosks, staff verification, and parking validation (high-frequency events).
+            Expand into the full access point registry + device verification + enterprise integrations.
           </div>
+        </div>
 
-          <div style={{ marginTop: 14, paddingTop: 12, borderTop: "1px solid rgba(0,0,0,0.10)", display: "flex", flexWrap: "wrap", gap: 10 }}>
-            <a href="/analytics" style={{ textDecoration: "none", fontWeight: 900, color: "#111", border: "1px solid rgba(0,0,0,0.14)", borderRadius: 12, padding: "10px 12px" }}>
-              Live Metrics
-            </a>
-            <a href="/sdk" style={{ textDecoration: "none", fontWeight: 900, color: "#111", border: "1px solid rgba(0,0,0,0.14)", borderRadius: 12, padding: "10px 12px" }}>
-              SDK
-            </a>
-            <a href="/case-studies/sf-pilot" style={{ textDecoration: "none", fontWeight: 900, color: "#fff", background: "#111", borderRadius: 12, padding: "10px 12px" }}>
-              SF Pilot
-            </a>
+        <div className="axw-card">
+          <div style={{ fontWeight: 950 }}>Moat</div>
+          <div className="axw-muted" style={{ marginTop: 6, lineHeight: 1.6 }}>
+            The network graph of spaces + access points + devices + policies + event logs becomes proprietary infrastructure.
+            This is the “access × space map” layer.
           </div>
-        </section>
+        </div>
 
-        <section style={{ marginTop: 24, border: "1px solid rgba(0,0,0,0.12)", borderRadius: 18, padding: 16 }}>
-          <div style={{ fontWeight: 950, fontSize: 18 }}>“Access × Space” sectors we take over</div>
-          <div style={{ marginTop: 10, display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 10 }}>
-            {[
-              "Parking garages & validation",
-              "Retail + customer validation",
-              "Coworking + office access",
-              "Residential buildings",
-              "Events & festivals",
-              "Universities & campuses",
-              "Hospitals & clinics",
-              "Warehouses & industrial yards",
-              "Government facilities",
-              "Data centers & critical infra",
-              "Storage units & lockers",
-              "EV charging access",
-            ].map((s) => (
-              <div key={s} style={{ border: "1px solid rgba(0,0,0,0.10)", borderRadius: 14, padding: 12, fontWeight: 800, fontSize: 13 }}>
-                {s}
-              </div>
-            ))}
+        <div className="axw-card">
+          <div style={{ fontWeight: 950 }}>What’s Already Built</div>
+          <div className="axw-muted" style={{ marginTop: 6, lineHeight: 1.6 }}>
+            Pass issuance, pass pages, staff verifier, kiosk mode, parking validation tokens, leads funnel, admin panels,
+            pilot pack + signage routes, and analytics.
           </div>
-        </section>
+        </div>
+      </div>
 
-        <footer style={{ marginTop: 26, opacity: 0.65, fontSize: 12 }}>
-          © {new Date().getFullYear()} AXW — Access × World
-        </footer>
+      <div className="axw-card" style={{ marginTop: 14 }}>
+        <div style={{ fontWeight: 950 }}>Links</div>
+        <div className="axw-row" style={{ marginTop: 10 }}>
+          <a className="axw-btn" href="/vc/packet">VC Packet</a>
+          <a className="axw-btn" href="/vc/checklist">Launch Checklist</a>
+          <a className="axw-btn" href="/case-studies/sf-pilot">SF Pilot Case Study</a>
+          <a className="axw-btn axw-btn-primary" href="/contact">Book a Call</a>
+        </div>
       </div>
     </main>
   );
