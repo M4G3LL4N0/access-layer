@@ -1,70 +1,83 @@
-export const dynamic = "force-dynamic";
-
-const codeStyle: React.CSSProperties = {
-  whiteSpace: "pre-wrap",
-  background: "#0b0b0b",
-  color: "#f2f2f2",
-  padding: 14,
-  borderRadius: 12,
-  fontSize: 13,
-  lineHeight: 1.5,
-  overflowX: "auto",
+export const metadata = {
+  title: "AXW SDK",
+  description: "Integrate programmable access into devices, kiosks, and operators.",
 };
+
+const Code = ({ children }: { children: string }) => (
+  <pre
+    style={{
+      background: "#0b1020",
+      color: "#d7e0ff",
+      padding: 14,
+      borderRadius: 14,
+      overflowX: "auto",
+      fontSize: 13,
+      lineHeight: 1.5,
+      border: "1px solid rgba(255,255,255,0.08)",
+      margin: "12px 0 18px",
+    }}
+  >
+    <code>{children}</code>
+  </pre>
+);
 
 export default function SDKPage() {
   return (
-    <main style={{ padding: 28, fontFamily: "system-ui" }}>
-      <h1 style={{ fontSize: 28, fontWeight: 900, marginBottom: 6 }}>AXW Hardware SDK (Demo)</h1>
-      <p style={{ opacity: 0.8, maxWidth: 860 }}>
-        This is how kiosks, scanners, parking gates, and access controllers integrate with AXW.
-        Tokens are time-bounded, auditable, revocable, and can be verified statelessly at the edge.
-      </p>
+    <main style={{ fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif", background: "#fff", color: "#111" }}>
+      <div style={{ maxWidth: 1100, margin: "0 auto", padding: "56px 16px" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap", alignItems: "center" }}>
+          <div>
+            <div style={{ fontWeight: 900, fontSize: 22 }}>AXW SDK</div>
+            <div style={{ opacity: 0.72 }}>Device + kiosk + operator integrations (edge verification, tokens, audit logs).</div>
+          </div>
+          <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+            <a href="/api-docs" style={{ textDecoration: "none", fontWeight: 800, color: "#111", border: "1px solid rgba(0,0,0,0.14)", borderRadius: 12, padding: "10px 12px" }}>
+              API Docs
+            </a>
+            <a href="/investors" style={{ textDecoration: "none", fontWeight: 800, color: "#fff", background: "#111", borderRadius: 12, padding: "10px 12px" }}>
+              Investor Deck
+            </a>
+          </div>
+        </div>
 
-      <h2 style={{ marginTop: 24 }}>1) Issue a Signed Pass</h2>
-      <div style={codeStyle}>
-{`curl -X POST https://app.accessxworld.com/api/edge/issue \\
-  -H "Content-Type: application/json" \\
-  -d '{"venueId":"VENUE_ID","minutes":15}'`}
+        <div style={{ marginTop: 26, display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 14 }}>
+          {[
+            { t: "Issue a pass", d: "Kiosk or staff issuance with expiry + scope." },
+            { t: "Verify at the edge", d: "Operators and devices verify tokens in real time." },
+            { t: "Log every event", d: "Audit logs for compliance + dispute resolution." },
+            { t: "Universal access points", d: "Doors, garages, gates, turnstiles, elevators, wifi, APIs." },
+          ].map((x) => (
+            <div key={x.t} style={{ border: "1px solid rgba(0,0,0,0.12)", borderRadius: 16, padding: 16 }}>
+              <div style={{ fontWeight: 900 }}>{x.t}</div>
+              <div style={{ opacity: 0.78, marginTop: 6, fontSize: 14 }}>{x.d}</div>
+            </div>
+          ))}
+        </div>
+
+        <h2 style={{ marginTop: 34, fontSize: 18 }}>Core endpoints</h2>
+
+        <div style={{ border: "1px solid rgba(0,0,0,0.12)", borderRadius: 16, padding: 16 }}>
+          <div style={{ fontWeight: 900 }}>Edge verify</div>
+          <div style={{ opacity: 0.75, fontSize: 14, marginTop: 6 }}>Use this from devices / operators to validate tokens.</div>
+          <Code>{`GET /api/verify?token=TOKEN_HERE`}</Code>
+
+          <div style={{ fontWeight: 900 }}>Kiosk issue</div>
+          <div style={{ opacity: 0.75, fontSize: 14, marginTop: 6 }}>Issue a short-lived access pass from a kiosk UI.</div>
+          <Code>{`POST /api/kiosk/issue-pass
+{ "venueId": "VENUE_UUID", "minutes": 15 }`}</Code>
+
+          <div style={{ fontWeight: 900 }}>Parking issue + verify</div>
+          <div style={{ opacity: 0.75, fontSize: 14, marginTop: 6 }}>Retail validation style (token / plate / expiry).</div>
+          <Code>{`POST /api/parking/issue
+{ "venueId": "VENUE_UUID", "minutes": 120 }
+
+GET /api/parking/verify?token=PARKING_TOKEN`}</Code>
+        </div>
+
+        <div style={{ marginTop: 22, opacity: 0.7, fontSize: 13 }}>
+          Next: device keys + signed tokens + per-access-point policy enforcement.
+        </div>
       </div>
-
-      <h2 style={{ marginTop: 24 }}>2) Verify at the Edge (No DB required)</h2>
-      <div style={codeStyle}>
-{`curl -X POST https://app.accessxworld.com/api/edge/verify \\
-  -H "Content-Type: application/json" \\
-  -d '{"token":"PASTE_TOKEN_HERE"}'`}
-      </div>
-
-      <h2 style={{ marginTop: 24 }}>3) Verify with Device Identity (Recommended)</h2>
-      <div style={codeStyle}>
-{`curl -X POST https://app.accessxworld.com/api/device/verify \\
-  -H "Content-Type: application/json" \\
-  -H "X-Device-Key: DEVICE_KEY_FROM_ADMIN" \\
-  -d '{"token":"PASTE_TOKEN_HERE"}'`}
-      </div>
-
-      <h2 style={{ marginTop: 24 }}>4) Revoke Instantly</h2>
-      <div style={codeStyle}>
-{`curl -X POST https://app.accessxworld.com/api/admin/revoke-token \\
-  -H "Content-Type: application/json" \\
-  -H "X-Admin-Seed-Token: YOUR_ADMIN_SEED_TOKEN" \\
-  -d '{"token":"PASTE_TOKEN_HERE","reason":"abuse"}'`}
-      </div>
-
-      <h2 style={{ marginTop: 24 }}>5) Minimal JS Integration</h2>
-      <div style={codeStyle}>
-{`async function verify(token) {
-  const res = await fetch("/api/edge/verify", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ token })
-  });
-  return await res.json(); // { allow: true|false, reason? }
-}`}
-      </div>
-
-      <p style={{ marginTop: 18, opacity: 0.7 }}>
-        Tip: Replace <b>VENUE_ID</b> with a real venue UUID from /venues.
-      </p>
     </main>
   );
 }
