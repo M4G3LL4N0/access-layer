@@ -2,6 +2,7 @@ import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
+<<<<<<< HEAD
 function Card({
   title,
   children,
@@ -224,6 +225,41 @@ export default function InvestorsPage() {
             </div>
           </Card>
         </div>
+=======
+export default function InvestorsHub() {
+  return (
+    <main style={{ padding: 40, maxWidth: 1100 }}>
+      <h1 style={{ fontSize: 34, fontWeight: 800 }}>
+        AXW Investor Portal
+      </h1>
+
+      <p style={{ marginTop: 10, color: "#666" }}>
+        Access is becoming programmable infrastructure.
+      </p>
+
+      <div style={{ marginTop: 40, display: "grid", gap: 20 }}>
+
+        <Link href="/investors/interactive">
+          → Interactive Scenario Engine
+        </Link>
+
+        <Link href="/investors/2t">
+          → $2 Trillion Path
+        </Link>
+
+        <Link href="/investors/model">
+          → Clean Financial Model
+        </Link>
+
+        <Link href="/vc">
+          → VC Narrative Deck
+        </Link>
+
+        <Link href="/vc/packet">
+          → Data Room Packet
+        </Link>
+
+>>>>>>> f0a27cf (Add investor hub + interactive engine + T path)
       </div>
     </main>
   );
