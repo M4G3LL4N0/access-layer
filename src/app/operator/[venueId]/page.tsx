@@ -7,15 +7,43 @@ export default async function OperatorPage({
 }: {
   params: { venueId: string };
 }) {
-  const venueId = params.venueId;
+  const venueId = params?.venueId || "";
+
+  if (!venueId) {
+    return (
+      <main style={{ padding: 40 }}>
+        <h1>Missing venueId</h1>
+      </main>
+    );
+  }
 
   const supabase = supabaseServer();
 
-  const { data: venue } = await supabase
+  const { data, error } = await supabase
     .from("venues")
-    .select("id,name,city,region")
+    .select("id,name,city,region,status")
     .eq("id", venueId)
-    .maybeSingle();
+    .limit(1);
+
+  if (error) {
+    return (
+      <main style={{ padding: 40 }}>
+        <h1>Database error</h1>
+        <pre>{JSON.stringify(error, null, 2)}</pre>
+      </main>
+    );
+  }
+
+  if (!data || data.length === 0) {
+    return (
+      <main style={{ padding: 40 }}>
+        <h1>Venue not found</h1>
+        <div>Requested ID: {venueId}</div>
+      </main>
+    );
+  }
+
+  const venue = data[0];
 
   const { data: recent } = await supabase
     .from("access_passes")
@@ -24,21 +52,17 @@ export default async function OperatorPage({
     .order("created_at", { ascending: false })
     .limit(25);
 
-  if (!venue) {
-    return (
-      <main style={{ padding: 40 }}>
-        <h1>Venue not found</h1>
-      </main>
-    );
-  }
-
   return (
     <main style={{ padding: 40, fontFamily: "system-ui" }}>
       <h1 style={{ fontSize: 28 }}>
         Operator Console — {venue.name}
       </h1>
 
-      <div style={{ marginTop: 20, display: "flex", gap: 12, flexWrap: "wrap" }}>
+      <div style={{ marginTop: 10, opacity: 0.7 }}>
+        {venue.city}, {venue.region}
+      </div>
+
+      <div style={{ marginTop: 30, display: "flex", gap: 12, flexWrap: "wrap" }}>
         <a href={`/kiosk/${venueId}`} style={btn()}>
           Open Kiosk
         </a>
@@ -50,7 +74,7 @@ export default async function OperatorPage({
         </a>
       </div>
 
-      <h2 style={{ marginTop: 40 }}>Recent Passes</h2>
+      <h2 style={{ marginTop: 40 }}>Recent Access Passes</h2>
 
       <div style={{ marginTop: 10 }}>
         {recent?.map((r) => (
