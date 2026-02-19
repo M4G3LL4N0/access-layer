@@ -1,4 +1,3 @@
-// src/app/investors/page.tsx
 export const dynamic = "force-dynamic";
 
 type MixKey = "restrooms" | "cowork" | "offices" | "events" | "enterprise" | "mixed";
