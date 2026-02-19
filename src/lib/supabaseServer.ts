@@ -1,62 +1,56 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
-/**
- * Canonical server-side Supabase clients (App Router).
- *
- * IMPORTANT RULES:
- * - supabaseServer() is a FUNCTION that returns a Supabase client.
- * - DO:   const supabase = supabaseServer();
- * - DON'T: const supabase = supabaseServer(); * - DON'T: supabaseServer()
- */
+type Keys = {
+  url: string;
+  anon: string;
+  service: string | null;
+};
 
-function mustEnv(name: string): string {
-  const v = process.env[name];
-  if (!v || !String(v).trim()) {
-    throw new Error(`${name} is required.`);
+function readKeys(): Keys {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
+  const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
+  const service = process.env.SUPABASE_SERVICE_ROLE_KEY || null;
+
+  // Hard fail with a *useful* message (this is what stops the mystery Digests)
+  if (!url) {
+    throw new Error(
+      "NEXT_PUBLIC_SUPABASE_URL is missing at runtime. Check Vercel env vars for Production."
+    );
   }
-  return v;
+  if (!anon) {
+    throw new Error(
+      "NEXT_PUBLIC_SUPABASE_ANON_KEY is missing at runtime. Check Vercel env vars for Production."
+    );
+  }
+
+  return { url, anon, service };
 }
 
 /**
- * Server client using ANON key (safe for reads, and writes when RLS permits).
- * For admin-only operations, use supabaseServerService().
+ * Canonical server-side Supabase client (anon).
+ * Usage:
+ *   const supabase = supabaseServer();
  */
 export function supabaseServer(): SupabaseClient {
-  const url = mustEnv("NEXT_PUBLIC_SUPABASE_URL");
-  const anon = mustEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY");
-
+  const { url, anon } = readKeys();
   return createClient(url, anon, {
-    auth: {
-      persistSession: false,
-      autoRefreshToken: false,
-      detectSessionInUrl: false,
-    },
-    global: {
-      headers: {
-        "X-Client-Info": "axw-server",
-      },
-    },
+    auth: { persistSession: false },
   });
 }
 
 /**
- * Server client using SERVICE ROLE key (bypasses RLS).
- * ONLY use in API routes that you guard with ADMIN_SEED_TOKEN (or similar).
+ * Canonical privileged server client (service role).
+ * Usage:
+ *   const supabase = supabaseServerService();
  */
 export function supabaseServerService(): SupabaseClient {
-  const url = mustEnv("NEXT_PUBLIC_SUPABASE_URL");
-  const service = mustEnv("SUPABASE_SERVICE_ROLE_KEY");
-
+  const { url, service } = readKeys();
+  if (!service) {
+    throw new Error(
+      "SUPABASE_SERVICE_ROLE_KEY is missing at runtime. Needed for admin writes."
+    );
+  }
   return createClient(url, service, {
-    auth: {
-      persistSession: false,
-      autoRefreshToken: false,
-      detectSessionInUrl: false,
-    },
-    global: {
-      headers: {
-        "X-Client-Info": "axw-service",
-      },
-    },
+    auth: { persistSession: false },
   });
 }
