@@ -34,7 +34,7 @@ export default function GlobalError({
       >
         <div style={{ fontWeight: 900, fontSize: 18 }}>AXW — Server error</div>
         <div style={{ marginTop: 8, opacity: 0.8, lineHeight: 1.5 }}>
-          Something threw on the server. If you’re debugging, check Vercel runtime logs.
+          Something threw on the server. Check Vercel runtime logs for the stack trace.
         </div>
 
         <div style={{ marginTop: 12, fontSize: 13 }}>
