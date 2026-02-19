@@ -1,81 +1,74 @@
 export const dynamic = "force-dynamic";
 
-function Card({
-  title,
-  value,
-  sub,
-}: {
-  title: string;
-  value: string;
-  sub?: string;
-}) {
+async function getMetrics() {
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_APP_BASE_URL || ""}/api/metrics/global`, {
+      cache: "no-store",
+    });
+    const json = await res.json().catch(() => null);
+    return json;
+  } catch {
+    return null;
+  }
+}
+
+function Stat({ label, value }: { label: string; value: string | number }) {
   return (
-    <div
-      style={{
-        padding: 18,
-        borderRadius: 14,
-        background: "rgba(255,255,255,0.06)",
-        border: "1px solid rgba(255,255,255,0.12)",
-      }}
-    >
-      <div style={{ fontWeight: 800, opacity: 0.9 }}>{title}</div>
-      <div style={{ fontSize: 30, fontWeight: 900, marginTop: 6 }}>{value}</div>
-      {sub ? <div style={{ opacity: 0.75, marginTop: 6 }}>{sub}</div> : null}
+    <div className="axw-card" style={{ minWidth: 220 }}>
+      <div className="axw-muted" style={{ fontSize: 12, fontWeight: 900 }}>{label}</div>
+      <div style={{ fontSize: 26, fontWeight: 950, marginTop: 6 }}>{value}</div>
     </div>
   );
 }
 
-export default function AnalyticsPage() {
-  return (
-    <main
-      style={{
-        minHeight: "100vh",
-        padding: 40,
-        fontFamily: "system-ui",
-        background: "#0b0f17",
-        color: "white",
-      }}
-    >
-      <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-        <h1 style={{ fontSize: 42, fontWeight: 900 }}>Network Analytics</h1>
-        <p style={{ marginTop: 10, opacity: 0.8, fontSize: 16 }}>
-          Demo metrics for investor preview. (Live metrics can be wired to Supabase
-          aggregation next.)
-        </p>
+export default async function AnalyticsPage() {
+  const m = await getMetrics();
 
-        <div
-          style={{
-            marginTop: 24,
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(230px, 1fr))",
-            gap: 14,
-          }}
-        >
-          <Card title="Active Venues" value="32" sub="Pilot + seeded demo network" />
-          <Card title="Requests (30 days)" value="4,832" sub="Rate-limited + rule-enforced" />
-          <Card title="Pass Issuance Rate" value="78%" sub="Denied mostly by cooldown/rules" />
-          <Card title="Projected MRR" value="$12,430" sub="Venue SaaS + paid access fees" />
+  return (
+    <main className="axw-container">
+      <div className="axw-row" style={{ justifyContent: "space-between" }}>
+        <div>
+          <div className="axw-title" style={{ fontSize: 24 }}>AXW Analytics</div>
+          <div className="axw-muted" style={{ marginTop: 6 }}>
+            Live network health: venues, tokens, parking events, inbound leads.
+          </div>
         </div>
 
-        <div
-          style={{
-            marginTop: 26,
-            padding: 18,
-            borderRadius: 14,
-            background: "rgba(255,255,255,0.06)",
-            border: "1px solid rgba(255,255,255,0.12)",
-          }}
-        >
-          <h2 style={{ margin: 0, fontSize: 20, fontWeight: 900 }}>
-            Moat: The Access Graph
-          </h2>
-          <p style={{ marginTop: 8, opacity: 0.85, lineHeight: 1.6 }}>
-            Each successful access event strengthens the network: policy templates, demand
-            signals by city/category, compliance logs, fraud patterns, and enterprise
-            integration learnings. This compounds into a defensible access coordination layer.
-          </p>
+        <div className="axw-row">
+          <a className="axw-btn" href="/">Home</a>
+          <a className="axw-btn" href="/investors">Investors</a>
+          <a className="axw-btn axw-btn-primary" href="/admin">Admin</a>
         </div>
       </div>
+
+      {!m || !m.ok ? (
+        <div className="axw-card" style={{ marginTop: 16 }}>
+          <div style={{ fontWeight: 900, color: "crimson" }}>Metrics unavailable</div>
+          <div className="axw-muted" style={{ marginTop: 6 }}>
+            Check <b>/api/metrics/global</b> is returning ok.
+          </div>
+          <pre style={{ marginTop: 10, fontSize: 12, opacity: 0.85, overflowX: "auto" }}>
+            {JSON.stringify(m, null, 2)}
+          </pre>
+        </div>
+      ) : (
+        <>
+          <div className="axw-row" style={{ marginTop: 16 }}>
+            <Stat label="Venues" value={m.venues ?? 0} />
+            <Stat label="Passes (7d)" value={m.passes_7d ?? 0} />
+            <Stat label="Parking events (7d)" value={m.parking_events_7d ?? 0} />
+            <Stat label="Leads (7d)" value={m.leads_7d ?? 0} />
+          </div>
+
+          <div className="axw-card" style={{ marginTop: 14 }}>
+            <div style={{ fontWeight: 950 }}>Why this matters</div>
+            <div className="axw-muted" style={{ marginTop: 6, lineHeight: 1.6 }}>
+              Investors don’t fund code — they fund traction and proof. These metrics become the “heartbeat” of AXW:
+              adoption (venues), usage (passes), monetizable validation events (parking), and inbound demand (leads).
+            </div>
+          </div>
+        </>
+      )}
     </main>
   );
 }
