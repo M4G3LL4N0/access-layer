@@ -164,6 +164,7 @@ export default function InvestorsPage() {
   return (
     <main style={styles.page}>
       <div style={styles.wrap}>
+        <InvestorNav />
         <header style={styles.topbar}>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <div style={styles.logoBox}>AXW</div>
@@ -347,6 +348,7 @@ export default function InvestorsPage() {
           right={<Pill>Links</Pill>}
         >
           <div style={styles.linksGrid}>
+            <MiniLink href="/investors/mega" label="Investors — Mega" note="All-in-one investor mini-site (everything)" />
             <MiniLink href="/investors/model" label="Investors — Model" note="Detailed model narrative & assumptions." />
             <MiniLink href="/vc" label="VC — Hub" note="Pitch hub landing." />
             <MiniLink href="/vc/packet" label="VC — Packet" note="Investor packet style page." />
