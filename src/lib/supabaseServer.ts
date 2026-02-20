@@ -1,56 +1,35 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
-type Keys = {
-  url: string;
-  anon: string;
-  service: string | null;
-};
+/**
+ * Canonical server-side Supabase clients (LAZY).
+ *
+ * IMPORTANT:
+ * - Do NOT create the client at module-load time (it breaks builds when env is missing).
+ * - Always call supabaseServer() / supabaseServerService() inside handlers/pages.
+ */
 
-function readKeys(): Keys {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
-  const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
-  const service = process.env.SUPABASE_SERVICE_ROLE_KEY || null;
+type AnyClient = SupabaseClient<any, "public", "public", any, any>;
 
-  // Hard fail with a *useful* message (this is what stops the mystery Digests)
-  if (!url) {
-    throw new Error(
-      "NEXT_PUBLIC_SUPABASE_URL is missing at runtime. Check Vercel env vars for Production."
-    );
-  }
-  if (!anon) {
-    throw new Error(
-      "NEXT_PUBLIC_SUPABASE_ANON_KEY is missing at runtime. Check Vercel env vars for Production."
-    );
-  }
-
-  return { url, anon, service };
+function mustGet(name: string): string {
+  const v = process.env[name];
+  if (!v) throw new Error(`${name} is required.`);
+  return v;
 }
 
-/**
- * Canonical server-side Supabase client (anon).
- * Usage:
- *   const supabase = supabaseServer();
- */
-export function supabaseServer(): SupabaseClient {
-  const { url, anon } = readKeys();
+/** Anon-key client (RLS enforced) */
+export function supabaseServer(): AnyClient {
+  const url = mustGet("NEXT_PUBLIC_SUPABASE_URL");
+  const anon = mustGet("NEXT_PUBLIC_SUPABASE_ANON_KEY");
   return createClient(url, anon, {
     auth: { persistSession: false },
   });
 }
 
-/**
- * Canonical privileged server client (service role).
- * Usage:
- *   const supabase = supabaseServerService();
- */
-export function supabaseServerService(): SupabaseClient {
-  const { url, service } = readKeys();
-  if (!service) {
-    throw new Error(
-      "SUPABASE_SERVICE_ROLE_KEY is missing at runtime. Needed for admin writes."
-    );
-  }
-  return createClient(url, service, {
+/** Service-role client (admin bypass RLS) — use ONLY in server routes */
+export function supabaseServerService(): AnyClient {
+  const url = mustGet("NEXT_PUBLIC_SUPABASE_URL");
+  const key = mustGet("SUPABASE_SERVICE_ROLE_KEY");
+  return createClient(url, key, {
     auth: { persistSession: false },
   });
 }

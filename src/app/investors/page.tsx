@@ -3,6 +3,7 @@
 import Link from "next/link";
 import React, { useMemo, useState } from "react";
 
+import InvestorNav from "@/components/InvestorNav";
 export const dynamic = "force-dynamic";
 
 /**
