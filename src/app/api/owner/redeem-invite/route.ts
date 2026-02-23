@@ -1,0 +1,96 @@
+import { NextResponse } from "next/server";
+import { createClient } from "@supabase/supabase-js";
+
+export const dynamic = "force-dynamic";
+
+export async function POST(request: Request) {
+  try {
+    const body = await request.json().catch(() => ({}));
+    const { venueId, token, email } = body || {};
+
+    if (!venueId || !token || !email) {
+      return NextResponse.json(
+        { ok: false, error: "Missing venueId, token, or email" },
+        { status: 400 }
+      );
+    }
+
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
+    );
+
+    // Look up invite
+    const { data: invite, error: inviteErr } = await supabase
+      .from("venue_owner_invites")
+      .select("*")
+      .eq("token", token)
+      .single();
+
+    if (inviteErr || !invite) {
+      return NextResponse.json(
+        { ok: false, error: "Invite token not found" },
+        { status: 404 }
+      );
+    }
+
+    if (invite.venue_id !== venueId || invite.email !== email) {
+      return NextResponse.json(
+        { ok: false, error: "Venue or email mismatch" },
+        { status: 400 }
+      );
+    }
+
+    // Check if user exists
+    const { data: existingUsers } = await supabase
+      .from("users")
+      .select("id")
+      .eq("email", email);
+
+    let userId: string;
+
+    if (existingUsers && existingUsers.length > 0) {
+      userId = existingUsers[0].id;
+    } else {
+      // Create the user
+      const { data: created, error: createErr } = await supabase.auth.admin.createUser({
+        email,
+        email_confirm: true,
+      });
+
+      if (createErr || !created?.user) {
+        return NextResponse.json(
+          { ok: false, error: "Failed to create user" },
+          { status: 500 }
+        );
+      }
+
+      userId = created.user.id;
+    }
+
+    // Insert venue owner
+    const { error: ownerErr } = await supabase
+      .from("venue_owners")
+      .insert([{ venue_id: venueId, user_id: userId, role: "owner" }]);
+
+    if (ownerErr) {
+      return NextResponse.json(
+        { ok: false, error: "Failed to assign owner" },
+        { status: 500 }
+      );
+    }
+
+    // Delete the invite token
+    await supabase
+      .from("venue_owner_invites")
+      .delete()
+      .eq("id", invite.id);
+
+    return NextResponse.json({ ok: true, userId });
+  } catch (e: any) {
+    return NextResponse.json(
+      { ok: false, error: String(e?.message || e) },
+      { status: 500 }
+    );
+  }
+}
