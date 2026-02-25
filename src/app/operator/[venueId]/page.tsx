@@ -17,7 +17,7 @@ export default async function OperatorPage({
     );
   }
 
-  const supabase = supabaseServer();
+  const supabase = await supabaseServer();
 
   const { data, error } = await supabase
     .from("venues")

@@ -45,7 +45,7 @@ export async function POST(req: Request) {
     if (!name) return NextResponse.json({ ok: false, error: "Missing name" }, { status: 400 });
     if (!type) return NextResponse.json({ ok: false, error: "Missing type" }, { status: 400 });
 
-    const supabase = supabaseServer();
+    const supabase = await supabaseServer();
 
     const { data: v, error: vErr } = await supabase
       .from("venues")

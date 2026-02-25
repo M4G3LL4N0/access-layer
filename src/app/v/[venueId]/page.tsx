@@ -29,8 +29,8 @@ export default async function VenuePage({
 
   // IMPORTANT:
   // supabaseServer is a CLIENT INSTANCE exported from your lib
-  // (not a function). Do NOT call it like supabaseServer().
-  const supabase = supabaseServer();
+  // (not a function). Do NOT call it like (await supabaseServer()).
+  const supabase = await supabaseServer();
 
   // Avoid .single() and avoid "Cannot coerce..." issues:
   // select + eq + limit(1) then take [0]

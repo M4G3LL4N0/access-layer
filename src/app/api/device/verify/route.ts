@@ -40,7 +40,7 @@ export async function GET(req: Request) {
     const pepper = String(process.env.KIOSK_PIN || process.env.DEVICE_PEPPER || "axw");
     const deviceHash = crypto.createHash("sha256").update(`${pepper}:${deviceKey}`).digest("hex");
 
-    const supabase = supabaseServer();
+    const supabase = await supabaseServer();
 
     // ✅ IMPORTANT: await BEFORE destructuring
     const { data, error } = await supabase

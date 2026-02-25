@@ -4,7 +4,7 @@ import { supabaseServer } from "@/lib/supabaseServer";
 export const dynamic = "force-dynamic";
 
 export default async function ParkingVenuesPage() {
-  const supabase = supabaseServer();
+  const supabase = await supabaseServer();
 
   const { data: venues, error } = await supabase
     .from("venues")

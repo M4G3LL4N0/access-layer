@@ -25,7 +25,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ ok: false, error: "Missing venueId/type/label" }, { status: 400 });
     }
 
-    const supabase = supabaseServer();
+    const supabase = await supabaseServer();
 
     const { data: venue, error: vErr } = await supabase
       .from("venues")

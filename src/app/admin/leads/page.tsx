@@ -5,7 +5,7 @@ export const dynamic = "force-dynamic";
 
 export default async function AdminLeadsPage() {
   // IMPORTANT: call the function to get a client
-  const supabase = supabaseServer();
+  const supabase = await supabaseServer();
 
   const { data: leads, error } = await supabase
     .from("leads")

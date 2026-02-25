@@ -26,7 +26,7 @@ function getIp(req: Request) {
 }
 
 async function rateLimit(ipHash: string) {
-  const supabase = supabaseServer();
+  const supabase = await supabaseServer();
 
   const since = new Date(Date.now() - 15_000).toISOString(); // 15s window
 
@@ -60,7 +60,7 @@ async function logSecurityEvent(opts: {
   meta?: any;
 }) {
   try {
-    const supabase = supabaseServer();
+    const supabase = await supabaseServer();
     await supabase.from("security_events").insert([
       {
         event_type: opts.event_type,
@@ -101,7 +101,7 @@ export async function GET(req: Request) {
       );
     }
 
-    const supabase = supabaseServer();
+    const supabase = await supabaseServer();
 
     // ✅ Avoid .single() to prevent "Cannot coerce to a single JSON object"
     const { data, error } = await supabase

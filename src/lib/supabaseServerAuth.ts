@@ -4,7 +4,7 @@ import { supabaseServer } from "@/lib/supabaseServer";
  * Convenience helper to fetch user + session on the server.
  */
 export async function supabaseServerAuth() {
-  const supabase = supabaseServer();
+  const supabase = await supabaseServer();
 
   const [{ data: userData }, { data: sessionData }] = await Promise.all([
     supabase.auth.getUser(),

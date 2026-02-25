@@ -1,25 +1,49 @@
 import { NextResponse } from "next/server";
-import { verifySignedPassToken } from "@/lib/signedToken";
 import { supabaseServer } from "@/lib/supabaseServer";
+import { verifySignedPassToken } from "@/lib/signedToken";
+
+export const dynamic = "force-dynamic";
 
 export async function POST(req: Request) {
   try {
-    const adminToken = req.headers.get("x-admin-seed-token") || "";
-    if (adminToken !== process.env.ADMIN_SEED_TOKEN) {
-      return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+    const body = await req.json();
+    const token = String(body?.token ?? "");
+    const reason = String(body?.reason ?? "manual revoke");
+
+    if (!token) {
+      return NextResponse.json({ ok: false, error: "Missing token" }, { status: 400 });
     }
 
-    const body = await req.json().catch(() => ({}));
-    const token = String(body.token || "");
-    const reason = String(body.reason || "revoked");
+    const v = await verifySignedPassToken(token);
+    if (!v.ok) {
+      return NextResponse.json({ ok: false, error: "Invalid token" }, { status: 400 });
+    }
 
-    const v = verifySignedPassToken(token);
-    if (!v.ok) return NextResponse.json({ ok: false, error: "Invalid token" }, { status: 400 });
+    const supabase = await supabaseServer();
 
-    supabaseServer().from("token_denylist").insert([{ jti: v.payload.jti, reason }]);
+    const { error: insErr } = await supabase
+      .from("token_denylist")
+      .insert([
+        {
+          token,
+          reason,
+          venue_id: v.payload.venueId,
+          exp: v.payload.exp ?? null,
+        },
+      ]);
 
-    return NextResponse.json({ ok: true, jti: v.payload.jti, reason });
+    if (insErr) {
+      return NextResponse.json(
+        { ok: false, error: insErr.message ?? String(insErr) },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json({ ok: true });
   } catch (e: any) {
-    return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 });
+    return NextResponse.json(
+      { ok: false, error: e?.message ?? String(e) },
+      { status: 500 }
+    );
   }
 }

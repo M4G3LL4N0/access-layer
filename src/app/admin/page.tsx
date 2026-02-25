@@ -43,7 +43,7 @@ function Btn({ href, label, primary }: { href: string; label: string; primary?: 
 }
 
 export default async function AdminPage() {
-  const supabase = supabaseServer();
+  const supabase = await supabaseServer();
 
   // IMPORTANT: count only exists on the awaited response object, not on the query builder.
   const [{ count: venuesCount }, { count: activeVenuesCount }, { count: leadsCount }, { count: passesCount }] =

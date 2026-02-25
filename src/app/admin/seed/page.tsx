@@ -56,7 +56,7 @@ export default async function AdminSeedPage({
   const ok = sp.ok === "1";
 
   // ✅ supabaseServer() returns a client (function). Call it once.
-  const supabase = supabaseServer();
+  const supabase = await supabaseServer();
 
   // ✅ ALWAYS await the query, THEN destructure { data, error }.
   const { data: recent, error: recentErr } = await supabase

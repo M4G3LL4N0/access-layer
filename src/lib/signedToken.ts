@@ -1,48 +1,77 @@
-import crypto from "crypto";
+import { SignJWT, jwtVerify } from "jose";
 
-const SECRET = process.env.SIGNED_TOKEN_SECRET || process.env.JWT_SECRET || "";
+type PassPayload = {
+  venueId: string;
+  exp: number; // seconds since epoch (JWT standard)
+  iat: number; // seconds since epoch
+};
 
-function base64url(input: Buffer | string) {
-  const buf = Buffer.isBuffer(input) ? input : Buffer.from(input);
-  return buf
-    .toString("base64")
-    .replace(/=/g, "")
-    .replace(/\+/g, "-")
-    .replace(/\//g, "_");
+function getSecretKey() {
+  const secret =
+    process.env.SIGNED_TOKEN_SECRET ||
+    process.env.JWT_SECRET ||
+    process.env.NEXTAUTH_SECRET;
+
+  if (!secret) {
+    throw new Error(
+      "Missing SIGNED_TOKEN_SECRET (or JWT_SECRET / NEXTAUTH_SECRET) env var"
+    );
+  }
+
+  return new TextEncoder().encode(secret);
 }
 
 /**
- * Minimal HMAC-signed token (NOT a full JWT).
- * If you already use JWT elsewhere, swap this out later.
+ * Issue a signed pass token for a venue that expires at `expiresAt`.
+ * Returns { token, payload } to match route usage.
  */
-export function signToken(payload: Record<string, any>, ttlSeconds = 3600) {
-  if (!SECRET) throw new Error("Missing SIGNED_TOKEN_SECRET (or JWT_SECRET)");
+export function issueSignedPassToken(venueId: string, expiresAt: Date) {
+  if (!venueId) throw new Error("Missing venueId");
 
-  const exp = Math.floor(Date.now() / 1000) + ttlSeconds;
-  const body = { ...payload, exp };
+  const nowSec = Math.floor(Date.now() / 1000);
+  const expSec = Math.floor(expiresAt.getTime() / 1000);
 
-  const encoded = base64url(JSON.stringify(body));
-  const sig = base64url(
-    crypto.createHmac("sha256", SECRET).update(encoded).digest()
-  );
+  const payload: PassPayload = {
+    venueId,
+    iat: nowSec,
+    exp: expSec,
+  };
 
-  return `${encoded}.${sig}`;
+  const tokenPromise = new SignJWT({ venueId })
+    .setProtectedHeader({ alg: "HS256", typ: "JWT" })
+    .setIssuedAt(nowSec)
+    .setExpirationTime(expSec)
+    .sign(getSecretKey());
+
+  // NOTE: caller expects sync return shape; but signing is async.
+  // We return a small wrapper: token is a Promise<string>.
+  // If your route expects a string immediately, use `await` when calling.
+  return { token: tokenPromise, payload };
 }
 
-export function verifyToken(token: string) {
-  if (!SECRET) throw new Error("Missing SIGNED_TOKEN_SECRET (or JWT_SECRET)");
+/**
+ * Verify a signed pass token.
+ */
+export async function verifySignedPassToken(token: string) {
+  try {
+    const { payload } = await jwtVerify(token, getSecretKey(), {
+      algorithms: ["HS256"],
+    });
 
-  const [encoded, sig] = token.split(".");
-  if (!encoded || !sig) return null;
+    const venueId = payload.venueId;
+    if (typeof venueId !== "string" || !venueId) {
+      return { ok: false as const, error: "Invalid token payload" };
+    }
 
-  const expected = base64url(
-    crypto.createHmac("sha256", SECRET).update(encoded).digest()
-  );
+    return { ok: true as const, payload: { venueId, exp: payload.exp } };
+  } catch (e: any) {
+    return { ok: false as const, error: e?.message || "Invalid token" };
+  }
+}
 
-  if (!crypto.timingSafeEqual(Buffer.from(sig), Buffer.from(expected))) return null;
-
-  const json = JSON.parse(Buffer.from(encoded.replace(/-/g, "+").replace(/_/g, "/"), "base64").toString("utf8"));
-  if (typeof json?.exp === "number" && json.exp < Math.floor(Date.now() / 1000)) return null;
-
-  return json;
+/**
+ * Back-compat name some files may still import.
+ */
+export async function verifyToken(token: string) {
+  return verifySignedPassToken(token);
 }

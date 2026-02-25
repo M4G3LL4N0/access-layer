@@ -69,7 +69,7 @@ export default async function AdminVenueDetailPage({
   const sp = await searchParams;
   const token = (sp.token as string) || "";
 
-  const supabase = supabaseServer();
+  const supabase = await supabaseServer();
 
   // ✅ MUST await query then destructure.
   const { data: venue, error: vErr } = await supabase

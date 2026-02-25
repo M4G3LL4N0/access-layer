@@ -24,7 +24,7 @@ export async function POST(req: Request) {
       return jsonError("Unauthorized", 401);
     }
 
-    const supabase = supabaseServer();
+    const supabase = await supabaseServer();
 
     // ✅ 1) Find the latest rule for this venue (optional)
     const { data: latestRule, error: latestErr } = await supabase

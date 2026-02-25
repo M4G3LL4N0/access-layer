@@ -3,7 +3,7 @@ import { supabaseServer } from "@/lib/supabaseServer";
 
 export async function POST(req: Request) {
   const { venueId, name, type } = await req.json();
-  const supabase = supabaseServer();
+  const supabase = await supabaseServer();
 
   const { error } = await supabase.from("spaces").insert([
     {

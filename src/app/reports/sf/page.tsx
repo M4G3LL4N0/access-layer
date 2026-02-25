@@ -10,7 +10,7 @@ function isoDaysAgo(days: number) {
 }
 
 export default async function SfReportPage() {
-  const supabase = supabaseServer();
+  const supabase = await supabaseServer();
 
   const { data: venues } = await supabase
     .from("venues")

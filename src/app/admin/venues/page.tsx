@@ -29,7 +29,7 @@ export default async function AdminVenuesPage({
   const token = (sp.token as string) || "";
 
   // ✅ In YOUR repo, supabaseServer is a FUNCTION.
-  const supabase = supabaseServer();
+  const supabase = await supabaseServer();
 
   const { data: venues, error } = await supabase
     .from("venues")

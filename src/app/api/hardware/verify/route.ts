@@ -9,7 +9,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ allow: false, reason: "Missing token" });
     }
 
-    const supabase = supabaseServer();
+    const supabase = await supabaseServer();
 
     const { data, error } = await supabase
       .from("access_passes")

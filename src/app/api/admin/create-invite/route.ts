@@ -8,7 +8,7 @@ function jsonError(msg: string, status = 400, extra?: any) {
 }
 
 async function sampleVenues() {
-  const supabase = supabaseServer();
+  const supabase = await supabaseServer();
 
   // ✅ IMPORTANT: await the query THEN destructure data/error
   const { data, error } = await supabase
@@ -30,7 +30,7 @@ export async function POST(req: Request) {
     if (!venueId) return jsonError("Missing venueId");
     if (!email) return jsonError("Missing email");
 
-    const supabase = supabaseServer();
+    const supabase = await supabaseServer();
 
     // Confirm venue exists (avoid FK fail)
     const { data: venue, error: venueErr } = await supabase

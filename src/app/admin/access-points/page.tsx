@@ -2,27 +2,10 @@ import Link from "next/link";
 import { supabaseServer } from "@/lib/supabaseServer";
 
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
-function chip(t: string) {
-  return (
-    <span
-      style={{
-        display: "inline-block",
-        padding: "4px 10px",
-        borderRadius: 999,
-        border: "1px solid rgba(0,0,0,0.12)",
-        fontSize: 12,
-        fontWeight: 800,
-        opacity: 0.85,
-      }}
-    >
-      {t}
-    </span>
-  );
-}
-
-export default async function AdminAccessPointsIndex() {
-  const supabase = supabaseServer();
+export default async function AdminAccessPointsIndexPage() {
+  const supabase = await supabaseServer();
 
   const { data: venues, error } = await supabase
     .from("venues")
@@ -31,66 +14,57 @@ export default async function AdminAccessPointsIndex() {
     .limit(200);
 
   return (
-    <main className="axw-container">
-      <div className="axw-row" style={{ justifyContent: "space-between" }}>
+    <div style={{ padding: 16 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 12 }}>
         <div>
-          <div className="axw-title" style={{ fontSize: 22 }}>Admin — Access Points</div>
-          <div className="axw-muted" style={{ marginTop: 6 }}>
-            Manage “every access surface” per venue: doors, garages, gates, elevators, turnstiles, lockers, Wi-Fi, APIs.
-          </div>
+          <h1 style={{ fontSize: 22, fontWeight: 800, margin: 0 }}>Admin • Access Points</h1>
+          <p style={{ margin: "6px 0 0 0", opacity: 0.8 }}>Pick a venue to manage its access points.</p>
         </div>
-
-        <div className="axw-row">
-          <Link className="axw-btn" href="/admin">← Back to Admin</Link>
-          <Link className="axw-btn axw-btn-primary" href="/venues">Directory</Link>
-        </div>
+        <Link href="/admin">← Admin</Link>
       </div>
 
-      <div className="axw-card" style={{ marginTop: 16 }}>
-        <div style={{ fontWeight: 900, marginBottom: 8 }}>Venues</div>
-        <div className="axw-muted" style={{ fontSize: 13, marginBottom: 10 }}>
-          Click a venue to add/list access points.
+      {error ? (
+        <div style={{ marginTop: 14 }}>
+          <p>Error loading venues.</p>
+          <pre style={{ whiteSpace: "pre-wrap" }}>{String(error.message ?? error)}</pre>
         </div>
-
-        {error ? (
-          <div style={{ color: "crimson", fontWeight: 800 }}>Error: {error.message}</div>
-        ) : (
-          <div style={{ display: "grid", gap: 10 }}>
-            {(venues || []).map((v) => (
-              <div
-                key={v.id}
-                style={{
-                  border: "1px solid rgba(0,0,0,0.10)",
-                  borderRadius: 14,
-                  padding: 12,
-                  display: "flex",
-                  justifyContent: "space-between",
-                  gap: 10,
-                  flexWrap: "wrap",
-                  alignItems: "center",
-                }}
-              >
-                <div>
-                  <div style={{ fontWeight: 950 }}>{v.name}</div>
-                  <div className="axw-muted" style={{ fontSize: 13, marginTop: 4 }}>
-                    {v.city} · {v.region} · {v.status}
-                  </div>
-                </div>
-
-                <div className="axw-row">
-                  {chip("doors")}
-                  {chip("garages")}
-                  {chip("gates")}
-                  {chip("turnstiles")}
-                  <Link className="axw-btn axw-btn-primary" href={`/admin/access-points/${v.id}`}>
-                    Manage →
-                  </Link>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-    </main>
+      ) : (
+        <div style={{ marginTop: 14 }}>
+          <table style={{ width: "100%", borderCollapse: "collapse" }}>
+            <thead>
+              <tr>
+                <th style={{ textAlign: "left", borderBottom: "1px solid #eee", padding: "8px 6px" }}>Venue</th>
+                <th style={{ textAlign: "left", borderBottom: "1px solid #eee", padding: "8px 6px" }}>City</th>
+                <th style={{ textAlign: "left", borderBottom: "1px solid #eee", padding: "8px 6px" }}>Region</th>
+                <th style={{ textAlign: "left", borderBottom: "1px solid #eee", padding: "8px 6px" }}>Status</th>
+                <th style={{ textAlign: "left", borderBottom: "1px solid #eee", padding: "8px 6px" }}>Created</th>
+              </tr>
+            </thead>
+            <tbody>
+              {(venues ?? []).map((v: any) => (
+                <tr key={v.id}>
+                  <td style={{ borderBottom: "1px solid #f3f3f3", padding: "8px 6px" }}>
+                    <Link href={`/admin/access-points/${v.id}`}>{v.name ?? v.id}</Link>
+                  </td>
+                  <td style={{ borderBottom: "1px solid #f3f3f3", padding: "8px 6px" }}>{v.city ?? "—"}</td>
+                  <td style={{ borderBottom: "1px solid #f3f3f3", padding: "8px 6px" }}>{v.region ?? "—"}</td>
+                  <td style={{ borderBottom: "1px solid #f3f3f3", padding: "8px 6px" }}>{v.status ?? "—"}</td>
+                  <td style={{ borderBottom: "1px solid #f3f3f3", padding: "8px 6px" }}>
+                    {v.created_at ? new Date(v.created_at).toLocaleString() : "—"}
+                  </td>
+                </tr>
+              ))}
+              {(venues ?? []).length === 0 ? (
+                <tr>
+                  <td colSpan={5} style={{ padding: "10px 6px", opacity: 0.7 }}>
+                    No venues found.
+                  </td>
+                </tr>
+              ) : null}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
   );
 }

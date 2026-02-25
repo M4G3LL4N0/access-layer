@@ -32,7 +32,7 @@ export async function POST(req: Request) {
     const lat = v?.lat === null || v?.lat === undefined || v?.lat === "" ? null : Number(v.lat);
     const lng = v?.lng === null || v?.lng === undefined || v?.lng === "" ? null : Number(v.lng);
 
-    const supabase = supabaseServer();
+    const supabase = await supabaseServer();
 
     // ✅ IMPORTANT: await the insert query BEFORE destructuring
     const { data: venue, error: vErr } = await supabase

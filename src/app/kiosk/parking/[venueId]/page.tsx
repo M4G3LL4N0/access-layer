@@ -17,7 +17,7 @@ export default async function ParkingKioskPage({
     );
   }
 
-  const supabase = supabaseServer();
+  const supabase = await supabaseServer();
 
   const { data, error } = await supabase
     .from("venues")

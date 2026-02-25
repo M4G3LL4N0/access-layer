@@ -15,7 +15,7 @@ export async function GET(req: Request) {
       );
     }
 
-    const supabase = supabaseServer();
+    const supabase = await supabaseServer();
 
     // Find all events for this token, newest first
     const { data: events, error: eventsErr } = await supabase

@@ -32,7 +32,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const supabase = supabaseServer();
+    const supabase = await supabaseServer();
 
     const payload = parsed.data;
 

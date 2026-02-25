@@ -5,7 +5,7 @@ export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
-    const supabase = supabaseServer();
+    const supabase = await supabaseServer();
 
     const since7d = new Date(Date.now() - 7 * 24 * 3600 * 1000).toISOString();
 

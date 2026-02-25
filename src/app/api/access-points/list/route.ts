@@ -12,7 +12,7 @@ export async function GET(req: Request) {
       return NextResponse.json({ ok: false, error: "Missing venueId" }, { status: 400 });
     }
 
-    const supabase = supabaseServer();
+    const supabase = await supabaseServer();
 
     const { data, error } = await supabase
       .from("access_points")

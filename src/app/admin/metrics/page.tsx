@@ -4,7 +4,7 @@ import { supabaseServer } from "@/lib/supabaseServer";
 export const dynamic = "force-dynamic";
 
 export default async function AdminMetricsPage() {
-  const supabase = supabaseServer();
+  const supabase = await supabaseServer();
 
   const [{ count: leadsCount }, { count: venuesCount }, { count: passesCount }] = await Promise.all([
     supabase.from("leads").select("*", { count: "exact", head: true }),

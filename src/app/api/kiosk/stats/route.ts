@@ -14,7 +14,7 @@ export async function GET(req: Request) {
 
     if (!venueId) return jsonError("Missing venueId (query param).", 400);
 
-    const supabase = supabaseServer();
+    const supabase = await supabaseServer();
 
     const { data: venue, error: vErr } = await supabase
       .from("venues")
