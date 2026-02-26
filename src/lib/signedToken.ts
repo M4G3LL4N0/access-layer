@@ -1,77 +1,73 @@
-import { SignJWT, jwtVerify } from "jose";
+import crypto from "crypto";
 
-type PassPayload = {
+export type PassPayload = {
   venueId: string;
-  exp: number; // seconds since epoch (JWT standard)
-  iat: number; // seconds since epoch
+  exp?: number;
+  jti: string;
+  iat: number;
 };
 
-function getSecretKey() {
-  const secret =
-    process.env.SIGNED_TOKEN_SECRET ||
-    process.env.JWT_SECRET ||
-    process.env.NEXTAUTH_SECRET;
-
-  if (!secret) {
-    throw new Error(
-      "Missing SIGNED_TOKEN_SECRET (or JWT_SECRET / NEXTAUTH_SECRET) env var"
-    );
-  }
-
-  return new TextEncoder().encode(secret);
+function b64url(input: Buffer | string) {
+  const buf = Buffer.isBuffer(input) ? input : Buffer.from(input);
+  return buf.toString("base64").replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
 }
 
-/**
- * Issue a signed pass token for a venue that expires at `expiresAt`.
- * Returns { token, payload } to match route usage.
- */
-export function issueSignedPassToken(venueId: string, expiresAt: Date) {
-  if (!venueId) throw new Error("Missing venueId");
+function b64urlJson(obj: any) {
+  return b64url(JSON.stringify(obj));
+}
 
-  const nowSec = Math.floor(Date.now() / 1000);
-  const expSec = Math.floor(expiresAt.getTime() / 1000);
+function hmac(data: string, secret: string) {
+  return b64url(crypto.createHmac("sha256", secret).update(data).digest());
+}
 
+function secret() {
+  const s = process.env.AXW_TOKEN_SECRET;
+  if (!s) throw new Error("Missing AXW_TOKEN_SECRET");
+  return s;
+}
+
+export function issueSignedPassToken(venueId: string, expiresAt?: Date) {
+  const header = { alg: "HS256", typ: "AXW" };
+  const now = Math.floor(Date.now() / 1000);
   const payload: PassPayload = {
     venueId,
-    iat: nowSec,
-    exp: expSec,
+    iat: now,
+    jti: crypto.randomUUID(),
+    exp: expiresAt ? Math.floor(expiresAt.getTime() / 1000) : undefined,
   };
 
-  const tokenPromise = new SignJWT({ venueId })
-    .setProtectedHeader({ alg: "HS256", typ: "JWT" })
-    .setIssuedAt(nowSec)
-    .setExpirationTime(expSec)
-    .sign(getSecretKey());
+  const h = b64urlJson(header);
+  const p = b64urlJson(payload);
+  const body = `${h}.${p}`;
+  const sig = hmac(body, secret());
+  const token = `${body}.${sig}`;
 
-  // NOTE: caller expects sync return shape; but signing is async.
-  // We return a small wrapper: token is a Promise<string>.
-  // If your route expects a string immediately, use `await` when calling.
-  return { token: tokenPromise, payload };
+  return { token, payload };
 }
 
-/**
- * Verify a signed pass token.
- */
-export async function verifySignedPassToken(token: string) {
+export function verifySignedPassToken(token: string): { ok: true; payload: PassPayload } | { ok: false; error: string } {
   try {
-    const { payload } = await jwtVerify(token, getSecretKey(), {
-      algorithms: ["HS256"],
-    });
+    const parts = token.split(".");
+    if (parts.length !== 3) return { ok: false, error: "bad_format" };
 
-    const venueId = payload.venueId;
-    if (typeof venueId !== "string" || !venueId) {
-      return { ok: false as const, error: "Invalid token payload" };
-    }
+    const [h, p, s] = parts;
+    const body = `${h}.${p}`;
+    const expected = hmac(body, secret());
+    if (!crypto.timingSafeEqual(Buffer.from(s), Buffer.from(expected))) return { ok: false, error: "bad_sig" };
 
-    return { ok: true as const, payload: { venueId, exp: payload.exp } };
-  } catch (e: any) {
-    return { ok: false as const, error: e?.message || "Invalid token" };
+    const payloadJson = Buffer.from(p.replace(/-/g, "+").replace(/_/g, "/"), "base64").toString("utf8");
+    const payload = JSON.parse(payloadJson) as PassPayload;
+
+    if (!payload.venueId || !payload.jti || !payload.iat) return { ok: false, error: "bad_payload" };
+
+    if (payload.exp && Math.floor(Date.now() / 1000) > payload.exp) return { ok: false, error: "expired" };
+
+    return { ok: true, payload };
+  } catch {
+    return { ok: false, error: "verify_failed" };
   }
 }
 
-/**
- * Back-compat name some files may still import.
- */
-export async function verifyToken(token: string) {
+export function verifyToken(token: string) {
   return verifySignedPassToken(token);
 }

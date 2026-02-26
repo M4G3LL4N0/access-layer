@@ -1,16 +1,15 @@
-import "./globals.css";
+import type { Metadata } from "next";
 
-export const metadata = {
-  title: "AXW — Access × World",
-  description: "Programmable access, everywhere.",
+export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://accessxworld.com"),
+  title: "AXW",
+  description: "Programmable access infrastructure",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body style={{ margin: 0, fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif" }}>
-        {children}
-      </body>
+      <body>{children}</body>
     </html>
   );
 }

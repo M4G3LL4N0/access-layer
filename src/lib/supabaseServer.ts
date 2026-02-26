@@ -1,64 +1,62 @@
-import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
+import { createServerClient } from "@supabase/ssr";
 
-function mustEnv(name: string) {
-  const v = process.env[name];
-  if (!v) throw new Error(`Missing env var: ${name}`);
-  return v;
-}
+type CookiePair = { name: string; value: string; options?: any };
 
-/**
- * Standard server client (anon key)
- */
 export async function supabaseServer() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!url || !anon) {
+    throw new Error("Missing NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_ANON_KEY");
+  }
+
   const cookieStore = await cookies();
 
-  return createServerClient(
-    mustEnv("NEXT_PUBLIC_SUPABASE_URL"),
-    mustEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY"),
-    {
-      cookies: {
-        getAll() {
-          return cookieStore.getAll();
-        },
-        setAll(cookiesToSet) {
-          try {
-            cookiesToSet.forEach(({ name, value, options }) => {
-              cookieStore.set(name, value, options);
-            });
-          } catch {
-            // ignore cookie write failures in RSC
-          }
-        },
+  return createServerClient(url, anon, {
+    cookies: {
+      getAll() {
+        const all = cookieStore.getAll();
+        return all.map((c) => ({ name: c.name, value: c.value }));
       },
-    }
-  );
+      setAll(cookiePairs: CookiePair[]) {
+        for (const c of cookiePairs) {
+          try {
+            cookieStore.set(c.name, c.value, c.options);
+          } catch {
+            void 0;
+          }
+        }
+      },
+    },
+  });
 }
 
-/**
- * Service-role client (admin key)
- */
 export async function supabaseServerService() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const service = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  if (!url || !service) {
+    throw new Error("Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY");
+  }
+
   const cookieStore = await cookies();
 
-  return createServerClient(
-    mustEnv("NEXT_PUBLIC_SUPABASE_URL"),
-    mustEnv("SUPABASE_SERVICE_ROLE_KEY"),
-    {
-      cookies: {
-        getAll() {
-          return cookieStore.getAll();
-        },
-        setAll(cookiesToSet) {
-          try {
-            cookiesToSet.forEach(({ name, value, options }) => {
-              cookieStore.set(name, value, options);
-            });
-          } catch {
-            // ignore
-          }
-        },
+  return createServerClient(url, service, {
+    cookies: {
+      getAll() {
+        const all = cookieStore.getAll();
+        return all.map((c) => ({ name: c.name, value: c.value }));
       },
-    }
-  );
+      setAll(cookiePairs: CookiePair[]) {
+        for (const c of cookiePairs) {
+          try {
+            cookieStore.set(c.name, c.value, c.options);
+          } catch {
+            void 0;
+          }
+        }
+      },
+    },
+  });
 }
