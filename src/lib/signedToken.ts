@@ -1,70 +1,48 @@
 import crypto from "crypto";
 
-export type PassPayload = {
+type Payload = {
   venueId: string;
   exp?: number;
   jti: string;
-  iat: number;
 };
 
-function b64url(input: Buffer | string) {
-  const buf = Buffer.isBuffer(input) ? input : Buffer.from(input);
+function reqEnv(name: string) {
+  const v = process.env[name];
+  if (!v) throw new Error(`Missing env: ${name}`);
+  return v;
+}
+
+function b64url(buf: Buffer) {
   return buf.toString("base64").replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
 }
 
-function b64urlJson(obj: any) {
-  return b64url(JSON.stringify(obj));
-}
-
-function hmac(data: string, secret: string) {
+function sign(data: string) {
+  const secret = reqEnv("SIGNED_TOKEN_SECRET");
   return b64url(crypto.createHmac("sha256", secret).update(data).digest());
 }
 
-function secret() {
-  const s = process.env.AXW_TOKEN_SECRET;
-  if (!s) throw new Error("Missing AXW_TOKEN_SECRET");
-  return s;
-}
-
 export function issueSignedPassToken(venueId: string, expiresAt?: Date) {
-  const header = { alg: "HS256", typ: "AXW" };
-  const now = Math.floor(Date.now() / 1000);
-  const payload: PassPayload = {
+  const payload: Payload = {
     venueId,
-    iat: now,
-    jti: crypto.randomUUID(),
     exp: expiresAt ? Math.floor(expiresAt.getTime() / 1000) : undefined,
+    jti: crypto.randomUUID(),
   };
-
-  const h = b64urlJson(header);
-  const p = b64urlJson(payload);
-  const body = `${h}.${p}`;
-  const sig = hmac(body, secret());
-  const token = `${body}.${sig}`;
-
-  return { token, payload };
+  const body = b64url(Buffer.from(JSON.stringify(payload)));
+  const sig = sign(body);
+  return { token: `${body}.${sig}`, payload };
 }
 
-export function verifySignedPassToken(token: string): { ok: true; payload: PassPayload } | { ok: false; error: string } {
+export function verifySignedPassToken(token: string) {
   try {
-    const parts = token.split(".");
-    if (parts.length !== 3) return { ok: false, error: "bad_format" };
-
-    const [h, p, s] = parts;
-    const body = `${h}.${p}`;
-    const expected = hmac(body, secret());
-    if (!crypto.timingSafeEqual(Buffer.from(s), Buffer.from(expected))) return { ok: false, error: "bad_sig" };
-
-    const payloadJson = Buffer.from(p.replace(/-/g, "+").replace(/_/g, "/"), "base64").toString("utf8");
-    const payload = JSON.parse(payloadJson) as PassPayload;
-
-    if (!payload.venueId || !payload.jti || !payload.iat) return { ok: false, error: "bad_payload" };
-
-    if (payload.exp && Math.floor(Date.now() / 1000) > payload.exp) return { ok: false, error: "expired" };
-
-    return { ok: true, payload };
-  } catch {
-    return { ok: false, error: "verify_failed" };
+    const [body, sig] = token.split(".");
+    if (!body || !sig) return { ok: false as const, error: "Malformed token" };
+    const expected = sign(body);
+    if (sig !== expected) return { ok: false as const, error: "Bad signature" };
+    const payload = JSON.parse(Buffer.from(body.replace(/-/g, "+").replace(/_/g, "/"), "base64").toString("utf8")) as Payload;
+    if (payload.exp && Date.now() / 1000 > payload.exp) return { ok: false as const, error: "Expired token" };
+    return { ok: true as const, payload };
+  } catch (e) {
+    return { ok: false as const, error: e };
   }
 }
 
