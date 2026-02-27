@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import SiteHeader from "@/components/SiteHeader";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://accessxworld.com"),
@@ -21,8 +20,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body>
-        <SiteHeader />
-        <div style={{ maxWidth: 1100, margin: "0 auto", padding: "18px 16px" }}>{children}</div>
+        {children}
       </body>
     </html>
   );
