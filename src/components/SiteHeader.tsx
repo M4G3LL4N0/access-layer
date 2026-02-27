@@ -1,38 +1,44 @@
 import Link from "next/link";
 import SiteLogo from "@/components/SiteLogo";
 
+function NavLink({ href, children }: { href: string; children: React.ReactNode }) {
+  return (
+    <Link
+      href={href}
+      style={{
+        textDecoration: "none",
+        padding: "6px 10px",
+        borderRadius: 10,
+        border: "1px solid rgba(255,255,255,0.12)"
+      }}
+    >
+      {children}
+    </Link>
+  );
+}
+
 export default function SiteHeader() {
   return (
     <header
       style={{
-        position: "sticky",
-        top: 0,
-        zIndex: 50,
-        backdropFilter: "blur(10px)",
-        borderBottom: "1px solid rgba(0,0,0,0.08)",
-        background: "rgba(255,255,255,0.85)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        gap: 12,
+        flexWrap: "wrap",
+        padding: "14px 16px",
+        borderBottom: "1px solid rgba(255,255,255,0.10)"
       }}
     >
-      <div
-        style={{
-          maxWidth: 1120,
-          margin: "0 auto",
-          padding: "14px 18px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          gap: 16,
-        }}
-      >
-        <SiteLogo />
+      <SiteLogo />
 
-        <nav style={{ display: "flex", alignItems: "center", gap: 14, fontSize: 14 }}>
-          <Link href="/venues">Venues</Link>
-          <Link href="/pricing">Pricing</Link>
-          <Link href="/investors">Investors</Link>
-          <Link href="/login">Login</Link>
-        </nav>
-      </div>
+      <nav style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", fontSize: 14 }}>
+        <NavLink href="/pricing">Pricing</NavLink>
+        <NavLink href="/venues">Venues</NavLink>
+        <NavLink href="/operators">Operators</NavLink>
+        <NavLink href="/investors">Investors</NavLink>
+        <NavLink href="/login">Login</NavLink>
+      </nav>
     </header>
   );
 }

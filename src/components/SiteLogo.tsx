@@ -8,8 +8,9 @@ export default function SiteLogo() {
         display: "flex",
         alignItems: "center",
         gap: 10,
-        textDecoration: "none",
+        textDecoration: "none"
       }}
+      aria-label="AXW Home"
     >
       <picture>
         <source media="(prefers-color-scheme: dark)" srcSet="/axw-logo-dark.png" />
@@ -21,10 +22,7 @@ export default function SiteLogo() {
           style={{ display: "block" }}
         />
       </picture>
-
-      <span style={{ fontWeight: 700, letterSpacing: 0.4, color: "inherit" }}>
-        AXW
-      </span>
+      <span style={{ fontWeight: 700, letterSpacing: 0.4, color: "inherit" }}>AXW</span>
     </Link>
   );
 }
