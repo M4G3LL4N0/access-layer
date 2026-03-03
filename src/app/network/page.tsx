@@ -1,4 +1,5 @@
-export const dynamic = "force-static";
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 const BUILD_STAMP = "NETWORK_OK_2026-02-26_1907PST";
 
@@ -20,7 +21,15 @@ export default function NetworkPage() {
           background: "white",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 12,
+            flexWrap: "wrap",
+          }}
+        >
           <h2 style={{ margin: 0, fontSize: 16 }}>Status</h2>
           <span
             style={{
@@ -35,7 +44,14 @@ export default function NetworkPage() {
           </span>
         </div>
 
-        <div style={{ marginTop: 12, display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 12 }}>
+        <div
+          style={{
+            marginTop: 12,
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+            gap: 12,
+          }}
+        >
           <Card title="Routing" value="OK" />
           <Card title="Render" value="OK" />
           <Card title="Data" value="Not connected" />
