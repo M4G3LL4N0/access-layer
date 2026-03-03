@@ -58,7 +58,7 @@ export default function Home() {
           >
             <a href="#what" style={navLink}>What</a>
             <a href="#how" style={navLink}>How</a>
-            <a href="#network" style={navLink}>Network</a>
+            <a href="/network" style={navLink}>Network</a>
             <a href="#investors" style={navLink}>Investors</a>
           </nav>
         </header>
