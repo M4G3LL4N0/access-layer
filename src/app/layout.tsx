@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import MarketingHeader from "@/components/MarketingHeader";
+import HeaderGate from "@/components/HeaderGate";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://accessxworld.com"),
@@ -31,7 +31,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body style={{ background: "#fff" }}>
-        <MarketingHeader />
+        <HeaderGate />
         {children}
       </body>
     </html>
