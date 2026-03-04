@@ -1,44 +1,74 @@
-import Link from "next/link";
-import SiteLogo from "@/components/SiteLogo";
-
-function NavLink({ href, children }: { href: string; children: React.ReactNode }) {
-  return (
-    <Link
-      href={href}
-      style={{
-        textDecoration: "none",
-        padding: "6px 10px",
-        borderRadius: 10,
-        border: "1px solid rgba(255,255,255,0.12)"
-      }}
-    >
-      {children}
-    </Link>
-  );
-}
+import React from "react";
 
 export default function SiteHeader() {
   return (
     <header
       style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        gap: 12,
-        flexWrap: "wrap",
-        padding: "14px 16px",
-        borderBottom: "1px solid rgba(255,255,255,0.10)"
+        position: "sticky",
+        top: 0,
+        zIndex: 50,
+        background: "white",
+        borderBottom: "1px solid #eee",
       }}
     >
-      <SiteLogo />
+      <div
+        style={{
+          maxWidth: 1100,
+          margin: "0 auto",
+          padding: "12px 16px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: 14,
+        }}
+      >
+        <a
+          href="/"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 10,
+            textDecoration: "none",
+            color: "black",
+            fontWeight: 800,
+            letterSpacing: 0.2,
+          }}
+        >
+          <img
+            src="/icon.png"
+            alt="AXW"
+            width={22}
+            height={22}
+            style={{ display: "block" }}
+          />
+          <span style={{ fontSize: 18 }}>AXW</span>
+        </a>
 
-      <nav style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", fontSize: 14 }}>
-        <NavLink href="/pricing">Pricing</NavLink>
-        <NavLink href="/venues">Venues</NavLink>
-        <NavLink href="/operators">Operators</NavLink>
-        <NavLink href="/investors">Investors</NavLink>
-        <NavLink href="/login">Login</NavLink>
-      </nav>
+        <nav style={{ display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
+          <A href="/pricing">Pricing</A>
+          <A href="/venues">Venues</A>
+          <A href="/operators">Operators</A>
+          <A href="/investors">Investors</A>
+          <A href="/login">Login</A>
+        </nav>
+      </div>
     </header>
+  );
+}
+
+function A({ href, children }: { href: string; children: React.ReactNode }) {
+  return (
+    <a
+      href={href}
+      style={{
+        textDecoration: "none",
+        color: "black",
+        fontSize: 14,
+        padding: "8px 10px",
+        borderRadius: 10,
+      }}
+    >
+      {children}
+    </a>
   );
 }

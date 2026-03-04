@@ -31,24 +31,9 @@ export default function OperatorsPage() {
           </div>
 
           <div style={{ marginTop: 12, display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 12 }}>
-            <Card
-              title="Admin → Ops"
-              body="Select a venue, view health + controls."
-              href="/admin/ops"
-              foot="Go to /admin/ops"
-            />
-            <Card
-              title="Admin → Venues"
-              body="Manage venues + status."
-              href="/admin/venues"
-              foot="Go to /admin/venues"
-            />
-            <Card
-              title="Ops Console (venue)"
-              body="Venue-scoped ops is at /ops/[venueId]."
-              href="/admin/ops"
-              foot="Pick venue then open ops"
-            />
+            <Card title="Admin → Ops" body="Select a venue, view health + controls." href="/admin/ops" foot="Go to /admin/ops" />
+            <Card title="Admin → Venues" body="Manage venues + status." href="/admin/venues" foot="Go to /admin/venues" />
+            <Card title="Ops Console (venue)" body="Venue-scoped ops is at /ops/[venueId]." href="/admin/ops" foot="Pick venue then open ops" />
           </div>
 
           <div style={{ marginTop: 14, display: "flex", gap: 10, flexWrap: "wrap" }}>
