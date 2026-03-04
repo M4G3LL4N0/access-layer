@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import MarketingHeader from "@/components/MarketingHeader";
+
 export const metadata: Metadata = {
   metadataBase: new URL("https://accessxworld.com"),
   title: "AXW — Access × World",
@@ -28,7 +30,8 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body style={{ background: "#fff", color: "#000" }}>
+      <body style={{ background: "#fff" }}>
+        <MarketingHeader />
         {children}
       </body>
     </html>
