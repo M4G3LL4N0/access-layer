@@ -1,14 +1,10 @@
 export const dynamic = "force-static";
 
-import SiteHeader from "@/components/SiteHeader";
-
 const BUILD_STAMP = "NETWORK_OK_2026-02-26_1907PST";
 
 export default function NetworkPage() {
   return (
     <main style={{ minHeight: "100vh", background: "#fafafa" }}>
-      <SiteHeader />
-
       <div style={{ maxWidth: 1100, margin: "0 auto", padding: "28px 16px 54px" }}>
         <div
           style={{

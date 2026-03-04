@@ -1,6 +1,5 @@
 "use client";
 
-import MarketingHeader from "@/components/MarketingHeader";
 import React, { useEffect, useMemo, useState } from "react";
 
 export const dynamic = "force-dynamic";
@@ -182,8 +181,6 @@ export default function HomeV2() {
       }}
     >
       {/* Top bar */}
-      <MarketingHeader />
-
       {/* Hero */}
       <section
         style={{

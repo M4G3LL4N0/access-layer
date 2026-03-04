@@ -1,27 +1,25 @@
+"use client";
+
+import Link from "next/link";
+import Image from "next/image";
+import { usePathname } from "next/navigation";
 import React from "react";
 
-type Item = { label: string; href: string };
+type NavItem = { label: string; href: string };
 
-export default function MarketingHeader({
-  items,
-  ctaHref = "https://app.accessxworld.com",
-  ctaLabel = "Open App",
-}: {
-  items?: Item[];
-  ctaHref?: string;
-  ctaLabel?: string;
-}) {
-  const nav: Item[] =
-    items ??
-    [
-      { label: "Pricing", href: "/pricing" },
-      { label: "Venues", href: "/venues" },
-      { label: "Operators", href: "/operators" },
-      { label: "Investors", href: "/investors" },
-      { label: "Network", href: "/network" },
-      { label: "Contact", href: "/contact" },
-      { label: "Login", href: "/login" },
-    ];
+const NAV: NavItem[] = [
+  { label: "Pricing", href: "/pricing" },
+  { label: "Venues", href: "/venues" },
+  { label: "Operators", href: "/operators" },
+  { label: "Network", href: "/network" },
+  { label: "Investors", href: "/investors" },
+  { label: "Case Study", href: "/case-studies/sf-pilot" },
+  { label: "Contact", href: "/contact" },
+  { label: "Login", href: "/login" },
+];
+
+export default function MarketingHeader() {
+  const pathname = usePathname();
 
   return (
     <header
@@ -29,13 +27,14 @@ export default function MarketingHeader({
         position: "sticky",
         top: 0,
         zIndex: 50,
-        background: "white",
+        background: "rgba(255,255,255,0.92)",
+        backdropFilter: "blur(10px)",
         borderBottom: "1px solid #eee",
       }}
     >
       <div
         style={{
-          maxWidth: 1100,
+          maxWidth: 1120,
           margin: "0 auto",
           padding: "14px 16px",
           display: "flex",
@@ -44,73 +43,97 @@ export default function MarketingHeader({
           gap: 14,
         }}
       >
-        <a
+        <Link
           href="/"
           style={{
             display: "flex",
             alignItems: "center",
-            gap: 12,
+            gap: 10,
             textDecoration: "none",
             color: "black",
+            minWidth: 220,
           }}
         >
           <span
             style={{
-              width: 40,
-              height: 40,
-              borderRadius: 12,
+              width: 34,
+              height: 34,
+              borderRadius: 10,
               border: "1px solid #eee",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
               background: "white",
+              display: "grid",
+              placeItems: "center",
+              overflow: "hidden",
             }}
           >
-            <img src="/icon.png" alt="AXW" width={20} height={20} style={{ display: "block" }} />
+            <Image
+              src="/icon.png"
+              alt="AXW"
+              width={24}
+              height={24}
+              priority
+              style={{ display: "block" }}
+            />
           </span>
 
-          <div style={{ lineHeight: 1.05 }}>
-            <div style={{ fontWeight: 800, letterSpacing: 0.2 }}>AXW</div>
-            <div style={{ fontSize: 12, color: "#666" }}>Access × World</div>
-          </div>
-        </a>
+          <span style={{ display: "flex", flexDirection: "column", lineHeight: 1.05 }}>
+            <span style={{ fontWeight: 700, letterSpacing: 0.2 }}>AXW</span>
+            <span style={{ fontSize: 12, color: "#666" }}>Access × World</span>
+          </span>
+        </Link>
 
-        <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap", justifyContent: "flex-end" }}>
-          <nav style={{ display: "flex", gap: 14, flexWrap: "wrap", alignItems: "center" }}>
-            {nav.map((i) => (
-              <a key={i.href} href={i.href} style={link}>
-                {i.label}
-              </a>
-            ))}
-          </nav>
+        <nav
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 12,
+            flexWrap: "wrap",
+            justifyContent: "flex-end",
+          }}
+        >
+          {NAV.map((item) => {
+            const active = pathname === item.href;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                style={{
+                  textDecoration: "none",
+                  color: "black",
+                  fontSize: 14,
+                  padding: "8px 10px",
+                  borderRadius: 10,
+                  border: "1px solid transparent",
+                  background: active ? "rgba(0,0,0,0.06)" : "transparent",
+                }}
+              >
+                {item.label}
+              </Link>
+            );
+          })}
 
-          <a href={ctaHref} style={cta}>
-            <span style={{ fontWeight: 650 }}>{ctaLabel}</span>
-            <span style={{ opacity: 0.9 }}>→</span>
-          </a>
-        </div>
+          <Link
+            href="https://app.accessxworld.com"
+            style={{
+              marginLeft: 6,
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 8,
+              textDecoration: "none",
+              color: "black",
+              padding: "9px 12px",
+              borderRadius: 999,
+              border: "1px solid #ddd",
+              background: "white",
+              fontSize: 14,
+              fontWeight: 600,
+              whiteSpace: "nowrap",
+            }}
+          >
+            Open App <span aria-hidden style={{ fontSize: 16 }}>→</span>
+          </Link>
+        </nav>
       </div>
     </header>
   );
 }
-
-const link: React.CSSProperties = {
-  fontSize: 14,
-  color: "black",
-  textDecoration: "none",
-  padding: "8px 10px",
-  borderRadius: 10,
-};
-
-const cta: React.CSSProperties = {
-  display: "inline-flex",
-  alignItems: "center",
-  gap: 10,
-  padding: "10px 14px",
-  borderRadius: 999,
-  border: "1px solid #ddd",
-  background: "white",
-  color: "black",
-  textDecoration: "none",
-  fontSize: 14,
-};
