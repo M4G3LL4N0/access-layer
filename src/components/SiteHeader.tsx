@@ -1,6 +1,32 @@
+"use client";
+
 import React from "react";
+import { usePathname } from "next/navigation";
 
 export default function SiteHeader() {
+  const pathname = usePathname() || "/";
+
+  const HIDE_ON = new Set<string>([
+    "/",
+    "/home-v1",
+    "/home-v2",
+    "/pricing",
+    "/venues",
+    "/operators",
+    "/investors",
+    "/network",
+    "/contact",
+    "/enterprise",
+    "/government",
+    "/press",
+    "/sdk",
+    "/owners",
+    "/legal/terms",
+    "/legal/privacy",
+  ]);
+
+  if (HIDE_ON.has(pathname)) return null;
+
   return (
     <header
       style={{
@@ -34,13 +60,7 @@ export default function SiteHeader() {
             letterSpacing: 0.2,
           }}
         >
-          <img
-            src="/icon.png"
-            alt="AXW"
-            width={22}
-            height={22}
-            style={{ display: "block" }}
-          />
+          <img src="/icon.png" alt="AXW" width={22} height={22} style={{ display: "block" }} />
           <span style={{ fontSize: 18 }}>AXW</span>
         </a>
 

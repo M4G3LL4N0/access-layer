@@ -1,3 +1,4 @@
+import MarketingHeader from "@/components/MarketingHeader";
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
@@ -181,86 +182,7 @@ export default function HomeV2() {
       }}
     >
       {/* Top bar */}
-      <header
-        style={{
-          position: "sticky",
-          top: 0,
-          zIndex: 20,
-          backdropFilter: "blur(14px)",
-          background: "rgba(255,255,255,0.78)",
-          borderBottom: "1px solid rgba(0,0,0,0.08)",
-        }}
-      >
-        <div
-          style={{
-            maxWidth: 1180,
-            margin: "0 auto",
-            padding: "14px 18px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            gap: 14,
-          }}
-        >
-          <a
-            href="/"
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 12,
-              textDecoration: "none",
-              color: "inherit",
-              minWidth: 0,
-            }}
-          >
-            <img
-              src="/axw-icon.png"
-              alt="AXW"
-              style={{
-                width: 34,
-                height: 34,
-                borderRadius: 10,
-                border: "1px solid rgba(0,0,0,0.10)",
-                background: "#fff",
-                objectFit: "cover",
-              }}
-              onError={(e) => {
-                // fallback if icon not present
-                (e.currentTarget as HTMLImageElement).style.display = "none";
-              }}
-            />
-            <div style={{ display: "grid", lineHeight: 1.1, minWidth: 0 }}>
-              <div style={{ fontWeight: 950, letterSpacing: -0.2 }}>AXW</div>
-              <div style={{ fontSize: 12, opacity: 0.7 }}>Access × World</div>
-            </div>
-          </a>
-
-          <nav style={{ display: "flex", gap: 14, flexWrap: "wrap", justifyContent: "flex-end" }}>
-            {nav.map((n) => (
-              <a
-                key={n.href}
-                href={n.href}
-                style={{
-                  fontSize: 13,
-                  fontWeight: 800,
-                  opacity: 0.78,
-                  textDecoration: "none",
-                  color: "inherit",
-                  padding: "8px 10px",
-                  borderRadius: 999,
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(0,0,0,0.04)")}
-                onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
-              >
-                {n.label}
-              </a>
-            ))}
-            <ButtonLink href="https://app.accessxworld.com" variant="secondary">
-              Open App
-            </ButtonLink>
-          </nav>
-        </div>
-      </header>
+      <MarketingHeader />
 
       {/* Hero */}
       <section
