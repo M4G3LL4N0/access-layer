@@ -1,6 +1,6 @@
-import MarketingHeader from "@/components/MarketingHeader";
 "use client";
 
+import MarketingHeader from "@/components/MarketingHeader";
 import React, { useEffect, useMemo, useState } from "react";
 
 export const dynamic = "force-dynamic";
