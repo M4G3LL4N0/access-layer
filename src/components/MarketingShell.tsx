@@ -1,33 +1,28 @@
+"use client";
+
 import React from "react";
+import MarketingHeader from "./MarketingHeader";
 
-export default function MarketingShell({
-  eyebrow,
-  title,
-  subtitle,
-  children,
-}: {
-  eyebrow?: string;
-  title: string;
-  subtitle?: string;
-  children?: React.ReactNode;
-}) {
+export default function MarketingShell({ children }: { children: React.ReactNode }) {
   return (
-    <main style={{ maxWidth: 1180, margin: "0 auto", padding: "32px 16px 80px" }}>
-      {eyebrow ? (
-        <div style={{ fontSize: 12, letterSpacing: 1.2, color: "#777", textTransform: "uppercase" }}>
-          {eyebrow}
+    <div style={{ minHeight: "100vh", background: "white" }}>
+      <MarketingHeader />
+      <div style={{ maxWidth: 1120, margin: "0 auto", padding: "28px 16px 80px" }}>
+        {children}
+      </div>
+      <footer style={{ borderTop: "1px solid #eee", padding: "18px 16px", color: "#666", fontSize: 12 }}>
+        <div style={{ maxWidth: 1120, margin: "0 auto", display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <img src="/axw-icon.png" alt="AXW" style={{ width: 16, height: 16, display: "block" }} />
+            <span>AXW — Access × World</span>
+          </div>
+          <div style={{ display: "flex", gap: 14, flexWrap: "wrap" }}>
+            <a href="/legal/terms" style={{ color: "inherit", textDecoration: "none" }}>Terms</a>
+            <a href="/legal/privacy" style={{ color: "inherit", textDecoration: "none" }}>Privacy</a>
+            <a href="/contact" style={{ color: "inherit", textDecoration: "none" }}>Contact</a>
+          </div>
         </div>
-      ) : null}
-
-      <h1 style={{ margin: "10px 0 0", fontSize: 52, lineHeight: 1.02, letterSpacing: -1.4, fontWeight: 900 }}>
-        {title}
-      </h1>
-
-      {subtitle ? (
-        <p style={{ marginTop: 12, maxWidth: 780, fontSize: 18, lineHeight: 1.6, color: "#444" }}>{subtitle}</p>
-      ) : null}
-
-      <div style={{ marginTop: 22 }}>{children}</div>
-    </main>
+      </footer>
+    </div>
   );
 }

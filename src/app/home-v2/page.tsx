@@ -1,42 +1,30 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React from "react";
+import MarketingShell from "@/components/MarketingShell";
 
 export const dynamic = "force-dynamic";
 
-/**
- * Home v2 (Additive)
- * - Self-contained (no "@/..." imports)
- * - Apple/Microsoft-ish: clean, high-contrast, big type, stacked sections, mobile-safe
- * - Uses your existing images if present in /public:
- *   /axw-logo-wordmark.png, /axw-icon.png
- * - Links out to app + investors + other pages (never removes anything)
- */
+const chips = [
+  "Fewer incidents, fewer disputes",
+  "Faster entry, less friction",
+  "Proof for auditors + insurers",
+  "Tokens instead of shared codes",
+];
 
-function cx(...c: Array<string | false | null | undefined>) {
-  return c.filter(Boolean).join(" ");
-}
-
-function Pill({
-  children,
-  tone = "neutral",
-}: {
-  children: React.ReactNode;
-  tone?: "neutral" | "dark";
-}) {
+function Pill({ children }: { children: React.ReactNode }) {
   return (
     <span
       style={{
         display: "inline-flex",
         alignItems: "center",
-        gap: 8,
         padding: "8px 12px",
         borderRadius: 999,
-        border: tone === "dark" ? "1px solid rgba(255,255,255,0.18)" : "1px solid rgba(0,0,0,0.12)",
-        background: tone === "dark" ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.03)",
+        border: "1px solid #e8e8e8",
+        background: "white",
         fontSize: 13,
         fontWeight: 700,
-        lineHeight: 1,
+        color: "#111",
         whiteSpace: "nowrap",
       }}
     >
@@ -45,356 +33,213 @@ function Pill({
   );
 }
 
-function ButtonLink({
-  href,
-  children,
-  variant = "primary",
-}: {
-  href: string;
-  children: React.ReactNode;
-  variant?: "primary" | "secondary" | "ghost";
-}) {
-  const base: React.CSSProperties = {
-    display: "inline-flex",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 10,
-    padding: "12px 16px",
-    borderRadius: 999,
-    textDecoration: "none",
-    fontWeight: 900,
-    fontSize: 14,
-    lineHeight: 1,
-    transition: "transform 120ms ease, opacity 120ms ease, background 120ms ease, border 120ms ease",
-    userSelect: "none",
-  };
-
-  const styles: Record<string, React.CSSProperties> = {
-    primary: { background: "#0B0B0F", color: "#fff", border: "1px solid rgba(255,255,255,0.12)" },
-    secondary: { background: "#fff", color: "#0B0B0F", border: "1px solid rgba(0,0,0,0.14)" },
-    ghost: { background: "transparent", color: "inherit", border: "1px solid rgba(255,255,255,0.18)" },
-  };
-
+function ButtonPrimary({ href, children }: { href: string; children: React.ReactNode }) {
   return (
     <a
       href={href}
-      style={{ ...base, ...(styles[variant] || styles.primary) }}
-      onMouseDown={(e) => (e.currentTarget.style.transform = "scale(0.98)")}
-      onMouseUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
-      onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 10,
+        padding: "12px 16px",
+        borderRadius: 999,
+        background: "black",
+        color: "white",
+        textDecoration: "none",
+        fontWeight: 800,
+        border: "1px solid black",
+      }}
     >
-      {children} <span aria-hidden style={{ opacity: 0.65 }}>→</span>
+      {children} <span aria-hidden="true">→</span>
     </a>
   );
 }
 
-function Card({
-  title,
-  children,
-  subtle,
-}: {
-  title?: string;
-  children: React.ReactNode;
-  subtle?: boolean;
-}) {
+function ButtonGhost({ href, children }: { href: string; children: React.ReactNode }) {
   return (
-    <section
+    <a
+      href={href}
       style={{
-        borderRadius: 20,
-        border: subtle ? "1px solid rgba(255,255,255,0.10)" : "1px solid rgba(0,0,0,0.10)",
-        background: subtle ? "rgba(255,255,255,0.06)" : "#fff",
-        boxShadow: subtle ? "none" : "0 20px 60px rgba(0,0,0,0.08)",
-        overflow: "hidden",
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 10,
+        padding: "12px 16px",
+        borderRadius: 999,
+        background: "white",
+        color: "black",
+        textDecoration: "none",
+        fontWeight: 800,
+        border: "1px solid #e6e6e6",
       }}
     >
-      {title ? (
-        <div style={{ padding: "16px 16px 0" }}>
-          <div style={{ fontWeight: 950, fontSize: 16 }}>{title}</div>
-        </div>
-      ) : null}
-      <div style={{ padding: 16 }}>{children}</div>
-    </section>
+      {children} <span aria-hidden="true">→</span>
+    </a>
   );
 }
 
-function Metric({ label, value }: { label: string; value: string }) {
+function Card({ title, body, href, cta }: { title: string; body: string; href: string; cta: string }) {
   return (
-    <div style={{ display: "grid", gap: 6 }}>
-      <div style={{ fontSize: 12, opacity: 0.72 }}>{label}</div>
-      <div style={{ fontSize: 22, fontWeight: 950, letterSpacing: -0.5 }}>{value}</div>
-    </div>
+    <a
+      href={href}
+      style={{
+        textDecoration: "none",
+        color: "black",
+        border: "1px solid #eee",
+        borderRadius: 18,
+        padding: 18,
+        background: "white",
+        display: "flex",
+        flexDirection: "column",
+        gap: 10,
+        boxShadow: "0 1px 0 rgba(0,0,0,0.03)",
+      }}
+    >
+      <div style={{ fontWeight: 900, fontSize: 16, letterSpacing: -0.2 }}>{title}</div>
+      <div style={{ color: "#444", lineHeight: 1.5, fontSize: 14 }}>{body}</div>
+      <div style={{ marginTop: 6, fontWeight: 900, fontSize: 13 }}>{cta} →</div>
+    </a>
   );
 }
 
 export default function HomeV2() {
-  const [metrics, setMetrics] = useState<{ venues?: number; passes?: number } | null>(null);
-
-  useEffect(() => {
-    let alive = true;
-    (async () => {
-      try {
-        const r = await fetch("/api/debug/schema", { cache: "no-store" });
-        // We don't rely on schema, but this confirms API reachability.
-        await r.json().catch(() => null);
-
-        const r2 = await fetch("/api/debug/venues", { cache: "no-store" });
-        const j2 = await r2.json().catch(() => null);
-
-        // fallback: /api/debug/venues returns {ok,count,venues:[...]} in your logs
-        const venueCount = Number(j2?.count ?? j2?.ok?.count ?? j2?.venues?.length ?? j2?.venues ?? 0) || 0;
-
-        const r3 = await fetch("/api/debug/passes", { cache: "no-store" });
-        const j3 = await r3.json().catch(() => null);
-        // you mentioned {venues:5, passes:4} on one endpoint output
-        const passes = Number(j3?.passes ?? j3?.count ?? 0) || 0;
-
-        if (!alive) return;
-        setMetrics({ venues: venueCount, passes });
-      } catch {
-        if (!alive) return;
-        setMetrics(null);
-      }
-    })();
-    return () => {
-      alive = false;
-    };
-  }, []);
-
-  const nav = useMemo(
-    () => [
-      { label: "Investors", href: "/investors" },
-      { label: "Case Study", href: "/case-studies/sf-pilot" },
-      { label: "Pricing", href: "/pricing" },
-      { label: "Network", href: "/network" },
-      { label: "Contact", href: "/contact" },
-    ],
-    []
-  );
-
   return (
-    <div
-      style={{
-        fontFamily:
-          "system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif",
-        color: "#0B0B0F",
-        background: "#fff",
-      }}
-    >
-      {/* Top bar */}
-      {/* Hero */}
-      <section
-        style={{
-          maxWidth: 1180,
-          margin: "0 auto",
-          padding: "54px 18px 22px",
-        }}
-      >
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginBottom: 16 }}>
-          <Pill>Policy-defined access</Pill>
-          <Pill>Time-bounded tokens</Pill>
-          <Pill>Audit logs</Pill>
-          <Pill>Parking validation</Pill>
+    <MarketingShell>
+      <div style={{ display: "grid", gridTemplateColumns: "1.2fr 0.8fr", gap: 18, alignItems: "start" }}>
+        <div>
+          <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+            {chips.map((c) => (
+              <Pill key={c}>{c}</Pill>
+            ))}
+          </div>
+
+          <h1 style={{ marginTop: 18, marginBottom: 10, fontSize: 62, lineHeight: 0.95, letterSpacing: -1.4 }}>
+            Programmable access,
+            <br />
+            without the chaos.
+          </h1>
+
+          <p style={{ marginTop: 12, color: "#333", lineHeight: 1.6, fontSize: 18, maxWidth: 720 }}>
+            AXW is the coordination layer between <b>access</b> and <b>space</b>.
+            You define policy once, issue time-bounded tokens, verify at any edge, and keep audit-grade logs — so operators move faster
+            and stakeholders trust the outcome.
+          </p>
+
+          <div style={{ marginTop: 18, display: "flex", gap: 10, flexWrap: "wrap" }}>
+            <ButtonPrimary href="https://app.accessxworld.com">Launch app</ButtonPrimary>
+            <ButtonGhost href="/investors">Investor hub</ButtonGhost>
+            <ButtonGhost href="/solutions/parking">Parking</ButtonGhost>
+            <ButtonGhost href="/kiosk">Kiosk mode</ButtonGhost>
+          </div>
+
+          <p style={{ marginTop: 14, color: "#666", fontSize: 13 }}>
+            Built for venues · property ops · parking · enterprise · government · infrastructure partners
+          </p>
         </div>
 
         <div
           style={{
-            display: "grid",
-            gridTemplateColumns: "1.2fr 0.8fr",
-            gap: 18,
+            border: "1px solid #eee",
+            borderRadius: 18,
+            padding: 16,
+            background: "linear-gradient(180deg, rgba(250,250,250,1) 0%, rgba(255,255,255,1) 100%)",
           }}
         >
-          <div style={{ minWidth: 0 }}>
-            <h1
-              style={{
-                fontSize: 52,
-                letterSpacing: -1.4,
-                lineHeight: 1.03,
-                margin: "0 0 14px",
-                fontWeight: 980,
-              }}
-            >
-              Programmable access,
-              <br />
-              everywhere.
-            </h1>
+          <div style={{ fontWeight: 900, fontSize: 16, marginBottom: 10 }}>Why it wins</div>
 
-            <p style={{ fontSize: 18, lineHeight: 1.6, opacity: 0.82, margin: "0 0 20px", maxWidth: 760 }}>
-              AXW is the universal coordination layer between <b>access</b> and <b>space</b>: define rules once,
-              issue scoped tokens, verify at any edge, and log every grant + use — without publishing sensitive codes.
-            </p>
-
-            <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-              <ButtonLink href="https://app.accessxworld.com" variant="primary">
-                Launch app
-              </ButtonLink>
-              <ButtonLink href="/investors" variant="secondary">
-                Investor hub
-              </ButtonLink>
-              <ButtonLink href="/kiosk" variant="secondary">
-                Kiosk mode
-              </ButtonLink>
-              <ButtonLink href="/solutions/parking" variant="secondary">
-                Parking
-              </ButtonLink>
+          <div style={{ display: "grid", gap: 10 }}>
+            <div style={{ border: "1px solid #eee", borderRadius: 14, padding: 12, background: "white" }}>
+              <div style={{ fontSize: 12, color: "#666", fontWeight: 800 }}>Operators</div>
+              <div style={{ marginTop: 6, fontSize: 14, color: "#222", lineHeight: 1.5 }}>
+                Fewer “code leaks”, less tail-risk, faster throughput at doors and kiosks.
+              </div>
             </div>
 
-            <div style={{ marginTop: 18, fontSize: 13, opacity: 0.7 }}>
-              Built for: venues • property ops • parking • enterprise • government • infrastructure partners
+            <div style={{ border: "1px solid #eee", borderRadius: 14, padding: 12, background: "white" }}>
+              <div style={{ fontSize: 12, color: "#666", fontWeight: 800 }}>Owners</div>
+              <div style={{ marginTop: 6, fontSize: 14, color: "#222", lineHeight: 1.5 }}>
+                Policy changes in minutes, not days. Clean logs when disputes happen.
+              </div>
+            </div>
+
+            <div style={{ border: "1px solid #eee", borderRadius: 14, padding: 12, background: "white" }}>
+              <div style={{ fontSize: 12, color: "#666", fontWeight: 800 }}>Investors</div>
+              <div style={{ marginTop: 6, fontSize: 14, color: "#222", lineHeight: 1.5 }}>
+                Network effects: more spaces → more credential utility → more demand.
+              </div>
             </div>
           </div>
 
-          <div style={{ minWidth: 0 }}>
-            <Card title="Live snapshot">
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "1fr 1fr",
-                  gap: 14,
-                }}
-              >
-                <Metric label="Venues" value={String(metrics?.venues ?? "—")} />
-                <Metric label="Passes issued" value={String(metrics?.passes ?? "—")} />
-              </div>
-
-              <div style={{ height: 12 }} />
-
-              <div style={{ display: "grid", gap: 10 }}>
-                <a href="/case-studies/sf-pilot" style={{ textDecoration: "none", color: "inherit" }}>
-                  <div style={{ fontWeight: 900 }}>SF Pilot</div>
-                  <div style={{ fontSize: 13, opacity: 0.72 }}>Case study + rollout pack</div>
-                </a>
-
-                <a href="/investors/model" style={{ textDecoration: "none", color: "inherit" }}>
-                  <div style={{ fontWeight: 900 }}>Model</div>
-                  <div style={{ fontSize: 13, opacity: 0.72 }}>Unit economics + growth loops</div>
-                </a>
-
-                <a href="/vc/packet" style={{ textDecoration: "none", color: "inherit" }}>
-                  <div style={{ fontWeight: 900 }}>VC Packet</div>
-                  <div style={{ fontSize: 13, opacity: 0.72 }}>Pitch narrative + rollout</div>
-                </a>
-              </div>
-            </Card>
+          <div style={{ marginTop: 14, display: "grid", gap: 10 }}>
+            <Card
+              title="SF Pilot"
+              body="Case study + rollout pack: how to deploy with minimal hardware and maximum proof."
+              href="/case-studies/sf-pilot"
+              cta="View"
+            />
+            <Card
+              title="Model"
+              body="Unit economics + growth loops: why coordination layers compound."
+              href="/investors/model"
+              cta="Open"
+            />
+            <Card
+              title="VC Packet"
+              body="Narrative, wedge, expansion, moat: ready-to-pitch."
+              href="/vc/packet"
+              cta="Read"
+            />
           </div>
         </div>
+      </div>
 
-        {/* Mobile safety: single column on narrow screens */}
-        <style>{`
-          @media (max-width: 980px) {
-            section > div[style*="grid-template-columns: 1.2fr 0.8fr"] { grid-template-columns: 1fr !important; }
-            h1 { font-size: 42px !important; }
-          }
-        `}</style>
-      </section>
+      <div style={{ marginTop: 26, borderRadius: 22, background: "black", color: "white", padding: 22 }}>
+        <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+          <Pill>Universal points of access</Pill>
+          <Pill>Doors · gates · garages · kiosks · APIs</Pill>
+          <Pill>Edge verify</Pill>
+        </div>
 
-      {/* Dark band (Apple-ish) */}
-      <section
-        style={{
-          background: "#0B0B0F",
-          color: "#fff",
-          marginTop: 26,
-        }}
-      >
-        <div style={{ maxWidth: 1180, margin: "0 auto", padding: "42px 18px" }}>
-          <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 16 }}>
-            <Pill tone="dark">Universal points of access</Pill>
-            <Pill tone="dark">Doors • gates • garages • kiosks • APIs</Pill>
-            <Pill tone="dark">Edge verify</Pill>
+        <h2 style={{ marginTop: 16, marginBottom: 10, fontSize: 34, letterSpacing: -0.6 }}>
+          One engine, many sectors.
+        </h2>
+
+        <p style={{ marginTop: 0, color: "rgba(255,255,255,0.82)", lineHeight: 1.6, maxWidth: 980 }}>
+          AXW is designed as a neutral access-and-space coordination layer: tokenized permissions, policy rules, device verification,
+          kiosk issuance, parking validation, staff scanning, and audit trails — scalable across every space type.
+        </p>
+
+        <div style={{ marginTop: 16, display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 12 }}>
+          <div style={{ border: "1px solid rgba(255,255,255,0.12)", borderRadius: 18, padding: 16, background: "rgba(255,255,255,0.04)" }}>
+            <div style={{ fontWeight: 900, fontSize: 16 }}>Venues & Events</div>
+            <div style={{ marginTop: 8, color: "rgba(255,255,255,0.78)", lineHeight: 1.5, fontSize: 14 }}>
+              Faster entry, fewer disputes, consistent enforcement, better incident records.
+            </div>
+            <div style={{ marginTop: 12 }}>
+              <a href="/kiosk" style={{ color: "white", textDecoration: "none", fontWeight: 900 }}>Kiosk hub →</a>
+            </div>
           </div>
 
-          <h2 style={{ margin: "0 0 10px", fontSize: 32, letterSpacing: -0.8, fontWeight: 980 }}>
-            One engine, many sectors.
-          </h2>
-
-          <p style={{ margin: 0, opacity: 0.82, lineHeight: 1.7, maxWidth: 980 }}>
-            AXW is designed as a neutral access-and-space coordination layer:
-            tokenized permissions, policy rules, device verification, kiosk issuance, parking validation,
-            staff scanning, and audit trails — scalable across every space type.
-          </p>
-
-          <div style={{ height: 20 }} />
-
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
-              gap: 14,
-            }}
-          >
-            <Card subtle title="Venues & Events">
-              <div style={{ fontSize: 13, opacity: 0.85, lineHeight: 1.6 }}>
-                Staff verification, guest tokens, time windows, rate-limits, incident logs.
-              </div>
-              <div style={{ height: 10 }} />
-              <ButtonLink href="/kiosk" variant="ghost">Kiosk hub</ButtonLink>
-            </Card>
-
-            <Card subtle title="Parking">
-              <div style={{ fontSize: 13, opacity: 0.85, lineHeight: 1.6 }}>
-                Plate-entry kiosks, validation tokens, operator verify tools, event trails.
-              </div>
-              <div style={{ height: 10 }} />
-              <ButtonLink href="/solutions/parking" variant="ghost">Parking solution</ButtonLink>
-            </Card>
-
-            <Card subtle title="Enterprise & Property Ops">
-              <div style={{ fontSize: 13, opacity: 0.85, lineHeight: 1.6 }}>
-                Policy-based access across buildings, teams, vendors, and workflows.
-              </div>
-              <div style={{ height: 10 }} />
-              <ButtonLink href="/enterprise" variant="ghost">Enterprise</ButtonLink>
-            </Card>
-
-            <Card subtle title="Government">
-              <div style={{ fontSize: 13, opacity: 0.85, lineHeight: 1.6 }}>
-                Compliance-grade logging, workflows, standardized issuance and verification.
-              </div>
-              <div style={{ height: 10 }} />
-              <ButtonLink href="/government" variant="ghost">Government</ButtonLink>
-            </Card>
+          <div style={{ border: "1px solid rgba(255,255,255,0.12)", borderRadius: 18, padding: 16, background: "rgba(255,255,255,0.04)" }}>
+            <div style={{ fontWeight: 900, fontSize: 16 }}>Parking</div>
+            <div style={{ marginTop: 8, color: "rgba(255,255,255,0.78)", lineHeight: 1.5, fontSize: 14 }}>
+              Validation tokens, plate-entry kiosks, operator verify tools, event trails.
+            </div>
+            <div style={{ marginTop: 12 }}>
+              <a href="/solutions/parking" style={{ color: "white", textDecoration: "none", fontWeight: 900 }}>Parking solution →</a>
+            </div>
           </div>
 
-          <style>{`
-            @media (max-width: 980px) {
-              h2 { font-size: 26px !important; }
-            }
-          `}</style>
-        </div>
-      </section>
-
-      {/* How it works */}
-      <section style={{ maxWidth: 1180, margin: "0 auto", padding: "44px 18px" }}>
-        <h3 style={{ margin: "0 0 10px", fontSize: 22, fontWeight: 980, letterSpacing: -0.4 }}>
-          How it works
-        </h3>
-        <ol style={{ margin: 0, paddingLeft: 18, lineHeight: 1.85, opacity: 0.9, maxWidth: 980 }}>
-          <li><b>Define policies</b>: who/what/when/where constraints.</li>
-          <li><b>Issue tokens</b>: scoped, expiring, rate-limited grants.</li>
-          <li><b>Verify at the edge</b>: apps, kiosks, devices, APIs.</li>
-          <li><b>Log everything</b>: audit, analytics, enforcement, dispute resolution.</li>
-        </ol>
-
-        <div style={{ height: 18 }} />
-
-        <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-          <ButtonLink href="/investors" variant="primary">See the full investor story</ButtonLink>
-          <ButtonLink href="/contact" variant="secondary">Talk to us</ButtonLink>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer style={{ borderTop: "1px solid rgba(0,0,0,0.08)" }}>
-        <div style={{ maxWidth: 1180, margin: "0 auto", padding: "22px 18px", opacity: 0.75, fontSize: 12 }}>
-          <div style={{ display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
-            <div>© {new Date().getFullYear()} AXW — Access × World</div>
-            <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-              <a href="/legal/privacy" style={{ color: "inherit" }}>Privacy</a>
-              <a href="/legal/terms" style={{ color: "inherit" }}>Terms</a>
-              <a href="/press" style={{ color: "inherit" }}>Press</a>
+          <div style={{ border: "1px solid rgba(255,255,255,0.12)", borderRadius: 18, padding: 16, background: "rgba(255,255,255,0.04)" }}>
+            <div style={{ fontWeight: 900, fontSize: 16 }}>Enterprise & Gov</div>
+            <div style={{ marginTop: 8, color: "rgba(255,255,255,0.78)", lineHeight: 1.5, fontSize: 14 }}>
+              Compliance-friendly logs, policy-based access, and clean audit narratives.
+            </div>
+            <div style={{ marginTop: 12 }}>
+              <a href="/government" style={{ color: "white", textDecoration: "none", fontWeight: 900 }}>Public sector →</a>
             </div>
           </div>
         </div>
-      </footer>
-    </div>
+      </div>
+    </MarketingShell>
   );
 }

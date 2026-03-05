@@ -1,187 +1,99 @@
-import Link from "next/link";
+"use client";
+
+import React, { useEffect, useMemo, useState } from "react";
+import MarketingShell from "@/components/MarketingShell";
+import { supabaseBrowser } from "@/lib/supabase/client";
+import { hasSupabasePublicEnv } from "@/lib/supabase/env";
 
 export const dynamic = "force-dynamic";
-export const revalidate = 0;
 
-function missingEnv(): string[] {
-  const required = ["NEXT_PUBLIC_SUPABASE_URL", "NEXT_PUBLIC_SUPABASE_ANON_KEY"];
-  return required.filter((k) => !process.env[k] || String(process.env[k]).trim().length === 0);
-}
+export default function AccountPage() {
+  const supabase = useMemo(() => supabaseBrowser(), []);
+  const [userId, setUserId] = useState<string | null>(null);
+  const [status, setStatus] = useState<string>("Loading...");
 
-export default async function AccountPage() {
-  const missing = missingEnv();
+  useEffect(() => {
+    if (!hasSupabasePublicEnv() || !supabase) {
+      setStatus("Supabase env not configured on this deployment.");
+      return;
+    }
 
-  // If env is missing, DO NOT import or call any Supabase helpers.
-  // This keeps `next build` green and avoids leaking secrets.
-  if (missing.length) {
-    return (
-      <main style={{ maxWidth: 900, margin: "0 auto", padding: "28px 16px" }}>
-        <h1 style={{ fontSize: 34, margin: 0 }}>Account</h1>
-        <p style={{ marginTop: 10, color: "#444", lineHeight: 1.55 }}>
-          Supabase env vars are not configured for this environment, so Account is temporarily in safe mode.
+    supabase.auth.getUser().then(({ data, error }) => {
+      if (error) {
+        setStatus("Not signed in.");
+        setUserId(null);
+        return;
+      }
+      setUserId(data.user?.id ?? null);
+      setStatus(data.user ? "Signed in" : "Not signed in.");
+    });
+  }, [supabase]);
+
+  return (
+    <MarketingShell>
+      <div style={{ maxWidth: 860 }}>
+        <div style={{ fontSize: 12, color: "#666", fontWeight: 900, letterSpacing: 1 }}>ACCOUNT</div>
+        <h1 style={{ margin: "8px 0 0", fontSize: 44, letterSpacing: -0.9 }}>Account</h1>
+
+        <p style={{ marginTop: 10, color: "#333", lineHeight: 1.6, fontSize: 16 }}>
+          Status: <b>{status}</b>
         </p>
 
-        <div
-          style={{
-            marginTop: 16,
-            border: "1px solid #eee",
-            borderRadius: 14,
-            padding: 16,
-            background: "white",
-          }}
-        >
-          <div style={{ fontSize: 12, letterSpacing: 1.1, color: "#666" }}>MISSING ENV</div>
-          <ul style={{ marginTop: 10, marginBottom: 0, color: "#444", lineHeight: 1.6 }}>
-            {missing.map((k) => (
-              <li key={k}>
-                <code>{k}</code>
-              </li>
-            ))}
-          </ul>
+        <div style={{ marginTop: 12, border: "1px solid #eee", borderRadius: 18, padding: 18, background: "white" }}>
+          <div style={{ fontSize: 13, color: "#666", fontWeight: 900 }}>User</div>
+          <div style={{ marginTop: 8, fontSize: 14 }}>
+            UUID: <span style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace" }}>{userId ?? "—"}</span>
+          </div>
 
-          <p style={{ marginTop: 12, fontSize: 13, color: "#666", lineHeight: 1.55 }}>
-            Fix by adding env vars in Vercel Project → Settings → Environment Variables, and locally in <code>.env.local</code>.
-          </p>
-
-          <div style={{ marginTop: 12, display: "flex", gap: 10, flexWrap: "wrap" }}>
-            <a
-              href="/"
-              style={{
-                display: "inline-block",
-                padding: "9px 12px",
-                border: "1px solid #ddd",
-                borderRadius: 999,
-                textDecoration: "none",
-                color: "black",
-                background: "white",
-                fontSize: 14,
-                fontWeight: 600,
-              }}
-            >
-              Home
-            </a>
-
+          <div style={{ marginTop: 14, display: "flex", gap: 10, flexWrap: "wrap" }}>
             <a
               href="/login"
               style={{
-                display: "inline-block",
-                padding: "9px 12px",
-                border: "1px solid #ddd",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 10,
+                padding: "12px 14px",
                 borderRadius: 999,
-                textDecoration: "none",
-                color: "black",
+                border: "1px solid #e6e6e6",
                 background: "white",
-                fontSize: 14,
-                fontWeight: 600,
-              }}
-            >
-              Login
-            </a>
-
-            <a
-              href="/api/debug/env"
-              style={{
-                display: "inline-block",
-                padding: "9px 12px",
-                border: "1px solid #eee",
-                borderRadius: 999,
                 textDecoration: "none",
                 color: "black",
-                background: "#fafafa",
-                fontSize: 14,
+                fontWeight: 900,
               }}
             >
-              Debug env
+              Login →
             </a>
-          </div>
-        </div>
-      </main>
-    );
-  }
 
-  // Env exists: now it's safe to import server auth helper.
-  const { supabaseServerAuth } = await import("@/lib/supabaseServerAuth");
-  const { supabase, user } = await supabaseServerAuth();
-
-  if (!user) {
-    return (
-      <main style={{ maxWidth: 900, margin: "0 auto", padding: "28px 16px" }}>
-        <h1 style={{ fontSize: 34, margin: 0 }}>Account</h1>
-        <p style={{ marginTop: 10, color: "#444", lineHeight: 1.55 }}>
-          You’re not logged in.
-        </p>
-        <div style={{ marginTop: 14 }}>
-          <Link
-            href="/login"
-            style={{
-              display: "inline-block",
-              padding: "9px 12px",
-              border: "1px solid #ddd",
-              borderRadius: 999,
-              textDecoration: "none",
-              color: "black",
-              background: "white",
-              fontSize: 14,
-              fontWeight: 600,
-            }}
-          >
-            Go to Login →
-          </Link>
-        </div>
-      </main>
-    );
-  }
-
-  return (
-    <main style={{ maxWidth: 900, margin: "0 auto", padding: "28px 16px" }}>
-      <h1 style={{ fontSize: 34, margin: 0 }}>Account</h1>
-      <p style={{ marginTop: 10, color: "#444", lineHeight: 1.55 }}>
-        Logged in.
-      </p>
-
-      <div
-        style={{
-          marginTop: 16,
-          border: "1px solid #eee",
-          borderRadius: 14,
-          padding: 16,
-          background: "white",
-        }}
-      >
-        <div style={{ fontSize: 12, letterSpacing: 1.1, color: "#666" }}>USER</div>
-        <div style={{ marginTop: 10, lineHeight: 1.6 }}>
-          <div>
-            <b>Email:</b> {user.email ?? "—"}
-          </div>
-          <div>
-            <b>UUID:</b> <code>{user.id}</code>
+            <button
+              onClick={async () => {
+                if (!supabase) {
+                  alert("Supabase env not configured.");
+                  return;
+                }
+                await supabase.auth.signOut();
+                setUserId(null);
+                setStatus("Signed out.");
+              }}
+              style={{
+                padding: "12px 14px",
+                borderRadius: 999,
+                border: "1px solid #e6e6e6",
+                background: "black",
+                color: "white",
+                fontWeight: 900,
+                cursor: "pointer",
+              }}
+            >
+              Sign out
+            </button>
           </div>
         </div>
 
-        <form
-          action={async () => {
-            "use server";
-            const { supabaseServerAuth } = await import("@/lib/supabaseServerAuth");
-            const { supabase } = await supabaseServerAuth();
-            await supabase.auth.signOut();
-          }}
-        >
-          <button
-            type="submit"
-            style={{
-              marginTop: 14,
-              padding: "9px 12px",
-              borderRadius: 999,
-              border: "1px solid #ddd",
-              background: "white",
-              cursor: "pointer",
-              fontWeight: 600,
-            }}
-          >
-            Sign out
-          </button>
-        </form>
+        <div style={{ marginTop: 16, color: "#666", fontSize: 13, lineHeight: 1.6 }}>
+          If this shows “env not configured”, add the environment variables in Vercel:
+          NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY.
+        </div>
       </div>
-    </main>
+    </MarketingShell>
   );
 }

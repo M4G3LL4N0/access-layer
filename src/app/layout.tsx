@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import HeaderGate from "@/components/HeaderGate";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://accessxworld.com"),
   title: "AXW — Access × World",
-  description: "Programmable access infrastructure and policy-driven coordination systems.",
+  description: "The coordination layer between access and space: safer, faster operations with provable audit trails.",
   applicationName: "AXW",
   icons: {
     icon: [{ url: "/icon.png", type: "image/png" }],
@@ -30,10 +29,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body style={{ background: "#fff" }}>
-        <HeaderGate />
-        {children}
-      </body>
+      <body>{children}</body>
     </html>
   );
 }
