@@ -1,10 +1,17 @@
 import type { Metadata } from "next";
+import { Inter } from "next/font/google";
 import "./globals.css";
+
+const inter = Inter({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-sans",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://accessxworld.com"),
   title: "AXW — Access × World",
-  description: "The coordination layer between access and space: safer, faster operations with provable audit trails.",
+  description: "Programmable access infrastructure and policy-driven coordination systems.",
   applicationName: "AXW",
   icons: {
     icon: [{ url: "/icon.png", type: "image/png" }],
@@ -28,7 +35,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className={inter.variable}>
       <body>{children}</body>
     </html>
   );
