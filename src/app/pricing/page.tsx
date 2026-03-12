@@ -1,182 +1,157 @@
-"use client";
+import MarketingShell from "@/components/MarketingShell";
+import React from "react";
 
-import Link from "next/link";
-import { useState } from "react";
+export const dynamic = "force-static";
 
 export default function PricingPage() {
-  const [loading, setLoading] = useState<null | "starter" | "pro" | "enterprise">(null);
-  const [err, setErr] = useState<string>("");
-
-  async function start(plan: "starter" | "pro" | "enterprise") {
-    setErr("");
-    setLoading(plan);
-    try {
-      const r = await fetch("/api/stripe/checkout", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ plan }),
-      });
-      const j = await r.json();
-      if (!j.ok || !j.url) throw new Error(j.error || "Checkout failed");
-      window.location.href = j.url;
-    } catch (e: any) {
-      setErr(e?.message || "Checkout failed");
-      setLoading(null);
-    }
-  }
-
   return (
-    <main style={{ padding: 28, fontFamily: "system-ui", minHeight: "100vh" }}>
-      <header style={{ display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
-        <div>
-          <h1 style={{ margin: 0, fontSize: 40, fontWeight: 999 }}>Pricing</h1>
-          <div style={{ marginTop: 8, opacity: 0.8, maxWidth: 920, lineHeight: 1.6 }}>
-            Owner controls + analytics + compliance-grade logs. This is the monetization layer for Access ↔ Space.
-          </div>
-        </div>
-        <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-          <Nav href="/demo">Demo</Nav>
-          <Nav href="/investors">Investors</Nav>
-          <Nav href="/venues">Directory</Nav>
-        </div>
-      </header>
+    <MarketingShell>
+      <h1 style={{fontSize:48,fontWeight:950,letterSpacing:-1.2}}>Pricing</h1>
 
-      {err ? (
-        <div
-          style={{
-            marginTop: 14,
-            padding: 12,
-            borderRadius: 14,
-            border: "1px solid #3a2a2a",
-            background: "#2a0b0b",
-            fontWeight: 900,
-          }}
-        >
-          {err}
-        </div>
-      ) : null}
+      <p style={{color:"#444",maxWidth:780}}>
+        Owner controls + analytics + compliance-grade logs.
+        This is the monetization layer for Access ↔ Space.
+      </p>
 
-      <section style={{ marginTop: 18, display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 14 }}>
-        <Plan
-          name="Starter"
+      <div style={{display:"flex",gap:12,marginTop:12}}>
+        <Button href="/demo">Demo</Button>
+        <Button href="/investors">Investors</Button>
+        <Button href="/directory">Directory</Button>
+      </div>
+
+      <div style={{
+        display:"grid",
+        gridTemplateColumns:"repeat(auto-fit,minmax(300px,1fr))",
+        gap:20,
+        marginTop:30
+      }}>
+
+        <Card
+          title="Starter"
           price="$49/mo"
           bullets={[
             "Rules: hours, cooldown, daily limits",
             "Basic analytics: requests & passes",
             "Signage QR + staff verify flow",
-            "Single venue",
+            "Single venue"
           ]}
-          cta="Start Starter"
-          loading={loading === "starter"}
-          onClick={() => start("starter")}
+          button="Start Starter"
         />
-        <Plan
-          name="Pro"
+
+        <Card
+          title="Pro"
           price="$199/mo"
           bullets={[
             "Everything in Starter",
             "Multi-venue & staff roles",
             "Audit logs + export",
-            "Owner onboarding & invites",
+            "Owner onboarding & invites"
           ]}
-          cta="Start Pro"
-          loading={loading === "pro"}
-          onClick={() => start("pro")}
+          button="Start Pro"
         />
-        <Plan
-          name="Enterprise"
+
+        <Card
+          title="Enterprise"
           price="Custom"
           bullets={[
             "SSO / SAML",
             "Compliance & SLA",
             "Custom integrations",
-            "Fleet rollout / chain deployments",
+            "Fleet rollout / chain deployments"
           ]}
-          cta="Talk to us"
-          loading={loading === "enterprise"}
-          onClick={() => start("enterprise")}
+          button="Talk to us"
         />
-      </section>
 
-      <section style={{ marginTop: 18 }}>
-        <div style={{ border: "1px solid #23232a", background: "#111118", borderRadius: 18, padding: 16 }}>
-          <div style={{ fontWeight: 999, fontSize: 18 }}>What you’re buying</div>
-          <div style={{ marginTop: 10, opacity: 0.85, lineHeight: 1.7 }}>
-            A neutral access layer: rule engine + issuance + verification + logs + analytics. Long-term, this becomes
-            infrastructure for multi-category access networks (public + private spaces).
-          </div>
-          <div style={{ marginTop: 12, display: "flex", gap: 10, flexWrap: "wrap" }}>
-            <Nav href="/verify">Verifier</Nav>
-            <Nav href="/admin/metrics">Metrics</Nav>
-            <Nav href="/reports/sf">SF Report</Nav>
-          </div>
+      </div>
+
+      <div style={{
+        marginTop:30,
+        borderRadius:20,
+        padding:24,
+        background:"#0b0b14",
+        color:"#fff"
+      }}>
+        <h2 style={{fontSize:24,fontWeight:900}}>What you're buying</h2>
+
+        <p style={{color:"#ddd",marginTop:8}}>
+          A neutral access layer: rule engine + issuance + verification + logs + analytics.
+          Long-term this becomes infrastructure for multi-category access networks
+          (public + private spaces).
+        </p>
+
+        <div style={{display:"flex",gap:12,marginTop:14}}>
+          <Button href="/verifier">Verifier</Button>
+          <Button href="/metrics">Metrics</Button>
+          <Button href="/case-studies/sf-pilot">SF Report</Button>
         </div>
-      </section>
-    </main>
-  );
+      </div>
+
+    </MarketingShell>
+  )
 }
 
-function Plan({
-  name,
-  price,
-  bullets,
-  cta,
-  loading,
-  onClick,
-}: {
-  name: string;
-  price: string;
-  bullets: string[];
-  cta: string;
-  loading: boolean;
-  onClick: () => void;
-}) {
-  return (
-    <div style={{ border: "1px solid #23232a", background: "#111118", borderRadius: 18, padding: 16 }}>
-      <div style={{ fontWeight: 999, fontSize: 20 }}>{name}</div>
-      <div style={{ marginTop: 8, fontSize: 34, fontWeight: 999 }}>{price}</div>
-      <ul style={{ marginTop: 10, marginLeft: 18, opacity: 0.9, lineHeight: 1.7 }}>
-        {bullets.map((b) => (
-          <li key={b}>{b}</li>
-        ))}
-      </ul>
-      <button
-        onClick={onClick}
-        disabled={loading}
-        style={{
-          marginTop: 14,
-          width: "100%",
-          padding: "12px 14px",
-          borderRadius: 14,
-          border: "1px solid #23232a",
-          background: "black",
-          color: "white",
-          fontWeight: 999,
-          cursor: "pointer",
-        }}
-      >
-        {loading ? "Redirecting…" : cta}
-      </button>
-    </div>
-  );
+function Card({title,price,bullets,button}:{title:string,price:string,bullets:string[],button:string}){
+
+return(
+
+<div style={{
+background:"#0b0b14",
+borderRadius:20,
+padding:24,
+color:"#fff"
+}}>
+
+<div style={{fontWeight:900,fontSize:20}}>
+{title}
+</div>
+
+<div style={{fontSize:36,fontWeight:900,marginTop:8}}>
+{price}
+</div>
+
+<ul style={{marginTop:16,lineHeight:1.7,color:"#ddd"}}>
+{bullets.map((b,i)=>(
+<li key={i}>{b}</li>
+))}
+</ul>
+
+<button style={{
+marginTop:18,
+width:"100%",
+padding:"12px 14px",
+borderRadius:999,
+border:"1px solid #333",
+background:"#000",
+color:"#fff",
+fontWeight:900
+}}>
+{button}
+</button>
+
+</div>
+
+)
+
 }
 
-function Nav({ href, children }: { href: string; children: React.ReactNode }) {
-  return (
-    <Link
-      href={href}
-      style={{
-        display: "inline-block",
-        padding: "10px 12px",
-        borderRadius: 12,
-        background: "black",
-        color: "white",
-        textDecoration: "none",
-        fontWeight: 950,
-        border: "1px solid #23232a",
-      }}
-    >
-      {children}
-    </Link>
-  );
+function Button({href,children}:{href:string,children:React.ReactNode}){
+
+return(
+
+<a
+href={href}
+style={{
+padding:"10px 14px",
+borderRadius:999,
+background:"#000",
+color:"#fff",
+fontWeight:900,
+textDecoration:"none"
+}}
+>
+{children}
+</a>
+
+)
+
 }
