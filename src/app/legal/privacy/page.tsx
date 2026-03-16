@@ -1,19 +1,13 @@
-import Link from "next/link";
+import MarketingShell from "@/components/MarketingShell";
+import React from "react";
 
 export default function PrivacyPage() {
   return (
-    <main style={{ padding: 24, fontFamily: "system-ui", maxWidth: 900, margin: "0 auto" }}>
-      <Link href="/" style={{ opacity: 0.8 }}>← Home</Link>
-      <h1 style={{ marginTop: 14, fontSize: 32, fontWeight: 950 }}>Privacy</h1>
-      <p style={{ marginTop: 10, opacity: 0.85, lineHeight: 1.7 }}>
-        We do not publish door codes. We issue time-limited passes and log operational events.
-        We minimize data collection and store only what’s needed to operate the service and prevent abuse.
+    <MarketingShell maxWidth={900}>
+      <h1 style={{ fontSize: 40, fontWeight: 950 }}>Privacy</h1>
+      <p style={{ color: "#555", lineHeight: 1.7 }}>
+        Placeholder privacy page for AXW. Replace with finalized privacy policy.
       </p>
-      <ul style={{ marginTop: 10, lineHeight: 1.9, opacity: 0.85 }}>
-        <li>Guest identifiers may be used for rate limiting and abuse prevention.</li>
-        <li>Owner accounts use email for authentication.</li>
-        <li>We may store access request timestamps and outcomes for analytics and auditing.</li>
-      </ul>
-    </main>
+    </MarketingShell>
   );
 }

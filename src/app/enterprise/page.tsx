@@ -1,20 +1,14 @@
-export default function Enterprise() {
+import MarketingShell from "@/components/MarketingShell";
+import React from "react";
+
+export default function EnterprisePage() {
   return (
-    <main style={{ padding: 40 }}>
-      <h1>Enterprise Access Control</h1>
-
-      <ul>
-        <li>Multi-location policy management</li>
-        <li>Subspace enforcement</li>
-        <li>Parking integration</li>
-        <li>Audit-grade logs</li>
-        <li>Role-based operator control</li>
-        <li>Token lifecycle monitoring</li>
-      </ul>
-
-      <a href="/contact" style={{ fontWeight: 900 }}>
-        Schedule Enterprise Demo →
-      </a>
-    </main>
+    <MarketingShell>
+      <div style={{ fontSize: 12, color: "#777", fontWeight: 900 }}>ENTERPRISE</div>
+      <h1 style={{ fontSize: 48, fontWeight: 950, letterSpacing: -1.2 }}>Enterprise access, without operational chaos.</h1>
+      <p style={{ color: "#333", lineHeight: 1.65, maxWidth: 860 }}>
+        AXW gives enterprise operators a policy-defined way to manage access, verification, and proof across locations.
+      </p>
+    </MarketingShell>
   );
 }

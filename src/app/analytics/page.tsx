@@ -1,74 +1,36 @@
-export const dynamic = "force-dynamic";
+import MarketingShell from "@/components/MarketingShell";
+import React from "react";
 
-async function getMetrics() {
-  try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_APP_BASE_URL || ""}/api/metrics/global`, {
-      cache: "no-store",
-    });
-    const json = await res.json().catch(() => null);
-    return json;
-  } catch {
-    return null;
-  }
-}
+export const dynamic = "force-static";
 
-function Stat({ label, value }: { label: string; value: string | number }) {
+export default function AnalyticsPage() {
   return (
-    <div className="axw-card" style={{ minWidth: 220 }}>
-      <div className="axw-muted" style={{ fontSize: 12, fontWeight: 900 }}>{label}</div>
-      <div style={{ fontSize: 26, fontWeight: 950, marginTop: 6 }}>{value}</div>
-    </div>
+    <MarketingShell>
+      <div style={{ fontSize: 12, color: "#777", fontWeight: 900, letterSpacing: 0.4 }}>ANALYTICS</div>
+
+      <h1 style={{ marginTop: 10, marginBottom: 10, fontSize: 52, letterSpacing: -1.4, fontWeight: 950 }}>
+        Proof, not guesswork.
+      </h1>
+
+      <p style={{ marginTop: 0, color: "#333", lineHeight: 1.65, maxWidth: 920 }}>
+        AXW analytics turns access events into operational intelligence: throughput, disputes, failures, and proof of control.
+      </p>
+
+      <div style={{ marginTop: 22, display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 12 }}>
+        <Card title="Throughput" body="See how quickly spaces move people through access points." />
+        <Card title="Verification health" body="Track allow/deny outcomes and identify weak points." />
+        <Card title="Incident correlation" body="Tie access logs to disputes and events." />
+        <Card title="Governance" body="Show how policy changes affect outcomes over time." />
+      </div>
+    </MarketingShell>
   );
 }
 
-export default async function AnalyticsPage() {
-  const m = await getMetrics();
-
+function Card({ title, body }: { title: string; body: string }) {
   return (
-    <main className="axw-container">
-      <div className="axw-row" style={{ justifyContent: "space-between" }}>
-        <div>
-          <div className="axw-title" style={{ fontSize: 24 }}>AXW Analytics</div>
-          <div className="axw-muted" style={{ marginTop: 6 }}>
-            Live network health: venues, tokens, parking events, inbound leads.
-          </div>
-        </div>
-
-        <div className="axw-row">
-          <a className="axw-btn" href="/">Home</a>
-          <a className="axw-btn" href="/investors">Investors</a>
-          <a className="axw-btn axw-btn-primary" href="/admin">Admin</a>
-        </div>
-      </div>
-
-      {!m || !m.ok ? (
-        <div className="axw-card" style={{ marginTop: 16 }}>
-          <div style={{ fontWeight: 900, color: "crimson" }}>Metrics unavailable</div>
-          <div className="axw-muted" style={{ marginTop: 6 }}>
-            Check <b>/api/metrics/global</b> is returning ok.
-          </div>
-          <pre style={{ marginTop: 10, fontSize: 12, opacity: 0.85, overflowX: "auto" }}>
-            {JSON.stringify(m, null, 2)}
-          </pre>
-        </div>
-      ) : (
-        <>
-          <div className="axw-row" style={{ marginTop: 16 }}>
-            <Stat label="Venues" value={m.venues ?? 0} />
-            <Stat label="Passes (7d)" value={m.passes_7d ?? 0} />
-            <Stat label="Parking events (7d)" value={m.parking_events_7d ?? 0} />
-            <Stat label="Leads (7d)" value={m.leads_7d ?? 0} />
-          </div>
-
-          <div className="axw-card" style={{ marginTop: 14 }}>
-            <div style={{ fontWeight: 950 }}>Why this matters</div>
-            <div className="axw-muted" style={{ marginTop: 6, lineHeight: 1.6 }}>
-              Investors don’t fund code — they fund traction and proof. These metrics become the “heartbeat” of AXW:
-              adoption (venues), usage (passes), monetizable validation events (parking), and inbound demand (leads).
-            </div>
-          </div>
-        </>
-      )}
-    </main>
+    <div style={{ border: "1px solid #eee", borderRadius: 16, padding: 14, background: "white" }}>
+      <div style={{ fontWeight: 950, fontSize: 15 }}>{title}</div>
+      <div style={{ marginTop: 8, color: "#666", fontSize: 13, lineHeight: 1.55 }}>{body}</div>
+    </div>
   );
 }

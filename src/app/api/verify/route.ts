@@ -1,58 +1,90 @@
 import { NextResponse } from "next/server";
-import * as SB from "@/lib/supabaseServer";
+import { verifyAxwToken } from "@/lib/axw/token";
+import { supabaseServerService } from "@/lib/supabaseServer";
+import { logAxwEvent } from "@/lib/axw/events";
 
 export const dynamic = "force-dynamic";
 
-function getSupabase() {
-  const anySB = SB as any;
-  if (typeof anySB.supabaseServer === "function") return anySB.supabaseServer();
-  if (anySB.supabaseServer) return anySB.supabaseServer;
-  if (typeof anySB.default === "function") return anySB.default();
-  if (anySB.default) return anySB.default;
-  throw new Error("supabaseServer export not found in @/lib/supabaseServer");
-}
-
 export async function POST(req: Request) {
   try {
-    const body = await req.json().catch(() => ({}));
-    const token = String(body?.token || "").trim();
+    const body = await req.json();
+    const token = String(body?.token || "");
+    const deviceId = body?.deviceId ? String(body.deviceId) : null;
+    const entrypointId = body?.entrypointId ? String(body.entrypointId) : null;
 
     if (!token) {
-      return NextResponse.json({ ok: false, error: "Missing token" }, { status: 400 });
+      return NextResponse.json({ ok: false, error: "token is required" }, { status: 400 });
     }
 
-    const supabase = getSupabase();
+    const verified = verifyAxwToken(token);
+    if (!verified.ok) {
+      await logAxwEvent({
+        action: "verify",
+        result: "deny",
+        metadata: { reason: verified.error },
+        device_id: deviceId,
+        entrypoint_id: entrypointId,
+      });
 
-    // Avoid .single() coercion errors: select + limit(1)
-    const { data, error } = await supabase
-      .from("access_passes")
-      .select("token,status,issued_at,expires_at,venue_id")
-      .eq("token", token)
-      .order("created_at", { ascending: false })
-      .limit(1);
-
-    if (error) {
-      return NextResponse.json({ ok: false, error: error.message }, { status: 500 });
+      return NextResponse.json({ ok: false, error: verified.error }, { status: 400 });
     }
 
-    if (!data || data.length === 0) {
-      return NextResponse.json({ ok: false, valid: false, reason: "not_found" }, { status: 200 });
+    const supabase = supabaseServerService();
+
+    const { data: tokenRow, error: tokenErr } = await supabase
+      .from("tokens")
+      .select("revoked, credential_id, venue_id")
+      .eq("token_jti", verified.payload.jti)
+      .maybeSingle();
+
+    if (tokenErr) {
+      return NextResponse.json({ ok: false, error: tokenErr.message }, { status: 400 });
     }
 
-    const pass = data[0];
-    const now = Date.now();
-    const exp = new Date(pass.expires_at).getTime();
+    if (!tokenRow) {
+      await logAxwEvent({
+        action: "verify",
+        result: "deny",
+        token_jti: verified.payload.jti,
+        metadata: { reason: "Token not found" },
+        device_id: deviceId,
+        entrypoint_id: entrypointId,
+      });
 
-    if (pass.status !== "active") {
-      return NextResponse.json({ ok: true, valid: false, reason: "inactive", pass }, { status: 200 });
+      return NextResponse.json({ ok: false, error: "Token not found" }, { status: 404 });
     }
 
-    if (now > exp) {
-      return NextResponse.json({ ok: true, valid: false, reason: "expired", pass }, { status: 200 });
+    if (tokenRow.revoked) {
+      await logAxwEvent({
+        venue_id: tokenRow.venue_id,
+        credential_id: tokenRow.credential_id,
+        token_jti: verified.payload.jti,
+        action: "verify",
+        result: "deny",
+        metadata: { reason: "Revoked token" },
+        device_id: deviceId,
+        entrypoint_id: entrypointId,
+      });
+
+      return NextResponse.json({ ok: false, error: "Token revoked" }, { status: 403 });
     }
 
-    return NextResponse.json({ ok: true, valid: true, reason: "active", pass }, { status: 200 });
-  } catch (e: any) {
-    return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 });
+    await logAxwEvent({
+      venue_id: tokenRow.venue_id,
+      credential_id: tokenRow.credential_id,
+      token_jti: verified.payload.jti,
+      action: "verify",
+      result: "allow",
+      metadata: { scope: verified.payload.scope },
+      device_id: deviceId,
+      entrypoint_id: entrypointId,
+    });
+
+    return NextResponse.json({
+      ok: true,
+      payload: verified.payload,
+    });
+  } catch (err: any) {
+    return NextResponse.json({ ok: false, error: err?.message || "Verify failed" }, { status: 500 });
   }
 }
