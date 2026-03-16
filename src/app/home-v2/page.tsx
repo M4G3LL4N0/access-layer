@@ -1,7 +1,7 @@
 "use client";
 
 import MarketingHeader from "@/components/MarketingHeader";
-import React, { useEffect, useMemo, useState } from "react";
+import React from "react";
 
 export const dynamic = "force-dynamic";
 
@@ -9,9 +9,12 @@ export default function HomeV2() {
   return (
     <main style={{ background: "#fff" }}>
       <MarketingHeader />
+
       <div style={{ maxWidth: 1120, margin: "0 auto", padding: "22px 16px 70px" }}>
         <Hero />
-        <SectionDark />
+        <WhyThisWins />
+        <SectorGrid />
+        <InvestorStrip />
       </div>
     </main>
   );
@@ -23,10 +26,10 @@ function Hero() {
       <div style={{ display: "grid", gridTemplateColumns: "1.3fr 0.9fr", gap: 22, alignItems: "start" }}>
         <div>
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-            <Pill>Policy-defined access</Pill>
-            <Pill>Time-bounded tokens</Pill>
-            <Pill>Audit logs</Pill>
-            <Pill>Parking validation</Pill>
+            <Pill>Lower liability</Pill>
+            <Pill>Higher throughput</Pill>
+            <Pill>Proof over guesswork</Pill>
+            <Pill>Rollout like software</Pill>
           </div>
 
           <h1
@@ -39,16 +42,14 @@ function Hero() {
               fontWeight: 900,
             }}
           >
-            Programmable
+            The trust and throughput
             <br />
-            access,
-            <br />
-            everywhere.
+            layer for physical access.
           </h1>
 
-          <p style={{ marginTop: 12, fontSize: 18, lineHeight: 1.6, color: "#333", maxWidth: 640 }}>
-            AXW is the universal coordination layer between <b>access</b> and <b>space</b>: define rules once, issue scoped
-            tokens, verify at any edge, and log every grant + use — without publishing sensitive codes.
+          <p style={{ marginTop: 12, fontSize: 18, lineHeight: 1.6, color: "#333", maxWidth: 720 }}>
+            AXW connects identity, policy, devices, and spaces into one operational graph — so operators move people faster,
+            reduce disputes, and prove control when it matters.
           </p>
 
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginTop: 18 }}>
@@ -58,26 +59,22 @@ function Hero() {
             <a href="/investors" style={btnGhost}>
               Investor hub <span style={{ marginLeft: 8 }}>→</span>
             </a>
-            <a href="/kiosk" style={btnGhost}>
-              Kiosk mode <span style={{ marginLeft: 8 }}>→</span>
+            <a href="/network" style={btnGhost}>
+              Network graph <span style={{ marginLeft: 8 }}>→</span>
             </a>
-            <a href="/parking" style={btnGhost}>
-              Parking <span style={{ marginLeft: 8 }}>→</span>
+            <a href="/contact" style={btnGhost}>
+              Start pilot <span style={{ marginLeft: 8 }}>→</span>
             </a>
-          </div>
-
-          <div style={{ marginTop: 16, fontSize: 12, color: "#777" }}>
-            Built for: venues · property ops · parking · enterprise · government · infrastructure partners
           </div>
         </div>
 
-        <LiveSnapshot />
+        <Snapshot />
       </div>
     </section>
   );
 }
 
-function LiveSnapshot() {
+function Snapshot() {
   return (
     <aside
       style={{
@@ -87,39 +84,49 @@ function LiveSnapshot() {
         background: "linear-gradient(180deg, #fff, #fafafa)",
       }}
     >
-      <div style={{ fontWeight: 800, fontSize: 16 }}>Live snapshot</div>
+      <div style={{ fontWeight: 950, fontSize: 16 }}>4.0 snapshot</div>
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginTop: 12 }}>
-        <Stat label="Venues" value="10" />
-        <Stat label="Passes issued" value="4" />
+        <Stat label="Outcome" value="Trust" />
+        <Stat label="Engine" value="Graph" />
       </div>
 
       <div style={{ marginTop: 14, borderTop: "1px solid #eee", paddingTop: 14 }}>
-        <a href="/case-studies/sf-pilot" style={snapLink}>
-          <div style={{ fontWeight: 800 }}>SF Pilot</div>
-          <div style={{ color: "#666", fontSize: 13 }}>Case study + rollout pack</div>
-        </a>
-        <a href="/investors/model" style={snapLink}>
-          <div style={{ fontWeight: 800 }}>Model</div>
-          <div style={{ color: "#666", fontSize: 13 }}>Unit economics + growth loops</div>
-        </a>
-        <a href="/vc/packet" style={snapLink}>
-          <div style={{ fontWeight: 800 }}>VC Packet</div>
-          <div style={{ color: "#666", fontSize: 13 }}>Pitch narrative + rollout</div>
-        </a>
+        <SnapLink href="/pricing" title="Pricing" sub="Buy lower risk + faster ops" />
+        <SnapLink href="/case-studies/sf-pilot" title="SF Pilot" sub="Rollout proof point" />
+        <SnapLink href="/vc/packet" title="VC Packet" sub="Moat + market + why now" />
       </div>
     </aside>
   );
 }
 
-function SectionDark() {
+function WhyThisWins() {
+  return (
+    <section style={{ marginTop: 34 }}>
+      <h2 style={{ fontSize: 36, letterSpacing: -1, fontWeight: 950, marginBottom: 10 }}>
+        Benefits that compound.
+      </h2>
+
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 12 }}>
+        <Card title="Less liability" body="Prove who had access, when, and why. Lower the cost of disputes and incident response." />
+        <Card title="More throughput" body="Reduce bottlenecks at doors, garages, kiosks, and checkpoints." />
+        <Card title="Tighter control" body="One policy layer across many spaces. Fewer ad-hoc overrides and less chaos." />
+        <Card title="Faster expansion" body="New sites become software rollout problems, not custom operations projects." />
+      </div>
+    </section>
+  );
+}
+
+function SectorGrid() {
   return (
     <section style={{ marginTop: 34, borderRadius: 22, overflow: "hidden", background: "#07090d", color: "white" }}>
       <div style={{ padding: "26px 18px" }}>
         <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-          <PillDark>Universal points of access</PillDark>
-          <PillDark>Doors · gates · garages · kiosks · APIs</PillDark>
-          <PillDark>Edge verify</PillDark>
+          <PillDark>Venues</PillDark>
+          <PillDark>Parking</PillDark>
+          <PillDark>Property</PillDark>
+          <PillDark>Enterprise</PillDark>
+          <PillDark>Government</PillDark>
         </div>
 
         <h2 style={{ marginTop: 18, fontSize: 40, letterSpacing: -1, marginBottom: 10, fontWeight: 900 }}>
@@ -127,29 +134,73 @@ function SectionDark() {
         </h2>
 
         <p style={{ maxWidth: 900, color: "rgba(255,255,255,0.82)", lineHeight: 1.6, fontSize: 15 }}>
-          AXW is designed as a neutral access-and-space coordination layer: tokenized permissions, policy rules, device
-          verification, kiosk issuance, parking validation, staff scanning, and audit trails — scalable across every space
-          type.
+          AXW is designed as the neutral access-and-space coordination layer: tokens, rules, verification, logs, analytics,
+          and operational proof across any physical network.
         </p>
       </div>
 
       <div style={{ padding: "0 18px 22px" }}>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
           <DarkCard
-            title="Venues & Events"
-            body="Staff verification, guest tokens, time windows, rate-limits, incident logs."
-            ctaLabel="Kiosk hub"
-            ctaHref="/kiosk"
+            title="Venues & events"
+            body="Faster entry, fewer disputes, staff accountability, and verifiable access state."
+            ctaLabel="See venues"
+            ctaHref="/venues"
           />
           <DarkCard
-            title="Parking"
-            body="Plate-entry kiosks, validation tokens, operator verify tools, event trails."
-            ctaLabel="Parking solution"
-            ctaHref="/solutions/parking"
+            title="Parking & property"
+            body="Validation, operator tooling, access proof, and scalable multi-site rollout."
+            ctaLabel="See pricing"
+            ctaHref="/pricing"
           />
         </div>
       </div>
     </section>
+  );
+}
+
+function InvestorStrip() {
+  return (
+    <section style={{ marginTop: 34 }}>
+      <div
+        style={{
+          border: "1px solid #eee",
+          borderRadius: 18,
+          padding: 18,
+          background: "linear-gradient(180deg, #fff, #fafafa)",
+        }}
+      >
+        <div style={{ fontWeight: 950, fontSize: 18 }}>Why this becomes big</div>
+        <p style={{ marginTop: 10, color: "#444", lineHeight: 1.65, maxWidth: 980 }}>
+          The platform that proves access and intent becomes the default integration target for devices, operators, and partners.
+          That is how AXW moves from a point product to infrastructure.
+        </p>
+
+        <div style={{ marginTop: 14, display: "flex", gap: 10, flexWrap: "wrap" }}>
+          <a href="/investors" style={btnGhost}>Investors →</a>
+          <a href="/vc/packet" style={btnGhost}>VC Packet →</a>
+          <a href="/network" style={btnGhost}>Network →</a>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function SnapLink({ href, title, sub }: { href: string; title: string; sub: string }) {
+  return (
+    <a href={href} style={snapLink}>
+      <div style={{ fontWeight: 900 }}>{title}</div>
+      <div style={{ color: "#666", fontSize: 13 }}>{sub}</div>
+    </a>
+  );
+}
+
+function Card({ title, body }: { title: string; body: string }) {
+  return (
+    <div style={{ border: "1px solid #eee", borderRadius: 16, padding: 14, background: "white" }}>
+      <div style={{ fontWeight: 950, fontSize: 15 }}>{title}</div>
+      <div style={{ marginTop: 8, color: "#666", fontSize: 13, lineHeight: 1.55 }}>{body}</div>
+    </div>
   );
 }
 

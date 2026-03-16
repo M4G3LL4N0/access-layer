@@ -1,74 +1,90 @@
-// src/app/venues/page.tsx
-import Link from "next/link";
-import { supabaseServer } from "@/lib/supabaseServer";
-import VenuesDirectoryClient from "@/components/VenuesDirectoryClient";
-import VenuesMap from "@/components/VenuesMap";
+import MarketingShell from "@/components/MarketingShell";
+import StatsStrip from "@/components/StatsStrip";
+import EventFeed from "@/components/EventFeed";
+import { getVenueStats, getVenuesList, getRecentEvents } from "@/lib/axw/data";
+import React from "react";
 
 export const dynamic = "force-dynamic";
-
-type Venue = {
-  id: string;
-  name: string;
-  address: string | null;
-  city: string | null;
-  region: string | null;
-  country: string | null;
-  lat: number | null;
-  lng: number | null;
-  category: string | null;
-  status: string | null;
-  created_at?: string | null;
-};
+export const revalidate = 0;
 
 export default async function VenuesPage() {
-  const supabase = await supabaseServer();
-
-  const { data, error } = await supabase
-    .from("venues")
-    .select("id,name,address,city,region,country,lat,lng,category,status,created_at")
-    .eq("status", "active")
-    .order("created_at", { ascending: false });
-
-  const venues = (data || []) as Venue[];
+  const stats = await getVenueStats();
+  const venues = await getVenuesList(24);
+  const events = await getRecentEvents(12);
 
   return (
-    <main style={{ padding: 24, fontFamily: "system-ui" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
-        <Link href="/" style={{ textDecoration: "none", color: "inherit", opacity: 0.8 }}>
-          Home
-        </Link>
-        <span style={{ opacity: 0.35 }}>·</span>
-        <Link href="/owners" style={{ textDecoration: "none", color: "inherit", opacity: 0.8 }}>
-          Owners
-        </Link>
-        <span style={{ opacity: 0.35 }}>·</span>
-        <Link href="/parking" style={{ textDecoration: "none", color: "inherit", opacity: 0.8 }}>
-          Parking
-        </Link>
+    <MarketingShell>
+      <div style={{ fontSize: 12, color: "#777", fontWeight: 900, letterSpacing: 0.4 }}>VENUES</div>
+
+      <h1 style={{ marginTop: 10, marginBottom: 10, fontSize: 52, letterSpacing: -1.4, fontWeight: 950 }}>
+        Spaces that operate like a network.
+      </h1>
+
+      <p style={{ marginTop: 0, color: "#333", lineHeight: 1.65, maxWidth: 980 }}>
+        Venues is where AXW shows up as an operating advantage: faster throughput, cleaner proof, and more scalable permissions across locations.
+      </p>
+
+      <div style={{ marginTop: 22 }}>
+        <StatsStrip
+          items={[
+            { label: "Venues", value: stats.venues, sub: "Onboarded operators" },
+            { label: "Credentials", value: stats.credentials, sub: "Issued identities" },
+            { label: "Devices", value: stats.devices, sub: "Verification hardware" },
+            { label: "Events", value: stats.events, sub: "Proof of control" },
+          ]}
+        />
       </div>
 
-      {error && (
-        <div
-          style={{
-            marginTop: 12,
-            padding: 12,
-            borderRadius: 12,
-            border: "1px solid rgba(0,0,0,0.12)",
-            background: "rgba(255,0,0,0.05)",
-            fontWeight: 800,
-          }}
-        >
-          Error loading venues: {String(error.message || error)}
-        </div>
-      )}
+      <section
+        style={{
+          marginTop: 22,
+          border: "1px solid #eee",
+          borderRadius: 18,
+          padding: 18,
+          background: "white",
+        }}
+      >
+        <div style={{ fontWeight: 950, fontSize: 18 }}>Live venues</div>
 
-      <div style={{ marginTop: 10 }}>
-        <VenuesMap venues={venues as any} />
-      </div>
+        {!venues.venues.length ? (
+          <div style={{ marginTop: 12, color: "#666", fontSize: 13 }}>
+            No venues yet. Seed or create venues in the admin flow, then this becomes the live commercial surface.
+          </div>
+        ) : (
+          <div
+            style={{
+              marginTop: 14,
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+              gap: 12,
+            }}
+          >
+            {venues.venues.map((venue: any) => (
+              <div
+                key={venue.id}
+                style={{
+                  border: "1px solid #eee",
+                  borderRadius: 16,
+                  padding: 14,
+                  background: "#fafafa",
+                }}
+              >
+                <div style={{ fontWeight: 950, fontSize: 15 }}>{venue.name}</div>
+                <div style={{ marginTop: 8, color: "#666", fontSize: 13, lineHeight: 1.5 }}>
+                  {[venue.city, venue.region, venue.country].filter(Boolean).join(", ") || "Location pending"}
+                </div>
+                <div style={{ marginTop: 10, fontSize: 12, color: "#666" }}>
+                  status: {venue.status || "active"}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
 
-      <div style={{ marginTop: 14 }}>
-        <VenuesDirectoryClient venues={venues as any} />
+      <div style={{ marginTop: 22 }}>
+        <EventFeed events={events.events} title="Recent venue activity" />
       </div>
-    </main>
+    </MarketingShell>
   );
 }

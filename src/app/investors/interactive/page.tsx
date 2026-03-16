@@ -1,72 +1,36 @@
-"use client";
+import MarketingShell from "@/components/MarketingShell";
+import React from "react";
 
-import { useState } from "react";
-import Link from "next/link";
+export const dynamic = "force-static";
 
-export default function InteractiveInvestorPage() {
-
-  const [venues, setVenues] = useState(2500);
-  const [events, setEvents] = useState(35);
-  const [revPerEvent, setRevPerEvent] = useState(0.25);
-  const [attach, setAttach] = useState(45);
-  const [multiple, setMultiple] = useState(18);
-
-  const totalEventsPerDay = venues * events;
-  const monetizedPerDay = totalEventsPerDay * (attach / 100);
-  const annualRevenue = monetizedPerDay * revPerEvent * 365;
-  const valuation = annualRevenue * multiple;
-
+export default function InvestorsInteractivePage() {
   return (
-    <main style={{ padding: 40, maxWidth: 1100 }}>
-      <h1 style={{ fontSize: 32, fontWeight: 800 }}>
-        Access ↔ Space is a Universal Primitive
+    <MarketingShell>
+      <div style={{ fontSize: 12, color: "#777", fontWeight: 900, letterSpacing: 0.4 }}>INTERACTIVE</div>
+
+      <h1 style={{ marginTop: 10, marginBottom: 10, fontSize: 52, letterSpacing: -1.4, fontWeight: 950 }}>
+        The moat is the graph.
       </h1>
 
-      <div style={{ marginTop: 30, display: "grid", gap: 20 }}>
-        <Stat label="Total events/day" value={totalEventsPerDay.toLocaleString()} />
-        <Stat label="Monetized/day" value={monetizedPerDay.toLocaleString()} />
-        <Stat label="Annual revenue" value={`$${(annualRevenue/1000000).toFixed(2)}M`} />
-        <Stat label="Valuation" value={`$${(valuation/1000000).toFixed(2)}M`} />
+      <p style={{ marginTop: 0, color: "#333", lineHeight: 1.65, maxWidth: 980 }}>
+        AXW compounds as more spaces, more devices, more credentials, and more events flow through one policy-defined system.
+      </p>
+
+      <div style={{ marginTop: 22, display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 12 }}>
+        <Card title="Venue nodes" body="Commercial wedge and rollout surface." />
+        <Card title="Entrypoint nodes" body="Where policy becomes real." />
+        <Card title="Device nodes" body="Verification distribution layer." />
+        <Card title="Event nodes" body="Proof history that others depend on." />
       </div>
-
-      <Slider label="Live venues" value={venues} setValue={setVenues} max={200000} />
-      <Slider label="Events per venue/day" value={events} setValue={setEvents} max={200} />
-      <Slider label="Revenue per event ($)" value={revPerEvent} setValue={setRevPerEvent} max={5} step={0.05} />
-      <Slider label="Attach rate (%)" value={attach} setValue={setAttach} max={100} />
-      <Slider label="Revenue multiple" value={multiple} setValue={setMultiple} max={40} />
-
-      <div style={{ marginTop: 40 }}>
-        <Link href="/investors/2t">
-          → View $2T Path Model
-        </Link>
-      </div>
-
-    </main>
+    </MarketingShell>
   );
 }
 
-function Stat({ label, value }: any) {
+function Card({ title, body }: { title: string; body: string }) {
   return (
-    <div style={{ padding: 20, border: "1px solid #ddd", borderRadius: 12 }}>
-      <div style={{ fontSize: 14, color: "#666" }}>{label}</div>
-      <div style={{ fontSize: 24, fontWeight: 700 }}>{value}</div>
-    </div>
-  );
-}
-
-function Slider({ label, value, setValue, max, step=1 }: any) {
-  return (
-    <div style={{ marginTop: 30 }}>
-      <div>{label}: {value}</div>
-      <input
-        type="range"
-        min={0}
-        max={max}
-        step={step}
-        value={value}
-        onChange={(e) => setValue(Number(e.target.value))}
-        style={{ width: "100%" }}
-      />
+    <div style={{ border: "1px solid #eee", borderRadius: 16, padding: 14, background: "white" }}>
+      <div style={{ fontWeight: 950, fontSize: 15 }}>{title}</div>
+      <div style={{ marginTop: 8, color: "#666", fontSize: 13, lineHeight: 1.55 }}>{body}</div>
     </div>
   );
 }
