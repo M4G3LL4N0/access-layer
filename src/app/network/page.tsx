@@ -1,42 +1,50 @@
 import MarketingShell from "@/components/MarketingShell";
-import StatsStrip from "@/components/StatsStrip";
-import SimpleNetworkGraph from "@/components/SimpleNetworkGraph";
-import { getNetworkGraph, getVenueStats } from "@/lib/axw/data";
-import React from "react";
+import NetworkGraph from "@/components/NetworkGraph";
 
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
+export default function Network(){
 
-export default async function NetworkPage() {
-  const stats = await getVenueStats();
-  const graph = await getNetworkGraph();
+const data = {
 
-  return (
-    <MarketingShell>
-      <div style={{ fontSize: 12, color: "#777", fontWeight: 900, letterSpacing: 0.4 }}>AXW NETWORK</div>
+nodes: [
+{id:"AXW",group:1},
+{id:"Venue A",group:2},
+{id:"Venue B",group:2},
+{id:"Device 1",group:3},
+{id:"Device 2",group:3},
+{id:"Credential",group:4}
+],
 
-      <h1 style={{ marginTop: 10, marginBottom: 10, fontSize: 52, letterSpacing: -1.4, fontWeight: 950 }}>
-        The access graph becomes the moat.
-      </h1>
+links: [
+{source:"AXW",target:"Venue A"},
+{source:"AXW",target:"Venue B"},
+{source:"Venue A",target:"Device 1"},
+{source:"Venue B",target:"Device 2"},
+{source:"Device 1",target:"Credential"}
+]
 
-      <p style={{ marginTop: 0, color: "#333", lineHeight: 1.65, maxWidth: 980 }}>
-        Every venue, entrypoint, device, credential, and event becomes part of the same coordination graph. That is what makes AXW infrastructure, not software.
-      </p>
+}
 
-      <div style={{ marginTop: 22 }}>
-        <StatsStrip
-          items={[
-            { label: "Venues", value: stats.venues, sub: "Root nodes" },
-            { label: "Spaces", value: stats.spaces, sub: "Operational zones" },
-            { label: "Entrypoints", value: stats.entrypoints, sub: "Doors, gates, checkpoints" },
-            { label: "Events", value: stats.events, sub: "Verified operational history" },
-          ]}
-        />
-      </div>
+return(
 
-      <div style={{ marginTop: 22 }}>
-        <SimpleNetworkGraph nodes={graph.nodes} edges={graph.edges} />
-      </div>
-    </MarketingShell>
-  );
+<MarketingShell>
+
+<h1 style={{fontSize:52,fontWeight:900}}>
+Global Access Network
+</h1>
+
+<p style={{color:"#555",maxWidth:900}}>
+AXW builds a programmable network connecting spaces,
+devices, and credentials across the physical world.
+</p>
+
+<div style={{marginTop:30}}>
+
+<NetworkGraph data={data}/>
+
+</div>
+
+</MarketingShell>
+
+)
+
 }
