@@ -1,55 +1,56 @@
-import React from "react";
+import React from "react"
+
+export type EventFeedItem = {
+  id?: string
+  title?: string
+  venue?: string
+  timestamp?: string
+  status?: string
+}
+
+export type EventFeedProps = {
+  title?: string
+  events?: EventFeedItem[]
+}
 
 export default function EventFeed({
-  events,
-  title = "Live event feed",
-}: {
-  events: any[];
-  title?: string;
-}) {
+  title = "Recent events",
+  events = [],
+}: EventFeedProps) {
   return (
-    <section
-      style={{
-        border: "1px solid #eee",
-        borderRadius: 18,
-        padding: 18,
-        background: "white",
-      }}
-    >
-      <div style={{ fontWeight: 950, fontSize: 18 }}>{title}</div>
+    <section className="rounded-2xl border border-black/10 bg-white p-6 shadow-sm">
+      <div className="mb-4 flex items-center justify-between">
+        <h2 className="text-lg font-semibold tracking-tight text-black">{title}</h2>
+        <span className="text-sm text-neutral-500">{events.length} items</span>
+      </div>
 
-      {!events.length ? (
-        <div style={{ marginTop: 12, color: "#666", fontSize: 13 }}>
-          No events yet. Once issue / verify / revoke is wired into real usage, this becomes the live operational ledger.
-        </div>
-      ) : (
-        <div style={{ marginTop: 14, display: "grid", gap: 10 }}>
-          {events.map((event) => (
+      <div className="space-y-3">
+        {events.length === 0 ? (
+          <div className="rounded-xl border border-dashed border-black/10 px-4 py-6 text-sm text-neutral-500">
+            No events available.
+          </div>
+        ) : (
+          events.map((event, index) => (
             <div
-              key={event.id}
-              style={{
-                border: "1px solid #eee",
-                borderRadius: 14,
-                padding: 12,
-                background: "#fafafa",
-              }}
+              key={event.id ?? `${event.title ?? "event"}-${index}`}
+              className="rounded-xl border border-black/10 px-4 py-3"
             >
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, flexWrap: "wrap" }}>
-                <div style={{ fontWeight: 900, fontSize: 13 }}>
-                  {String(event.action).toUpperCase()} · {String(event.result).toUpperCase()}
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <div>
+                  <div className="font-medium text-black">{event.title ?? "Untitled event"}</div>
+                  <div className="text-sm text-neutral-500">{event.venue ?? "Unknown venue"}</div>
                 </div>
-                <div style={{ fontSize: 12, color: "#666" }}>
-                  {event.created_at ? new Date(event.created_at).toLocaleString() : "—"}
+                <div className="text-right">
+                  <div className="text-xs uppercase tracking-wide text-neutral-500">
+                    {event.status ?? "unknown"}
+                  </div>
+                  <div className="text-sm text-neutral-500">{event.timestamp ?? ""}</div>
                 </div>
-              </div>
-
-              <div style={{ marginTop: 8, fontSize: 12, color: "#666", lineHeight: 1.5 }}>
-                venue_id: {event.venue_id || "—"} · device_id: {event.device_id || "—"} · entrypoint_id: {event.entrypoint_id || "—"}
               </div>
             </div>
-          ))}
-        </div>
-      )}
+          ))
+        )}
+      </div>
     </section>
-  );
+  )
 }

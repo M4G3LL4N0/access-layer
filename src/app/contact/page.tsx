@@ -53,6 +53,12 @@ const button={
 padding:"12px 16px",
 borderRadius:999,
 border:"1px solid #ddd",
-background:"#fff",
-fontWeight:900
+background:"#000",
+color:"#fff",
+fontWeight:900,
+cursor:"pointer",
+transition:"all 0.2s ease",
+":hover":{
+  opacity:0.9
+}
 }
