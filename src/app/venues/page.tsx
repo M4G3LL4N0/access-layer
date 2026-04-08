@@ -2,15 +2,44 @@ import MarketingShell from "@/components/MarketingShell";
 import StatsStrip from "@/components/StatsStrip";
 import EventFeed from "@/components/EventFeed";
 import { getVenueStats, getVenuesList, getRecentEvents } from "@/lib/axw/data";
-import React from "react";
+
+interface VenueStats {
+  venues: number;
+  entrypoints: number;
+  devices: number;
+  events: number;
+}
+
+interface Venue {
+  id: string;
+  name: string;
+  city: string;
+  state: string;
+  status: string;
+  events?: number;
+}
+
+interface VenuesResponse {
+  venues: Venue[];
+}
+
+interface Event {
+  id: string;
+  timestamp: string;
+  type: string;
+  venueId: string;
+  credentialId?: string;
+  deviceId?: string;
+}
+
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export default async function VenuesPage() {
-  const stats = await getVenueStats();
-  const venues = await getVenuesList(24);
-  const events = await getRecentEvents(12);
+  const stats: VenueStats = await getVenueStats();
+  const venues = await getVenuesList();
+  const events = await getRecentEvents();
 
   return (
     <MarketingShell>
@@ -28,7 +57,7 @@ export default async function VenuesPage() {
         <StatsStrip
           items={[
             { label: "Venues", value: stats.venues, sub: "Onboarded operators" },
-            { label: "Credentials", value: stats.credentials, sub: "Issued identities" },
+            { label: "Entrypoints", value: stats.entrypoints, sub: "Access points" },
             { label: "Devices", value: stats.devices, sub: "Verification hardware" },
             { label: "Events", value: stats.events, sub: "Proof of control" },
           ]}
@@ -46,7 +75,7 @@ export default async function VenuesPage() {
       >
         <div style={{ fontWeight: 950, fontSize: 18 }}>Live venues</div>
 
-        {!venues.venues.length ? (
+        {!venues.length ? (
           <div style={{ marginTop: 12, color: "#666", fontSize: 13 }}>
             No venues yet. Seed or create venues in the admin flow, then this becomes the live commercial surface.
           </div>
@@ -59,7 +88,7 @@ export default async function VenuesPage() {
               gap: 12,
             }}
           >
-            {venues.venues.map((venue: any) => (
+            {venues.map((venue: Venue) => (
               <div
                 key={venue.id}
                 style={{
@@ -83,7 +112,7 @@ export default async function VenuesPage() {
       </section>
 
       <div style={{ marginTop: 22 }}>
-        <EventFeed events={events.events} title="Recent venue activity" />
+        <EventFeed events={events} title="Recent venue activity" />
       </div>
     </MarketingShell>
   );
