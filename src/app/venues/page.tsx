@@ -47,11 +47,27 @@ export default async function VenuesPage() {
       <div style={{ marginTop: 22 }}>
         <StatsStrip
           items={[
-            { label: "Venues", value: stats.venues, sub: "Onboarded operators" },
-            { label: "Entrypoints", value: stats.entrypoints, sub: "Access points" },
-            { label: "Devices", value: stats.devices, sub: "Verification hardware" },
-            { label: "Events", value: stats.events, sub: "Proof of control" },
-          ] as StatsStripProps['items']}
+            { 
+              label: "Venues", 
+              value: stats.venues.toString(), 
+              sub: "Onboarded operators" 
+            },
+            { 
+              label: "Entrypoints", 
+              value: stats.entrypoints.toString(), 
+              sub: "Access points" 
+            },
+            { 
+              label: "Devices", 
+              value: stats.devices.toString(), 
+              sub: "Verification hardware" 
+            },
+            { 
+              label: "Events", 
+              value: stats.events.toString(), 
+              sub: "Proof of control" 
+            },
+          ]}
         />
       </div>
 
