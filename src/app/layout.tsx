@@ -38,7 +38,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={inter.variable}>
       <body className="min-h-screen flex flex-col bg-white antialiased">
         <main className="flex-1 w-full">
-          <div className="w-full">
+          <div className="w-full" suppressHydrationWarning>
             {children}
           </div>
         </main>
