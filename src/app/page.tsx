@@ -1,9 +1,9 @@
 export default function Page() {
   return (
-    <div className="container">
+    <div>
       <div className="min-h-[80vh] flex flex-col justify-center py-16">
-        <div className="max-w-3xl">
-          <h1 className="text-6xl font-bold tracking-tight mb-6">
+        <div className="max-w-3xl mx-auto">
+          <h1 className="text-6xl font-bold tracking-tight mb-6 leading-tight">
             <span className="block">Access Infrastructure</span>
             <span className="block text-blue-600">For The Physical World</span>
           </h1>
