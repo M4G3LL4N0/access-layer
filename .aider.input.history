@@ -1306,3 +1306,109 @@
 +- do not make cosmetic-only changes
 +- make the project buildable
 +
+
+# 2026-04-08 16:19:19.927356
++Venture: access-layer
++State: scaling
++Lane: visual
++
++Mission:
++- improve the homepage and key visual surfaces
++- make the UI feel more premium, polished, and complete
++- prioritize hero, layout, spacing, cards, CTA, section hierarchy
++- avoid breaking the build
++- do not do raw debug output
++- do not do tiny cosmetic noise
++- make visible improvements
++
++Rules:
++- focus on page, layout, globals, hero/header/nav files
++- preserve existing product direction
++- keep changes deploy-worthy
++
++Build error context:
++├ ƒ /checkout
++├ ƒ /claim/[venueId]
++├ ○ /contact
++├ ƒ /crm/leads
++├ ƒ /crm/targets
++├ ƒ /crm/templates
++├ ○ /demo
++├ ○ /developers
++├ ○ /enterprise
++├ ○ /government
++├ ƒ /hardware
++├ ƒ /health
++├ ○ /home-v1
++├ ○ /home-v2
++├ ○ /icon.png
++├ ○ /investors
++├ ○ /investors/2t
++├ ○ /investors/interactive
++├ ○ /investors/mega
++├ ○ /investors/model
++├ ○ /kiosk
++├ ƒ /kiosk/[venueId]
++├ ƒ /kiosk/parking/[venueId]
++├ ○ /legal/privacy
++├ ○ /legal/terms
++├ ○ /login
++├ ƒ /manage/[venueId]
++├ ○ /manifest.webmanifest
++├ ○ /map
++├ ○ /network
++├ ○ /onboard
++├ ○ /onboarding
++├ ○ /onboarding/new
++├ ○ /opengraph-image.png
++├ ƒ /operator/[venueId]
++├ ○ /operators
++├ ƒ /ops
++├ ƒ /ops/[venueId]
++├ ○ /outreach
++├ ○ /owners
++├ ƒ /parking
++├ ƒ /parking/operator/[venueId]
++├ ƒ /pass/[token]
++├ ƒ /pilot-pack/[venueId]
++├ ○ /policies
++├ ○ /press
++├ ○ /pricing
++├ ƒ /reports/sf
++├ ƒ /request/[venueId]
++├ ○ /rollout
++├ ○ /scanner
++├ ○ /sdk
++├ ○ /sf-pilot
++├ ƒ /signage/[venueId]
++├ ○ /simulator
++├ ƒ /solutions/parking
++├ ƒ /v/[venueId]
++├ ƒ /v2
++├ ƒ /v2/credentials
++├ ƒ /v2/entrypoints
++├ ƒ /v2/sectors
++├ ○ /v2/simulator
++├ ƒ /v2/spaces
++├ ƒ /v3
++├ ƒ /v3/audit
++├ ƒ /v3/policies
++├ ○ /v3/seed
++├ ○ /v3/test
++├ ○ /vc
++├ ○ /vc/checklist
++├ ○ /vc/packet
++├ ƒ /venues
++└ ○ /verify
++
++
++ƒ Proxy (Middleware)
++
++○  (Static)   prerendered as static content
++ƒ  (Dynamic)  server-rendered on demand
++
++Rules:
++- fix the actual build error shown above
++- do not make cosmetic-only changes
++- make the project buildable
++
