@@ -3,7 +3,19 @@ import StatsStrip from "@/components/StatsStrip";
 import EventFeed from "@/components/EventFeed";
 import { getVenueStats, getVenuesList, getRecentEvents } from "@/lib/axw/data";
 
-import type { VenueStats, VenueItem, EventItem, RecentEventsResult } from "@/lib/axw/data";
+import type { 
+  VenueStats, 
+  VenueItem, 
+  EventItem, 
+  RecentEventsResult,
+  StatsStripProps,
+  EventFeedProps 
+} from "@/lib/axw/data";
+
+interface ExtendedVenueItem extends VenueItem {
+  region?: string;
+  country?: string;
+}
 
 
 export const dynamic = "force-dynamic";
@@ -11,7 +23,7 @@ export const revalidate = 0;
 
 export default async function VenuesPage() {
   const stats = await getVenueStats();
-  const venues: VenueItem[] = await getVenuesList();
+  const venues: ExtendedVenueItem[] = await getVenuesList();
   const events: RecentEventsResult = await getRecentEvents();
 
   return (
@@ -33,7 +45,7 @@ export default async function VenuesPage() {
             { label: "Entrypoints", value: stats.entrypoints, sub: "Access points" },
             { label: "Devices", value: stats.devices, sub: "Verification hardware" },
             { label: "Events", value: stats.events, sub: "Proof of control" },
-          ]}
+          ] as StatsStripProps['items']}
         />
       </div>
 
@@ -85,7 +97,7 @@ export default async function VenuesPage() {
       </section>
 
       <div style={{ marginTop: 22 }}>
-        <EventFeed events={events} title="Recent venue activity" />
+        <EventFeed events={events.events} title="Recent venue activity" />
       </div>
     </MarketingShell>
   );
