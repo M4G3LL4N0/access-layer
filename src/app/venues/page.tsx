@@ -1,20 +1,19 @@
 import MarketingShell from "@/components/MarketingShell";
-import StatsStrip from "@/components/StatsStrip";
-import EventFeed from "@/components/EventFeed";
+import StatsStrip, { StatsStripProps } from "@/components/StatsStrip";
+import EventFeed, { EventFeedProps } from "@/components/EventFeed";
 import { getVenueStats, getVenuesList, getRecentEvents } from "@/lib/axw/data";
 
 import type { 
   VenueStats, 
   VenueItem, 
-  EventItem, 
-  RecentEventsResult,
-  StatsStripProps,
-  EventFeedProps 
+  RecentEventsResult
 } from "@/lib/axw/data";
 
 interface ExtendedVenueItem extends VenueItem {
   region?: string;
   country?: string;
+  events?: number;
+  status: string;
 }
 
 
