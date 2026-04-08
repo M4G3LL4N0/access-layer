@@ -10,10 +10,12 @@ import type {
 } from "@/lib/axw/data";
 
 interface ExtendedVenueItem extends VenueItem {
-  region?: string;
-  country?: string;
-  events?: number;
+  region?: string | null;
+  country?: string | null;
+  events?: number | null;
   status: string;
+  city?: string;
+  state?: string;
 }
 
 
@@ -21,9 +23,14 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export default async function VenuesPage() {
-  const stats = await getVenueStats();
-  const venues: ExtendedVenueItem[] = await getVenuesList();
-  const events: RecentEventsResult = await getRecentEvents();
+  const stats = await getVenueStats().catch(() => ({
+    venues: 0,
+    entrypoints: 0,
+    devices: 0,
+    events: 0
+  }));
+  const venues: ExtendedVenueItem[] = await getVenuesList().catch(() => []);
+  const events: RecentEventsResult = await getRecentEvents().catch(() => ({ events: [] }));
 
   return (
     <MarketingShell>
