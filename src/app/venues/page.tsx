@@ -1,5 +1,5 @@
 import MarketingShell from "@/components/MarketingShell";
-import StatsStrip, { StatsStripProps } from "@/components/StatsStrip";
+import StatsStrip from "@/components/StatsStrip";
 import EventFeed, { EventFeedProps } from "@/components/EventFeed";
 import { getVenueStats, getVenuesList, getRecentEvents } from "@/lib/axw/data";
 
