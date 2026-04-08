@@ -990,3 +990,107 @@
 +- do not make cosmetic-only changes
 +- make the project buildable
 +
+
+# 2026-04-08 13:31:09.210155
++Venture: access-layer
++State: premium
++Lane: feature
++
++Current mission:
++- refine premium design
++- improve strategic surfaces
++- deploy polished progress
++
++Rules:
++- make meaningful progress
++- preserve build stability
++- fix root causes
++- prefer deploy-worthy output
++- avoid tiny cosmetic-only changes unless bundled with stronger progress
++
++Build error context:
++├ ƒ /checkout
++├ ƒ /claim/[venueId]
++├ ○ /contact
++├ ƒ /crm/leads
++├ ƒ /crm/targets
++├ ƒ /crm/templates
++├ ○ /demo
++├ ○ /developers
++├ ○ /enterprise
++├ ○ /government
++├ ƒ /hardware
++├ ƒ /health
++├ ○ /home-v1
++├ ○ /home-v2
++├ ○ /icon.png
++├ ○ /investors
++├ ○ /investors/2t
++├ ○ /investors/interactive
++├ ○ /investors/mega
++├ ○ /investors/model
++├ ○ /kiosk
++├ ƒ /kiosk/[venueId]
++├ ƒ /kiosk/parking/[venueId]
++├ ○ /legal/privacy
++├ ○ /legal/terms
++├ ○ /login
++├ ƒ /manage/[venueId]
++├ ○ /manifest.webmanifest
++├ ○ /map
++├ ○ /network
++├ ○ /onboard
++├ ○ /onboarding
++├ ○ /onboarding/new
++├ ○ /opengraph-image.png
++├ ƒ /operator/[venueId]
++├ ○ /operators
++├ ƒ /ops
++├ ƒ /ops/[venueId]
++├ ○ /outreach
++├ ○ /owners
++├ ƒ /parking
++├ ƒ /parking/operator/[venueId]
++├ ƒ /pass/[token]
++├ ƒ /pilot-pack/[venueId]
++├ ○ /policies
++├ ○ /press
++├ ○ /pricing
++├ ƒ /reports/sf
++├ ƒ /request/[venueId]
++├ ○ /rollout
++├ ○ /scanner
++├ ○ /sdk
++├ ○ /sf-pilot
++├ ƒ /signage/[venueId]
++├ ○ /simulator
++├ ƒ /solutions/parking
++├ ƒ /v/[venueId]
++├ ƒ /v2
++├ ƒ /v2/credentials
++├ ƒ /v2/entrypoints
++├ ƒ /v2/sectors
++├ ○ /v2/simulator
++├ ƒ /v2/spaces
++├ ƒ /v3
++├ ƒ /v3/audit
++├ ƒ /v3/policies
++├ ○ /v3/seed
++├ ○ /v3/test
++├ ○ /vc
++├ ○ /vc/checklist
++├ ○ /vc/packet
++├ ƒ /venues
++└ ○ /verify
++
++
++ƒ Proxy (Middleware)
++
++○  (Static)   prerendered as static content
++ƒ  (Dynamic)  server-rendered on demand
++
++Rules:
++- fix the actual build error shown above
++- do not make cosmetic-only changes
++- make the project buildable
++
