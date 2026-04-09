@@ -11,7 +11,8 @@ export default function HomePage() {
           </h1>
           <p className="text-xl md:text-2xl text-gray-600 mb-16 max-w-3xl leading-relaxed">
             Programmable access control, policy enforcement, and coordination systems
-            for venues, operators, and developers.
+            for venues, operators, and developers. Manage access policies, monitor activity,
+            and integrate with your existing systems through our developer-friendly APIs.
           </p>
           <div className="flex gap-6">
             <div className="flex flex-col md:flex-row gap-4 md:gap-6">

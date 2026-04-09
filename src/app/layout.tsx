@@ -42,6 +42,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <div className="container mx-auto flex h-16 items-center justify-between">
               <a href="/" className="font-bold">AXW Access Layer</a>
               <div className="flex items-center gap-4">
+                <a href="/dashboard" className="text-sm hover:text-blue-600">Dashboard</a>
+                <a href="/developers" className="text-sm hover:text-blue-600">Developers</a>
                 <a href="/login" className="text-sm hover:text-blue-600">Login</a>
                 <a href="/demo" className="rounded-md bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700">
                   Get Demo
