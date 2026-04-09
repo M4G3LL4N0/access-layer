@@ -1,4 +1,4 @@
-export default function Page() {
+export default function HomePage() {
   return (
     <div className="bg-gradient-to-b from-[var(--color-gradient-start)] to-[var(--color-gradient-end)] w-full">
       <div className="min-h-screen flex flex-col justify-center py-32">

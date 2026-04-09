@@ -37,11 +37,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={inter.variable}>
       <body className="min-h-screen flex flex-col bg-white antialiased">
-        <main className="flex-1 w-full">
-          <div className="w-full" suppressHydrationWarning>
-            {children}
-          </div>
-        </main>
+        <div className="flex-1 flex flex-col">
+          <main className="flex-1">
+            <div className="w-full" suppressHydrationWarning>
+              {children}
+            </div>
+          </main>
+        </div>
       </body>
     </html>
   );
