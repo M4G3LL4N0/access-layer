@@ -800,8 +800,8 @@ export default function HomePage() {
                 <div className="flex items-start gap-3">
                   <span className="text-blue-600 text-lg flex-shrink-0">✓</span>
                   <div>
-                    <div className="font-semibold text-sm">SOC 2 Type II</div>
-                    <div className="text-sm text-gray-600">Pre-certified infrastructure for compliance reporting</div>
+                    <div className="font-semibold text-sm">Compliance Architecture</div>
+                    <div className="text-sm text-gray-600">Built with SOC 2 Type II requirements in mind from day one</div>
                   </div>
                 </div>
               </div>
