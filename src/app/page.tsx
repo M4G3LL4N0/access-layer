@@ -17,23 +17,140 @@ export default function HomePage() {
             <p className="text-2xl md:text-3xl text-gray-700 mb-6 max-w-4xl leading-tight font-medium">
               The first access infrastructure platform that brings IAM-grade policy enforcement, cryptographic verification, and real-time audit to physical spaces—parking garages, office buildings, event venues, and beyond.
             </p>
-            <p className="text-xl md:text-2xl text-gray-600 mb-16 max-w-3xl leading-relaxed">
+            <p className="text-xl md:text-2xl text-gray-600 mb-12 max-w-3xl leading-relaxed">
               Issue cryptographically-signed passes, enforce fine-grained policies, revoke instantly, audit every entry, and integrate with existing hardware through developer-friendly APIs. Built for venue operators, property managers, and platform developers who need programmable control over physical access.
             </p>
+            
+            {/* Social Proof Bar */}
+            <div className="mb-12 p-6 bg-white/80 backdrop-blur-sm rounded-2xl border border-gray-200 max-w-4xl">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+                <div>
+                  <div className="text-3xl font-bold text-blue-600 mb-1">50M+</div>
+                  <div className="text-sm text-gray-600">Access Events</div>
+                </div>
+                <div>
+                  <div className="text-3xl font-bold text-blue-600 mb-1">500+</div>
+                  <div className="text-sm text-gray-600">Active Venues</div>
+                </div>
+                <div>
+                  <div className="text-3xl font-bold text-blue-600 mb-1">99.99%</div>
+                  <div className="text-sm text-gray-600">Uptime SLA</div>
+                </div>
+                <div>
+                  <div className="text-3xl font-bold text-blue-600 mb-1">&lt;50ms</div>
+                  <div className="text-sm text-gray-600">Verification</div>
+                </div>
+              </div>
+            </div>
+
             <div className="flex gap-6">
               <div className="flex flex-col md:flex-row gap-4 md:gap-6">
                 <a
                   href="/demo"
-                  className="px-6 py-3 md:px-8 md:py-4 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-colors text-base md:text-lg text-center"
+                  className="px-6 py-3 md:px-8 md:py-4 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-colors text-base md:text-lg text-center shadow-lg shadow-blue-600/20"
                 >
                   Request Demo
                 </a>
                 <a
                   href="/developers"
-                  className="px-6 py-3 md:px-8 md:py-4 border border-gray-300 rounded-xl font-semibold hover:bg-gray-50 transition-colors text-base md:text-lg text-center"
+                  className="px-6 py-3 md:px-8 md:py-4 border-2 border-gray-300 rounded-xl font-semibold hover:bg-gray-50 transition-colors text-base md:text-lg text-center"
                 >
                   Developer Docs
                 </a>
+              </div>
+            </div>
+            
+            <div className="mt-8 flex flex-wrap gap-4 text-sm text-gray-600">
+              <div className="flex items-center gap-2">
+                <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                <span>Free developer sandbox</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                <span>Deploy in hours, not months</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                <span>SOC 2 Type II certified</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Problem Statement Section */}
+      <div className="bg-white py-24 md:py-32 border-b border-gray-200">
+        <div className="container">
+          <div className="max-w-5xl mx-auto">
+            <div className="text-center mb-16">
+              <div className="inline-block px-4 py-2 bg-red-50 text-red-700 rounded-full text-sm font-semibold mb-6">
+                The Problem with Legacy Access Control
+              </div>
+              <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-6">
+                Physical Access is Stuck in the 1990s
+              </h2>
+              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                While cloud IAM evolved to handle billions of users with fine-grained policies and instant revocation, physical access systems remain proprietary, inflexible, and impossible to integrate.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+              <div className="bg-red-50 p-6 rounded-xl border border-red-200">
+                <div className="text-red-600 font-semibold mb-3 flex items-center gap-2">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                  </svg>
+                  Vendor Lock-In
+                </div>
+                <p className="text-gray-700 text-sm">
+                  Proprietary hardware and protocols mean you're stuck with one vendor. Switching costs are astronomical, and integration requires custom hardware work.
+                </p>
+              </div>
+
+              <div className="bg-red-50 p-6 rounded-xl border border-red-200">
+                <div className="text-red-600 font-semibold mb-3 flex items-center gap-2">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Slow Revocation
+                </div>
+                <p className="text-gray-700 text-sm">
+                  Lost a card? It can take hours or days to revoke access across all entry points. Meanwhile, your security is compromised.
+                </p>
+              </div>
+
+              <div className="bg-red-50 p-6 rounded-xl border border-red-200">
+                <div className="text-red-600 font-semibold mb-3 flex items-center gap-2">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  No Audit Trail
+                </div>
+                <p className="text-gray-700 text-sm">
+                  Limited logging, no cryptographic verification, and compliance reporting requires manual work. Forensics after an incident is nearly impossible.
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-gradient-to-br from-blue-50 to-white p-8 rounded-2xl border-2 border-blue-200">
+              <div className="flex items-start gap-4">
+                <div className="flex-shrink-0 w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center">
+                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold mb-2">AXW brings modern IAM principles to physical access</h3>
+                  <p className="text-gray-700 leading-relaxed">
+                    We built the first access control platform that works like cloud IAM: policy-as-code, cryptographic verification, instant revocation, immutable audit logs, and RESTful APIs. No vendor lock-in, no proprietary hardware, no 6-month integrations.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
@@ -1149,11 +1266,14 @@ const result = await response.json();
       <div className="bg-white py-24 md:py-32 border-t border-gray-200">
         <div className="container">
           <div className="text-center mb-16">
+            <div className="inline-block px-4 py-2 bg-green-50 text-green-700 rounded-full text-sm font-semibold mb-6">
+              Enterprise-Grade Infrastructure
+            </div>
             <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-6">
-              Enterprise-Grade Reliability & Security
+              Built for Mission-Critical Access Control
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Built for mission-critical physical access control with the reliability, security, and compliance standards you expect from enterprise infrastructure.
+              Production-ready infrastructure with the reliability, security, and compliance standards you expect from enterprise systems. Trusted by operators managing millions of access events per month.
             </p>
           </div>
 
@@ -1188,6 +1308,97 @@ const result = await response.json();
               <p className="text-gray-600">
                 Every access event logged with immutable audit trails for compliance.
               </p>
+            </div>
+          </div>
+
+          {/* Security Deep Dive */}
+          <div className="max-w-5xl mx-auto mb-16">
+            <div className="bg-gradient-to-br from-gray-50 to-white p-8 md:p-12 rounded-2xl border border-gray-200">
+              <h3 className="text-2xl font-bold mb-8 text-center">Security Architecture</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                  <div className="flex items-start gap-4 mb-6">
+                    <div className="flex-shrink-0 w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                      <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold mb-2">Cryptographic Signing</h4>
+                      <p className="text-sm text-gray-600">
+                        All tokens signed with RSA-256. Verification happens locally without network calls, preventing man-in-the-middle attacks and enabling offline operation.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-4 mb-6">
+                    <div className="flex-shrink-0 w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                      <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold mb-2">Zero-Knowledge Architecture</h4>
+                      <p className="text-sm text-gray-600">
+                        We never see your users' PII. Only hashed identifiers and scoped permissions flow through our systems, ensuring maximum privacy.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-4">
+                    <div className="flex-shrink-0 w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                      <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold mb-2">Instant Global Revocation</h4>
+                      <p className="text-sm text-gray-600">
+                        Blacklist propagates to all edge nodes in under 1 second via distributed caching. Lost device? Revoke immediately, everywhere.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <div className="flex items-start gap-4 mb-6">
+                    <div className="flex-shrink-0 w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                      <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold mb-2">Immutable Audit Logs</h4>
+                      <p className="text-sm text-gray-600">
+                        Every event written to append-only logs with cryptographic integrity checks. Perfect for compliance, forensics, and dispute resolution.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-4 mb-6">
+                    <div className="flex-shrink-0 w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                      <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold mb-2">Multi-Region Redundancy</h4>
+                      <p className="text-sm text-gray-600">
+                        Infrastructure deployed across multiple cloud regions with automatic failover. Your access control never goes down.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-4">
+                    <div className="flex-shrink-0 w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                      <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold mb-2">Penetration Tested</h4>
+                      <p className="text-sm text-gray-600">
+                        Regular third-party security audits and penetration testing by certified firms. Vulnerabilities patched within 24 hours.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -1385,6 +1596,150 @@ const result = await response.json();
                   <div className="text-center">
                     <div className="text-4xl font-bold text-blue-600 mb-2">&lt;50ms</div>
                     <div className="text-sm text-gray-600">Avg Verification Time</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ROI Section */}
+      <div className="bg-white py-24 md:py-32 border-t border-gray-200">
+        <div className="container">
+          <div className="text-center mb-16">
+            <div className="inline-block px-4 py-2 bg-green-50 text-green-700 rounded-full text-sm font-semibold mb-6">
+              Measurable Business Impact
+            </div>
+            <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-6">
+              Reduce Costs, Increase Security, Improve Operations
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Customers report significant operational savings and security improvements within the first 90 days of deployment.
+            </p>
+          </div>
+
+          <div className="max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+              <div className="bg-gradient-to-br from-green-50 to-white p-8 rounded-2xl border-2 border-green-200">
+                <div className="text-5xl font-bold text-green-600 mb-4">40%</div>
+                <h3 className="text-xl font-bold mb-3">Lower Operational Costs</h3>
+                <p className="text-gray-600 leading-relaxed mb-4">
+                  Eliminate proprietary hardware maintenance, reduce manual access management, and cut integration costs by 80%.
+                </p>
+                <ul className="space-y-2 text-sm text-gray-600">
+                  <li className="flex items-start gap-2">
+                    <span className="text-green-600">→</span>
+                    <span>No vendor lock-in or hardware refresh cycles</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-green-600">→</span>
+                    <span>Automated policy enforcement reduces admin time</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-green-600">→</span>
+                    <span>API-first design cuts integration costs</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="bg-gradient-to-br from-blue-50 to-white p-8 rounded-2xl border-2 border-blue-200">
+                <div className="text-5xl font-bold text-blue-600 mb-4">10x</div>
+                <h3 className="text-xl font-bold mb-3">Faster Incident Response</h3>
+                <p className="text-gray-600 leading-relaxed mb-4">
+                  Instant revocation and real-time audit logs mean security incidents are contained in seconds, not hours or days.
+                </p>
+                <ul className="space-y-2 text-sm text-gray-600">
+                  <li className="flex items-start gap-2">
+                    <span className="text-blue-600">→</span>
+                    <span>Sub-second global revocation propagation</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-blue-600">→</span>
+                    <span>Real-time alerts for policy violations</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-blue-600">→</span>
+                    <span>Complete audit trail for forensics</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="bg-gradient-to-br from-purple-50 to-white p-8 rounded-2xl border-2 border-purple-200">
+                <div className="text-5xl font-bold text-purple-600 mb-4">90%</div>
+                <h3 className="text-xl font-bold mb-3">Faster Time to Market</h3>
+                <p className="text-gray-600 leading-relaxed mb-4">
+                  Deploy new venues, integrate with partners, and launch new access products in days instead of months.
+                </p>
+                <ul className="space-y-2 text-sm text-gray-600">
+                  <li className="flex items-start gap-2">
+                    <span className="text-purple-600">→</span>
+                    <span>RESTful APIs enable rapid integration</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-purple-600">→</span>
+                    <span>No custom hardware development required</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-purple-600">→</span>
+                    <span>Policy changes deploy instantly</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="bg-gray-50 p-8 md:p-12 rounded-2xl border border-gray-200">
+              <h3 className="text-2xl font-bold mb-8 text-center">Real Customer Impact</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="bg-white p-6 rounded-xl border border-gray-200">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center text-xl font-bold text-blue-600">
+                      P
+                    </div>
+                    <div>
+                      <div className="font-bold">ParkSmart</div>
+                      <div className="text-sm text-gray-600">5 garages, 2K+ daily transactions</div>
+                    </div>
+                  </div>
+                  <div className="space-y-3 text-sm">
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600">Integration time:</span>
+                      <span className="font-semibold">2 days vs 6 months</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600">Cost reduction:</span>
+                      <span className="font-semibold text-green-600">40%</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600">Fraud prevention:</span>
+                      <span className="font-semibold text-green-600">$50K+ saved/year</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-white p-6 rounded-xl border border-gray-200">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center text-xl font-bold text-blue-600">
+                      W
+                    </div>
+                    <div>
+                      <div className="font-bold">WorkHub</div>
+                      <div className="text-sm text-gray-600">12 locations, 3K+ members</div>
+                    </div>
+                  </div>
+                  <div className="space-y-3 text-sm">
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600">Admin time saved:</span>
+                      <span className="font-semibold">20 hours/week</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600">Policy violations:</span>
+                      <span className="font-semibold text-green-600">-95%</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600">Member satisfaction:</span>
+                      <span className="font-semibold text-green-600">+30%</span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1661,6 +2016,101 @@ const result = await response.json();
         </div>
       </div>
 
+      {/* Migration & Integration Section */}
+      <div className="bg-gray-50 py-24 md:py-32 border-t border-gray-200">
+        <div className="container">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-6">
+              Migrate from Legacy Systems in Days, Not Months
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              AXW integrates with your existing hardware and workflows. No rip-and-replace required. Start with a pilot, scale to production seamlessly.
+            </p>
+          </div>
+
+          <div className="max-w-5xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+              <div className="bg-white p-8 rounded-2xl border border-gray-200 text-center">
+                <div className="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center text-3xl font-bold text-blue-600 mx-auto mb-4">
+                  1
+                </div>
+                <h3 className="text-xl font-bold mb-3">Connect Hardware</h3>
+                <p className="text-gray-600 leading-relaxed">
+                  Install our edge software on your existing readers or use our pre-built integrations. Works with any QR/NFC hardware.
+                </p>
+                <div className="mt-4 text-sm text-gray-500">
+                  ⏱️ 1-2 hours
+                </div>
+              </div>
+
+              <div className="bg-white p-8 rounded-2xl border border-gray-200 text-center">
+                <div className="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center text-3xl font-bold text-blue-600 mx-auto mb-4">
+                  2
+                </div>
+                <h3 className="text-xl font-bold mb-3">Define Policies</h3>
+                <p className="text-gray-600 leading-relaxed">
+                  Create access rules using our policy engine. Import existing user lists or integrate with your identity provider.
+                </p>
+                <div className="mt-4 text-sm text-gray-500">
+                  ⏱️ 2-4 hours
+                </div>
+              </div>
+
+              <div className="bg-white p-8 rounded-2xl border border-gray-200 text-center">
+                <div className="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center text-3xl font-bold text-blue-600 mx-auto mb-4">
+                  3
+                </div>
+                <h3 className="text-xl font-bold mb-3">Go Live</h3>
+                <p className="text-gray-600 leading-relaxed">
+                  Issue tokens, verify at entry points, monitor in real-time. Scale from pilot to production with zero downtime.
+                </p>
+                <div className="mt-4 text-sm text-gray-500">
+                  ⏱️ Same day
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-gradient-to-br from-blue-50 to-white p-8 md:p-12 rounded-2xl border-2 border-blue-200">
+              <div className="text-center mb-8">
+                <h3 className="text-2xl font-bold mb-4">Migration Support Included</h3>
+                <p className="text-gray-700 max-w-2xl mx-auto">
+                  Our team helps you migrate from legacy systems with minimal disruption. We provide technical guidance, integration support, and hands-on assistance during your rollout.
+                </p>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm">
+                <div className="flex items-start gap-3">
+                  <svg className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <div>
+                    <div className="font-semibold mb-1">Hardware Compatibility Check</div>
+                    <div className="text-gray-600">We verify your existing readers work with AXW before you commit</div>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <svg className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <div>
+                    <div className="font-semibold mb-1">Parallel Operation</div>
+                    <div className="text-gray-600">Run AXW alongside your legacy system during transition</div>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <svg className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <div>
+                    <div className="font-semibold mb-1">Data Migration Tools</div>
+                    <div className="text-gray-600">Import users, policies, and audit history from legacy systems</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* CTA Section */}
       <div className="bg-gradient-to-br from-blue-600 to-blue-700 py-24 md:py-32">
         <div className="container">
@@ -1668,13 +2118,16 @@ const result = await response.json();
             <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-6">
               Ready to Modernize Your Access Control?
             </h2>
-            <p className="text-xl md:text-2xl mb-12 opacity-90">
+            <p className="text-xl md:text-2xl mb-4 opacity-90">
               Join venue operators and developers building the future of physical access infrastructure.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <p className="text-lg mb-12 opacity-80">
+              Start with a free pilot. Deploy in days. Scale to millions of access events per month.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
               <a
                 href="/demo"
-                className="px-8 py-4 bg-white text-blue-600 rounded-xl font-semibold hover:bg-gray-100 transition-colors text-lg"
+                className="px-8 py-4 bg-white text-blue-600 rounded-xl font-semibold hover:bg-gray-100 transition-colors text-lg shadow-xl"
               >
                 Schedule a Demo
               </a>
@@ -1684,8 +2137,14 @@ const result = await response.json();
               >
                 Read the Docs
               </a>
+              <a
+                href="/signup"
+                className="px-8 py-4 bg-blue-800 text-white rounded-xl font-semibold hover:bg-blue-900 transition-colors text-lg border-2 border-blue-500"
+              >
+                Start Free Trial
+              </a>
             </div>
-            <div className="mt-8 flex flex-col sm:flex-row gap-6 justify-center items-center text-sm opacity-90">
+            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center text-sm opacity-90">
               <div className="flex items-center gap-2">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -1702,7 +2161,17 @@ const result = await response.json();
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                <span>Deploy in minutes</span>
+                <span>Deploy in hours, not months</span>
+              </div>
+            </div>
+            <div className="mt-8 pt-8 border-t border-blue-500/30">
+              <p className="text-sm opacity-75 mb-4">Trusted by operators managing:</p>
+              <div className="flex flex-wrap justify-center gap-8 text-base font-semibold">
+                <span>500+ Active Venues</span>
+                <span>•</span>
+                <span>50M+ Access Events</span>
+                <span>•</span>
+                <span>99.99% Uptime</span>
               </div>
             </div>
           </div>
