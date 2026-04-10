@@ -56,6 +56,12 @@ h4 {
   letter-spacing: -0.02em;
 }
 
-code {
+code,
+pre {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+pre {
+  white-space: pre-wrap;
+  word-wrap: break-word;
 }
