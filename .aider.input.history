@@ -2196,3 +2196,35 @@
 +- preserve and improve venture direction
 +- do not stop after tiny edits
 +- make the venture more complete and useful
+
+# 2026-04-09 20:42:42.951842
++VENTURE: access-layer
++LANE: release
++
++PRIMARY OBJECTIVE:
++Strengthen the access-layer venture landing page by making the product story clearer, more credible, and more conversion-focused while filling in missing website sections and finishing the truncated UI content.
++
++CURRENT SLICE GOAL:
++Complete and expand the homepage beyond the current hero and capabilities cards by adding the missing fourth capability and several high-trust sections that explain who it is for, how it works, why it is differentiated, and what the next action is.
++
++ACCEPTANCE CHECKS:
++- Homepage no longer ends mid-component; the JSX is complete and valid.
++- There is a coherent narrative from hero to capabilities to trust to CTA.
++- The fourth capability card is completed and matches the design system of the others.
++- The page includes at least one section that explains the product workflow in plain language.
++- The page includes at least one section that names concrete physical-access use cases.
++- The page includes at least one differentiation section that speaks to technical buyers.
++
++FOLLOW-ON EXPANSION PROMPTS:
++- Finish the truncated fourth capability card in the grid and ensure all capability cards share a consistent structure, depth, and CTA utility.
++- Add a 'How it works' section that explains issuance, verification, policy evaluation, revocation, and audit in 3–5 concise steps.
++- Add a 'Use cases' section tailored to parking garages, office buildings, event venues, and developers/platform operators.
++
++RULES:
++- make real code changes
++- deepen website and product
++- avoid decorative-only churn
++- keep build stability
++- preserve and improve venture direction
++- do not stop after tiny edits
++- make the venture more complete and useful
