@@ -21,24 +21,24 @@ export default function HomePage() {
               Issue cryptographically-signed passes, enforce fine-grained policies, revoke instantly, audit every entry, and integrate with existing hardware through developer-friendly APIs. Built for venue operators, property managers, and platform developers who need programmable control over physical access.
             </p>
             
-            {/* Social Proof Bar */}
+            {/* Value Props Bar */}
             <div className="mb-12 p-6 bg-white/80 backdrop-blur-sm rounded-2xl border border-gray-200 max-w-4xl">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
                 <div>
-                  <div className="text-3xl font-bold text-blue-600 mb-1">50M+</div>
-                  <div className="text-sm text-gray-600">Access Events</div>
+                  <div className="text-3xl font-bold text-blue-600 mb-1">API-First</div>
+                  <div className="text-sm text-gray-600">RESTful Integration</div>
                 </div>
                 <div>
-                  <div className="text-3xl font-bold text-blue-600 mb-1">500+</div>
-                  <div className="text-sm text-gray-600">Active Venues</div>
+                  <div className="text-3xl font-bold text-blue-600 mb-1">Offline</div>
+                  <div className="text-sm text-gray-600">Edge Verification</div>
                 </div>
                 <div>
-                  <div className="text-3xl font-bold text-blue-600 mb-1">99.99%</div>
-                  <div className="text-sm text-gray-600">Uptime SLA</div>
+                  <div className="text-3xl font-bold text-blue-600 mb-1">&lt;1s</div>
+                  <div className="text-sm text-gray-600">Revocation</div>
                 </div>
                 <div>
-                  <div className="text-3xl font-bold text-blue-600 mb-1">&lt;50ms</div>
-                  <div className="text-sm text-gray-600">Verification</div>
+                  <div className="text-3xl font-bold text-blue-600 mb-1">Open</div>
+                  <div className="text-sm text-gray-600">No Lock-In</div>
                 </div>
               </div>
             </div>
@@ -806,8 +806,8 @@ export default function HomePage() {
                 </div>
               </div>
               <div className="pt-4 border-t border-gray-200">
-                <div className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Compliance Ready</div>
-                <div className="text-sm text-gray-700">GDPR & CCPA compliant • HIPAA-ready audit trails • Zero-knowledge architecture</div>
+                <div className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Compliance Architecture</div>
+                <div className="text-sm text-gray-700">GDPR & CCPA design principles • Audit-ready logging • Privacy-by-design</div>
               </div>
             </div>
           </div>
@@ -1536,28 +1536,28 @@ const result = await response.json();
         <div className="container">
           <div className="text-center mb-16">
             <div className="inline-block px-4 py-2 bg-green-50 text-green-700 rounded-full text-sm font-semibold mb-6">
-              Enterprise-Grade Infrastructure
+              Production-Ready Infrastructure
             </div>
             <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-6">
-              Built for Mission-Critical Access Control
+              Built for Reliable Access Control
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Production-ready infrastructure with the reliability, security, and compliance standards you expect from enterprise systems. Trusted by operators managing millions of access events per month.
+              Modern infrastructure designed with the security, auditability, and operational reliability standards required for physical access control at scale.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 max-w-6xl mx-auto mb-16">
             <div className="text-center">
-              <div className="text-5xl font-bold text-blue-600 mb-4">99.99%</div>
-              <div className="text-xl font-semibold mb-2">Uptime SLA</div>
+              <div className="text-5xl font-bold text-blue-600 mb-4">Cloud</div>
+              <div className="text-xl font-semibold mb-2">Hosted Infrastructure</div>
               <p className="text-gray-600">
-                Multi-region redundancy with automatic failover and 24/7 monitoring.
+                Managed platform with automatic updates, backups, and monitoring.
               </p>
             </div>
 
             <div className="text-center">
-              <div className="text-5xl font-bold text-blue-600 mb-4">&lt;50ms</div>
-              <div className="text-xl font-semibold mb-2">Verification Latency</div>
+              <div className="text-5xl font-bold text-blue-600 mb-4">&lt;100ms</div>
+              <div className="text-xl font-semibold mb-2">Verification Target</div>
               <p className="text-gray-600">
                 Fast policy evaluation and token verification for seamless entry.
               </p>
@@ -1565,14 +1565,14 @@ const result = await response.json();
 
             <div className="text-center">
               <div className="text-5xl font-bold text-blue-600 mb-4">SOC 2</div>
-              <div className="text-xl font-semibold mb-2">Type II Certified</div>
+              <div className="text-xl font-semibold mb-2">Compliance Ready</div>
               <p className="text-gray-600">
-                Security controls, audit logs, and compliance reporting built in.
+                Architecture designed for SOC 2 Type II certification path.
               </p>
             </div>
 
             <div className="text-center">
-              <div className="text-5xl font-bold text-blue-600 mb-4">100%</div>
+              <div className="text-5xl font-bold text-blue-600 mb-4">Full</div>
               <div className="text-xl font-semibold mb-2">Audit Coverage</div>
               <p className="text-gray-600">
                 Every access event logged with immutable audit trails for compliance.
@@ -1742,15 +1742,15 @@ const result = await response.json();
                   <div className="flex items-start gap-3">
                     <span className="text-blue-600 text-xl flex-shrink-0">✓</span>
                     <div>
-                      <div className="font-semibold mb-1">GDPR & CCPA Ready</div>
-                      <p className="text-sm text-gray-600">Data residency controls, right-to-deletion support, and privacy-by-design architecture.</p>
+                      <div className="font-semibold mb-1">Privacy-by-Design</div>
+                      <p className="text-sm text-gray-600">Architecture built with GDPR and CCPA principles, data minimization, and user rights support.</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
                     <span className="text-blue-600 text-xl flex-shrink-0">✓</span>
                     <div>
-                      <div className="font-semibold mb-1">Compliance Reporting</div>
-                      <p className="text-sm text-gray-600">Pre-built reports for SOC 2, ISO 27001, and industry-specific compliance requirements.</p>
+                      <div className="font-semibold mb-1">Audit-Ready Logging</div>
+                      <p className="text-sm text-gray-600">Comprehensive event logs designed to support SOC 2, ISO 27001, and compliance audits.</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
@@ -1767,15 +1767,15 @@ const result = await response.json();
         </div>
       </div>
 
-      {/* Customer Proof Section */}
+      {/* Early Adopter Section */}
       <div className="bg-white py-24 md:py-32 border-t border-gray-200">
         <div className="container">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-6">
-              Trusted by Forward-Thinking Operators
+              Built for Modern Access Control Operators
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              From parking operators to coworking spaces to event venues—organizations are modernizing their access infrastructure with AXW.
+              AXW is designed for venue operators, property managers, and platform developers who need programmable, policy-driven access control without vendor lock-in.
             </p>
           </div>
 
@@ -1783,78 +1783,75 @@ const result = await response.json();
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
               <div className="bg-gray-50 p-8 rounded-2xl border border-gray-200">
                 <div className="flex items-center gap-4 mb-6">
-                  <div className="w-16 h-16 bg-blue-100 rounded-xl flex items-center justify-center text-2xl font-bold text-blue-600">
-                    P
+                  <div className="w-16 h-16 bg-blue-100 rounded-xl flex items-center justify-center">
+                    <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                    </svg>
                   </div>
                   <div>
-                    <div className="font-bold text-lg">ParkSmart</div>
-                    <div className="text-sm text-gray-600">Parking Operator</div>
+                    <div className="font-bold text-lg">Parking Operators</div>
+                    <div className="text-sm text-gray-600">Multi-site management</div>
                   </div>
                 </div>
                 <p className="text-gray-700 leading-relaxed mb-4">
-                  "We replaced our legacy card system with AXW and cut our operational costs by 40%. The API integration took 2 days instead of 6 months. Instant revocation alone has saved us thousands in fraud prevention."
+                  Replace legacy card systems with API-driven access control. Issue time-limited passes via SMS or mobile app, integrate with license plate recognition, and handle dynamic pricing based on demand.
                 </p>
-                <div className="text-sm text-gray-600">
-                  <span className="font-semibold">Sarah Chen</span>, Director of Operations
-                </div>
                 <div className="mt-4 pt-4 border-t border-gray-200 text-sm text-gray-600">
-                  <div className="font-semibold mb-2">Results:</div>
+                  <div className="font-semibold mb-2">Key Benefits:</div>
                   <ul className="space-y-1">
-                    <li>• 5 garages, 2,000+ daily transactions</li>
-                    <li>• 40% reduction in operational costs</li>
-                    <li>• 2-day integration vs 6-month legacy</li>
+                    <li>• Flexible pass types (hourly, daily, monthly)</li>
+                    <li>• Instant revocation for lost devices</li>
+                    <li>• Integration with existing gate hardware</li>
                   </ul>
                 </div>
               </div>
 
               <div className="bg-gray-50 p-8 rounded-2xl border border-gray-200">
                 <div className="flex items-center gap-4 mb-6">
-                  <div className="w-16 h-16 bg-blue-100 rounded-xl flex items-center justify-center text-2xl font-bold text-blue-600">
-                    W
+                  <div className="w-16 h-16 bg-blue-100 rounded-xl flex items-center justify-center">
+                    <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                    </svg>
                   </div>
                   <div>
-                    <div className="font-bold text-lg">WorkHub</div>
-                    <div className="text-sm text-gray-600">Coworking Network</div>
+                    <div className="font-bold text-lg">Coworking Spaces</div>
+                    <div className="text-sm text-gray-600">Membership-based access</div>
                   </div>
                 </div>
                 <p className="text-gray-700 leading-relaxed mb-4">
-                  "Managing member access across 12 locations was a nightmare. AXW's policy engine lets us define rules once and enforce them everywhere. The audit logs are a lifesaver for compliance."
+                  Manage member access across multiple locations with membership tier-based permissions. Support hot-desking, meeting room reservations, and visitor pre-registration with time-limited access codes.
                 </p>
-                <div className="text-sm text-gray-600">
-                  <span className="font-semibold">Marcus Rodriguez</span>, VP Technology
-                </div>
                 <div className="mt-4 pt-4 border-t border-gray-200 text-sm text-gray-600">
-                  <div className="font-semibold mb-2">Results:</div>
+                  <div className="font-semibold mb-2">Key Benefits:</div>
                   <ul className="space-y-1">
-                    <li>• 12 locations, 3,000+ members</li>
-                    <li>• Unified policy across all sites</li>
-                    <li>• 100% audit compliance</li>
+                    <li>• Unified policy across all locations</li>
+                    <li>• Room booking integration</li>
+                    <li>• Visitor management workflows</li>
                   </ul>
                 </div>
               </div>
 
               <div className="bg-gray-50 p-8 rounded-2xl border border-gray-200">
                 <div className="flex items-center gap-4 mb-6">
-                  <div className="w-16 h-16 bg-blue-100 rounded-xl flex items-center justify-center text-2xl font-bold text-blue-600">
-                    V
+                  <div className="w-16 h-16 bg-blue-100 rounded-xl flex items-center justify-center">
+                    <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
+                    </svg>
                   </div>
                   <div>
-                    <div className="font-bold text-lg">VenueMax</div>
-                    <div className="text-sm text-gray-600">Event Platform</div>
+                    <div className="font-bold text-lg">Event Venues</div>
+                    <div className="text-sm text-gray-600">Ticketing & capacity</div>
                   </div>
                 </div>
                 <p className="text-gray-700 leading-relaxed mb-4">
-                  "We process 200+ events per year with complex ticketing tiers. AXW's zone-based access control and real-time capacity monitoring have eliminated our biggest operational headaches. The webhook integration is seamless."
+                  Sell tickets with zone-based access control, manage VIP and backstage permissions, track real-time occupancy, and prevent ticket fraud with cryptographically-signed passes that can't be duplicated.
                 </p>
-                <div className="text-sm text-gray-600">
-                  <span className="font-semibold">Jennifer Park</span>, CTO
-                </div>
                 <div className="mt-4 pt-4 border-t border-gray-200 text-sm text-gray-600">
-                  <div className="font-semibold mb-2">Results:</div>
+                  <div className="font-semibold mb-2">Key Benefits:</div>
                   <ul className="space-y-1">
-                    <li>• 200+ events/year, 500-5K attendees</li>
-                    <li>• Zero capacity violations</li>
-                    <li>• Real-time fraud detection</li>
+                    <li>• Multi-tier ticketing (GA, VIP, press)</li>
+                    <li>• Real-time capacity monitoring</li>
+                    <li>• Fraud prevention via signed tokens</li>
                   </ul>
                 </div>
               </div>
@@ -1864,29 +1861,29 @@ const result = await response.json();
               <div className="max-w-4xl mx-auto">
                 <div className="text-center mb-8">
                   <div className="inline-block px-4 py-2 bg-blue-100 text-blue-700 rounded-full text-sm font-semibold mb-4">
-                    Platform Metrics
+                    Platform Capabilities
                   </div>
-                  <h3 className="text-3xl font-bold mb-4">Proven at Scale</h3>
+                  <h3 className="text-3xl font-bold mb-4">Production-Ready Infrastructure</h3>
                   <p className="text-lg text-gray-600">
-                    Real-world performance across diverse physical access scenarios
+                    Built for reliability, security, and developer productivity
                   </p>
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
                   <div className="text-center">
-                    <div className="text-4xl font-bold text-blue-600 mb-2">50M+</div>
-                    <div className="text-sm text-gray-600">Access Events Processed</div>
+                    <div className="text-4xl font-bold text-blue-600 mb-2">REST</div>
+                    <div className="text-sm text-gray-600">API-First Design</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-4xl font-bold text-blue-600 mb-2">500+</div>
-                    <div className="text-sm text-gray-600">Active Venues</div>
+                    <div className="text-4xl font-bold text-blue-600 mb-2">JWT</div>
+                    <div className="text-sm text-gray-600">Signed Tokens</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-4xl font-bold text-blue-600 mb-2">99.99%</div>
-                    <div className="text-sm text-gray-600">Uptime SLA</div>
+                    <div className="text-4xl font-bold text-blue-600 mb-2">&lt;1s</div>
+                    <div className="text-sm text-gray-600">Revocation Time</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-4xl font-bold text-blue-600 mb-2">&lt;50ms</div>
-                    <div className="text-sm text-gray-600">Avg Verification Time</div>
+                    <div className="text-4xl font-bold text-blue-600 mb-2">Full</div>
+                    <div className="text-sm text-gray-600">Audit Logging</div>
                   </div>
                 </div>
               </div>
@@ -1895,26 +1892,26 @@ const result = await response.json();
         </div>
       </div>
 
-      {/* ROI Section */}
+      {/* Value Proposition Section */}
       <div className="bg-white py-24 md:py-32 border-t border-gray-200">
         <div className="container">
           <div className="text-center mb-16">
             <div className="inline-block px-4 py-2 bg-green-50 text-green-700 rounded-full text-sm font-semibold mb-6">
-              Measurable Business Impact
+              Business Value
             </div>
             <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-6">
               Reduce Costs, Increase Security, Improve Operations
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Customers report significant operational savings and security improvements within the first 90 days of deployment.
+              Modern access control infrastructure designed to eliminate vendor lock-in, reduce operational overhead, and improve security response times.
             </p>
           </div>
 
           <div className="max-w-6xl mx-auto">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
               <div className="bg-gradient-to-br from-green-50 to-white p-8 rounded-2xl border-2 border-green-200">
-                <div className="text-5xl font-bold text-green-600 mb-4">40%</div>
-                <h3 className="text-xl font-bold mb-3">Lower Operational Costs</h3>
+                <div className="text-5xl font-bold text-green-600 mb-4">No</div>
+                <h3 className="text-xl font-bold mb-3">Vendor Lock-In</h3>
                 <p className="text-gray-600 leading-relaxed mb-4">
                   Eliminate proprietary hardware maintenance, reduce manual access management, and cut integration costs by 80%.
                 </p>
@@ -1935,8 +1932,8 @@ const result = await response.json();
               </div>
 
               <div className="bg-gradient-to-br from-blue-50 to-white p-8 rounded-2xl border-2 border-blue-200">
-                <div className="text-5xl font-bold text-blue-600 mb-4">10x</div>
-                <h3 className="text-xl font-bold mb-3">Faster Incident Response</h3>
+                <div className="text-5xl font-bold text-blue-600 mb-4">&lt;1s</div>
+                <h3 className="text-xl font-bold mb-3">Instant Revocation</h3>
                 <p className="text-gray-600 leading-relaxed mb-4">
                   Instant revocation and real-time audit logs mean security incidents are contained in seconds, not hours or days.
                 </p>
@@ -1957,8 +1954,8 @@ const result = await response.json();
               </div>
 
               <div className="bg-gradient-to-br from-purple-50 to-white p-8 rounded-2xl border-2 border-purple-200">
-                <div className="text-5xl font-bold text-purple-600 mb-4">90%</div>
-                <h3 className="text-xl font-bold mb-3">Faster Time to Market</h3>
+                <div className="text-5xl font-bold text-purple-600 mb-4">Days</div>
+                <h3 className="text-xl font-bold mb-3">Integration Time</h3>
                 <p className="text-gray-600 leading-relaxed mb-4">
                   Deploy new venues, integrate with partners, and launch new access products in days instead of months.
                 </p>
@@ -1980,56 +1977,60 @@ const result = await response.json();
             </div>
 
             <div className="bg-gray-50 p-8 md:p-12 rounded-2xl border border-gray-200">
-              <h3 className="text-2xl font-bold mb-8 text-center">Real Customer Impact</h3>
+              <h3 className="text-2xl font-bold mb-8 text-center">Expected Outcomes</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="bg-white p-6 rounded-xl border border-gray-200">
                   <div className="flex items-center gap-3 mb-4">
-                    <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center text-xl font-bold text-blue-600">
-                      P
+                    <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                      <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
                     </div>
                     <div>
-                      <div className="font-bold">ParkSmart</div>
-                      <div className="text-sm text-gray-600">5 garages, 2K+ daily transactions</div>
+                      <div className="font-bold">Cost Savings</div>
+                      <div className="text-sm text-gray-600">Eliminate proprietary hardware costs</div>
                     </div>
                   </div>
                   <div className="space-y-3 text-sm">
                     <div className="flex justify-between items-center">
+                      <span className="text-gray-600">Hardware flexibility:</span>
+                      <span className="font-semibold">Use any QR/NFC reader</span>
+                    </div>
+                    <div className="flex justify-between items-center">
                       <span className="text-gray-600">Integration time:</span>
-                      <span className="font-semibold">2 days vs 6 months</span>
+                      <span className="font-semibold text-green-600">Days vs months</span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-gray-600">Cost reduction:</span>
-                      <span className="font-semibold text-green-600">40%</span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-600">Fraud prevention:</span>
-                      <span className="font-semibold text-green-600">$50K+ saved/year</span>
+                      <span className="text-gray-600">Vendor lock-in:</span>
+                      <span className="font-semibold text-green-600">None</span>
                     </div>
                   </div>
                 </div>
 
                 <div className="bg-white p-6 rounded-xl border border-gray-200">
                   <div className="flex items-center gap-3 mb-4">
-                    <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center text-xl font-bold text-blue-600">
-                      W
+                    <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                      <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                      </svg>
                     </div>
                     <div>
-                      <div className="font-bold">WorkHub</div>
-                      <div className="text-sm text-gray-600">12 locations, 3K+ members</div>
+                      <div className="font-bold">Security Improvements</div>
+                      <div className="text-sm text-gray-600">Faster response to incidents</div>
                     </div>
                   </div>
                   <div className="space-y-3 text-sm">
                     <div className="flex justify-between items-center">
-                      <span className="text-gray-600">Admin time saved:</span>
-                      <span className="font-semibold">20 hours/week</span>
+                      <span className="text-gray-600">Revocation speed:</span>
+                      <span className="font-semibold">Sub-second global</span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-gray-600">Policy violations:</span>
-                      <span className="font-semibold text-green-600">-95%</span>
+                      <span className="text-gray-600">Audit coverage:</span>
+                      <span className="font-semibold text-green-600">100% of events</span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-gray-600">Member satisfaction:</span>
-                      <span className="font-semibold text-green-600">+30%</span>
+                      <span className="text-gray-600">Token security:</span>
+                      <span className="font-semibold text-green-600">Cryptographically signed</span>
                     </div>
                   </div>
                 </div>
@@ -2044,10 +2045,10 @@ const result = await response.json();
         <div className="container">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-6">
-              Transparent, Usage-Based Pricing
+              Simple, Transparent Pricing
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Pay only for what you use. No hidden fees, no vendor lock-in, no minimum commitments. Scale from pilot to production seamlessly.
+              Start free for development and pilots. Usage-based pricing for production. No vendor lock-in, no minimum commitments.
             </p>
           </div>
 
@@ -2410,24 +2411,24 @@ const result = await response.json();
               Ready to Modernize Your Access Control?
             </h2>
             <p className="text-xl md:text-2xl mb-4 opacity-90">
-              Join venue operators and developers building the future of physical access infrastructure.
+              Start building with modern access control infrastructure designed for developers and operators.
             </p>
             <p className="text-lg mb-8 opacity-80">
-              Start with a free pilot. Deploy in days. Scale to millions of access events per month.
+              Free developer sandbox. Deploy in days. No vendor lock-in.
             </p>
             <div className="mb-12 p-6 bg-blue-800/50 backdrop-blur-sm rounded-2xl border border-blue-400/30 max-w-3xl mx-auto">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm">
                 <div>
-                  <div className="text-2xl font-bold mb-2">2 Days</div>
-                  <div className="opacity-90">Average integration time from sandbox to production</div>
+                  <div className="text-2xl font-bold mb-2">API-First</div>
+                  <div className="opacity-90">RESTful APIs for all operations with comprehensive documentation</div>
                 </div>
                 <div>
-                  <div className="text-2xl font-bold mb-2">40%</div>
-                  <div className="opacity-90">Typical operational cost reduction vs legacy systems</div>
+                  <div className="text-2xl font-bold mb-2">Open</div>
+                  <div className="opacity-90">Works with any QR/NFC hardware—no proprietary readers required</div>
                 </div>
                 <div>
                   <div className="text-2xl font-bold mb-2">&lt;1s</div>
-                  <div className="opacity-90">Global revocation propagation time for instant security</div>
+                  <div className="opacity-90">Global revocation propagation for instant security response</div>
                 </div>
               </div>
             </div>
@@ -2472,13 +2473,13 @@ const result = await response.json();
               </div>
             </div>
             <div className="mt-8 pt-8 border-t border-blue-500/30">
-              <p className="text-sm opacity-75 mb-4">Trusted by operators managing:</p>
+              <p className="text-sm opacity-75 mb-4">Platform capabilities:</p>
               <div className="flex flex-wrap justify-center gap-8 text-base font-semibold">
-                <span>500+ Active Venues</span>
+                <span>JWT-Based Tokens</span>
                 <span>•</span>
-                <span>50M+ Access Events</span>
+                <span>Policy Engine</span>
                 <span>•</span>
-                <span>99.99% Uptime</span>
+                <span>Full Audit Logs</span>
               </div>
             </div>
           </div>
