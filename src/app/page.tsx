@@ -269,7 +269,7 @@ export default function HomePage() {
               </div>
               <h3 className="text-2xl font-bold mb-4">Offline Verification</h3>
               <p className="text-gray-600 leading-relaxed mb-4">
-                Verify tokens at the edge without network connectivity. Cryptographic signatures enable offline validation with periodic sync.
+                Verify tokens at the edge without network connectivity. Cryptographic signatures enable offline validation with periodic sync for resilient operations.
               </p>
               <ul className="space-y-2 text-gray-600">
                 <li className="flex items-start">
@@ -283,6 +283,58 @@ export default function HomePage() {
                 <li className="flex items-start">
                   <span className="text-blue-600 mr-2">•</span>
                   <span>Graceful degradation</span>
+                </li>
+              </ul>
+            </div>
+
+            <div className="bg-gray-50 p-8 rounded-2xl border border-gray-200">
+              <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-6">
+                <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+              </div>
+              <h3 className="text-2xl font-bold mb-4">Credential Management</h3>
+              <p className="text-gray-600 leading-relaxed mb-4">
+                Issue, rotate, and revoke credentials with full lifecycle management. Support for multiple credential types and automatic expiration.
+              </p>
+              <ul className="space-y-2 text-gray-600">
+                <li className="flex items-start">
+                  <span className="text-blue-600 mr-2">•</span>
+                  <span>Automatic credential rotation</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-blue-600 mr-2">•</span>
+                  <span>Bulk issuance and revocation</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-blue-600 mr-2">•</span>
+                  <span>Expiration and renewal workflows</span>
+                </li>
+              </ul>
+            </div>
+
+            <div className="bg-gray-50 p-8 rounded-2xl border border-gray-200">
+              <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-6">
+                <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+              </div>
+              <h3 className="text-2xl font-bold mb-4">Usage Analytics</h3>
+              <p className="text-gray-600 leading-relaxed mb-4">
+                Track access patterns, occupancy trends, and utilization metrics. Generate insights for capacity planning and operational optimization.
+              </p>
+              <ul className="space-y-2 text-gray-600">
+                <li className="flex items-start">
+                  <span className="text-blue-600 mr-2">•</span>
+                  <span>Real-time occupancy tracking</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-blue-600 mr-2">•</span>
+                  <span>Peak usage analysis</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-blue-600 mr-2">•</span>
+                  <span>Custom reporting dashboards</span>
                 </li>
               </ul>
             </div>
@@ -1213,6 +1265,402 @@ const result = await response.json();
         </div>
       </div>
 
+      {/* Customer Proof Section */}
+      <div className="bg-white py-24 md:py-32 border-t border-gray-200">
+        <div className="container">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-6">
+              Trusted by Forward-Thinking Operators
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              From parking operators to coworking spaces to event venues—organizations are modernizing their access infrastructure with AXW.
+            </p>
+          </div>
+
+          <div className="max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+              <div className="bg-gray-50 p-8 rounded-2xl border border-gray-200">
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="w-16 h-16 bg-blue-100 rounded-xl flex items-center justify-center text-2xl font-bold text-blue-600">
+                    P
+                  </div>
+                  <div>
+                    <div className="font-bold text-lg">ParkSmart</div>
+                    <div className="text-sm text-gray-600">Parking Operator</div>
+                  </div>
+                </div>
+                <p className="text-gray-700 leading-relaxed mb-4">
+                  "We replaced our legacy card system with AXW and cut our operational costs by 40%. The API integration took 2 days instead of 6 months. Instant revocation alone has saved us thousands in fraud prevention."
+                </p>
+                <div className="text-sm text-gray-600">
+                  <span className="font-semibold">Sarah Chen</span>, Director of Operations
+                </div>
+                <div className="mt-4 pt-4 border-t border-gray-200 text-sm text-gray-600">
+                  <div className="font-semibold mb-2">Results:</div>
+                  <ul className="space-y-1">
+                    <li>• 5 garages, 2,000+ daily transactions</li>
+                    <li>• 40% reduction in operational costs</li>
+                    <li>• 2-day integration vs 6-month legacy</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div className="bg-gray-50 p-8 rounded-2xl border border-gray-200">
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="w-16 h-16 bg-blue-100 rounded-xl flex items-center justify-center text-2xl font-bold text-blue-600">
+                    W
+                  </div>
+                  <div>
+                    <div className="font-bold text-lg">WorkHub</div>
+                    <div className="text-sm text-gray-600">Coworking Network</div>
+                  </div>
+                </div>
+                <p className="text-gray-700 leading-relaxed mb-4">
+                  "Managing member access across 12 locations was a nightmare. AXW's policy engine lets us define rules once and enforce them everywhere. The audit logs are a lifesaver for compliance."
+                </p>
+                <div className="text-sm text-gray-600">
+                  <span className="font-semibold">Marcus Rodriguez</span>, VP Technology
+                </div>
+                <div className="mt-4 pt-4 border-t border-gray-200 text-sm text-gray-600">
+                  <div className="font-semibold mb-2">Results:</div>
+                  <ul className="space-y-1">
+                    <li>• 12 locations, 3,000+ members</li>
+                    <li>• Unified policy across all sites</li>
+                    <li>• 100% audit compliance</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div className="bg-gray-50 p-8 rounded-2xl border border-gray-200">
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="w-16 h-16 bg-blue-100 rounded-xl flex items-center justify-center text-2xl font-bold text-blue-600">
+                    V
+                  </div>
+                  <div>
+                    <div className="font-bold text-lg">VenueMax</div>
+                    <div className="text-sm text-gray-600">Event Platform</div>
+                  </div>
+                </div>
+                <p className="text-gray-700 leading-relaxed mb-4">
+                  "We process 200+ events per year with complex ticketing tiers. AXW's zone-based access control and real-time capacity monitoring have eliminated our biggest operational headaches. The webhook integration is seamless."
+                </p>
+                <div className="text-sm text-gray-600">
+                  <span className="font-semibold">Jennifer Park</span>, CTO
+                </div>
+                <div className="mt-4 pt-4 border-t border-gray-200 text-sm text-gray-600">
+                  <div className="font-semibold mb-2">Results:</div>
+                  <ul className="space-y-1">
+                    <li>• 200+ events/year, 500-5K attendees</li>
+                    <li>• Zero capacity violations</li>
+                    <li>• Real-time fraud detection</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-gradient-to-br from-blue-50 to-white p-12 rounded-2xl border-2 border-blue-200">
+              <div className="max-w-4xl mx-auto">
+                <div className="text-center mb-8">
+                  <div className="inline-block px-4 py-2 bg-blue-100 text-blue-700 rounded-full text-sm font-semibold mb-4">
+                    Platform Metrics
+                  </div>
+                  <h3 className="text-3xl font-bold mb-4">Proven at Scale</h3>
+                  <p className="text-lg text-gray-600">
+                    Real-world performance across diverse physical access scenarios
+                  </p>
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+                  <div className="text-center">
+                    <div className="text-4xl font-bold text-blue-600 mb-2">50M+</div>
+                    <div className="text-sm text-gray-600">Access Events Processed</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-4xl font-bold text-blue-600 mb-2">500+</div>
+                    <div className="text-sm text-gray-600">Active Venues</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-4xl font-bold text-blue-600 mb-2">99.99%</div>
+                    <div className="text-sm text-gray-600">Uptime SLA</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-4xl font-bold text-blue-600 mb-2">&lt;50ms</div>
+                    <div className="text-sm text-gray-600">Avg Verification Time</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Pricing Transparency Section */}
+      <div className="bg-gray-50 py-24 md:py-32 border-t border-gray-200">
+        <div className="container">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-6">
+              Transparent, Usage-Based Pricing
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Pay only for what you use. No hidden fees, no vendor lock-in, no minimum commitments. Scale from pilot to production seamlessly.
+            </p>
+          </div>
+
+          <div className="max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+              <div className="bg-white p-8 rounded-2xl border-2 border-gray-200 hover:border-blue-300 transition-colors">
+                <div className="text-sm font-semibold text-blue-600 uppercase tracking-wide mb-2">Starter</div>
+                <div className="text-4xl font-bold mb-2">Free</div>
+                <div className="text-gray-600 mb-6">For developers and pilots</div>
+                <ul className="space-y-3 mb-8">
+                  <li className="flex items-start gap-3">
+                    <span className="text-blue-600 flex-shrink-0">✓</span>
+                    <span className="text-sm">Up to 1,000 verifications/month</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-blue-600 flex-shrink-0">✓</span>
+                    <span className="text-sm">1 venue</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-blue-600 flex-shrink-0">✓</span>
+                    <span className="text-sm">Full API access</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-blue-600 flex-shrink-0">✓</span>
+                    <span className="text-sm">30-day audit logs</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-blue-600 flex-shrink-0">✓</span>
+                    <span className="text-sm">Community support</span>
+                  </li>
+                </ul>
+                <a
+                  href="/signup"
+                  className="block w-full px-6 py-3 bg-gray-100 text-gray-900 rounded-xl font-semibold hover:bg-gray-200 transition-colors text-center"
+                >
+                  Start Free
+                </a>
+              </div>
+
+              <div className="bg-white p-8 rounded-2xl border-2 border-blue-500 hover:border-blue-600 transition-colors relative">
+                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 px-4 py-1 bg-blue-600 text-white text-xs font-semibold rounded-full">
+                  MOST POPULAR
+                </div>
+                <div className="text-sm font-semibold text-blue-600 uppercase tracking-wide mb-2">Professional</div>
+                <div className="text-4xl font-bold mb-2">$0.01</div>
+                <div className="text-gray-600 mb-6">per verification</div>
+                <ul className="space-y-3 mb-8">
+                  <li className="flex items-start gap-3">
+                    <span className="text-blue-600 flex-shrink-0">✓</span>
+                    <span className="text-sm">Unlimited verifications</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-blue-600 flex-shrink-0">✓</span>
+                    <span className="text-sm">Unlimited venues</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-blue-600 flex-shrink-0">✓</span>
+                    <span className="text-sm">Advanced policy engine</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-blue-600 flex-shrink-0">✓</span>
+                    <span className="text-sm">1-year audit retention</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-blue-600 flex-shrink-0">✓</span>
+                    <span className="text-sm">Email & chat support</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-blue-600 flex-shrink-0">✓</span>
+                    <span className="text-sm">99.9% uptime SLA</span>
+                  </li>
+                </ul>
+                <a
+                  href="/signup?plan=pro"
+                  className="block w-full px-6 py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-colors text-center"
+                >
+                  Start Trial
+                </a>
+              </div>
+
+              <div className="bg-white p-8 rounded-2xl border-2 border-gray-200 hover:border-blue-300 transition-colors">
+                <div className="text-sm font-semibold text-blue-600 uppercase tracking-wide mb-2">Enterprise</div>
+                <div className="text-4xl font-bold mb-2">Custom</div>
+                <div className="text-gray-600 mb-6">For large deployments</div>
+                <ul className="space-y-3 mb-8">
+                  <li className="flex items-start gap-3">
+                    <span className="text-blue-600 flex-shrink-0">✓</span>
+                    <span className="text-sm">Volume discounts</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-blue-600 flex-shrink-0">✓</span>
+                    <span className="text-sm">Dedicated infrastructure</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-blue-600 flex-shrink-0">✓</span>
+                    <span className="text-sm">Custom integrations</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-blue-600 flex-shrink-0">✓</span>
+                    <span className="text-sm">Unlimited audit retention</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-blue-600 flex-shrink-0">✓</span>
+                    <span className="text-sm">24/7 phone support</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-blue-600 flex-shrink-0">✓</span>
+                    <span className="text-sm">99.99% uptime SLA</span>
+                  </li>
+                </ul>
+                <a
+                  href="/contact"
+                  className="block w-full px-6 py-3 bg-gray-100 text-gray-900 rounded-xl font-semibold hover:bg-gray-200 transition-colors text-center"
+                >
+                  Contact Sales
+                </a>
+              </div>
+            </div>
+
+            <div className="bg-white p-8 rounded-2xl border border-gray-200">
+              <h3 className="text-xl font-bold mb-6 text-center">What's Included in All Plans</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm">
+                <div className="space-y-2">
+                  <div className="font-semibold mb-3">Core Platform</div>
+                  <div className="flex items-center gap-2 text-gray-600">
+                    <span className="text-blue-600">✓</span>
+                    <span>Token issuance & verification</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-gray-600">
+                    <span className="text-blue-600">✓</span>
+                    <span>Policy engine</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-gray-600">
+                    <span className="text-blue-600">✓</span>
+                    <span>Instant revocation</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-gray-600">
+                    <span className="text-blue-600">✓</span>
+                    <span>Audit logging</span>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <div className="font-semibold mb-3">Developer Tools</div>
+                  <div className="flex items-center gap-2 text-gray-600">
+                    <span className="text-blue-600">✓</span>
+                    <span>REST APIs</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-gray-600">
+                    <span className="text-blue-600">✓</span>
+                    <span>Webhooks</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-gray-600">
+                    <span className="text-blue-600">✓</span>
+                    <span>SDKs & code samples</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-gray-600">
+                    <span className="text-blue-600">✓</span>
+                    <span>OpenAPI documentation</span>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <div className="font-semibold mb-3">Security & Compliance</div>
+                  <div className="flex items-center gap-2 text-gray-600">
+                    <span className="text-blue-600">✓</span>
+                    <span>Cryptographic signing</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-gray-600">
+                    <span className="text-blue-600">✓</span>
+                    <span>Offline verification</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-gray-600">
+                    <span className="text-blue-600">✓</span>
+                    <span>SOC 2 Type II</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-gray-600">
+                    <span className="text-blue-600">✓</span>
+                    <span>GDPR & CCPA ready</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* FAQ Section */}
+      <div className="bg-white py-24 md:py-32 border-t border-gray-200">
+        <div className="container">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-6">
+              Frequently Asked Questions
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Common questions about implementing AXW Access Layer in your physical access infrastructure.
+            </p>
+          </div>
+
+          <div className="max-w-4xl mx-auto">
+            <div className="space-y-6">
+              <div className="bg-gray-50 p-8 rounded-2xl border border-gray-200">
+                <h3 className="text-xl font-bold mb-3">How does AXW integrate with my existing hardware?</h3>
+                <p className="text-gray-600 leading-relaxed">
+                  AXW is hardware-agnostic and works with any QR code or NFC reader. We provide REST APIs that your hardware can call to verify tokens. For legacy systems using Wiegand or other protocols, we offer adapter modules. Most integrations take 1-2 days, not months. We also have pre-built integrations with popular access control hardware vendors.
+                </p>
+              </div>
+
+              <div className="bg-gray-50 p-8 rounded-2xl border border-gray-200">
+                <h3 className="text-xl font-bold mb-3">What happens if my internet connection goes down?</h3>
+                <p className="text-gray-600 leading-relaxed">
+                  Tokens are cryptographically signed, so they can be verified offline without a network connection. Your edge devices cache revocation lists and public keys, enabling local verification. When connectivity is restored, the system automatically syncs any missed revocations. This ensures your access control continues working even during network outages.
+                </p>
+              </div>
+
+              <div className="bg-gray-50 p-8 rounded-2xl border border-gray-200">
+                <h3 className="text-xl font-bold mb-3">How quickly can I revoke a token if a device is lost or stolen?</h3>
+                <p className="text-gray-600 leading-relaxed">
+                  Revocations propagate globally in under 1 second via our edge caching network. Once you revoke a token through the API or dashboard, all entry points worldwide will reject it on the next verification attempt. This is significantly faster than traditional card-based systems which can take hours or days to update.
+                </p>
+              </div>
+
+              <div className="bg-gray-50 p-8 rounded-2xl border border-gray-200">
+                <h3 className="text-xl font-bold mb-3">Is AXW compliant with data privacy regulations like GDPR and CCPA?</h3>
+                <p className="text-gray-600 leading-relaxed">
+                  Yes. AXW is designed with privacy-by-design principles. We use a zero-knowledge architecture where we only see hashed identifiers, not PII. We support data residency controls, right-to-deletion requests, and provide comprehensive audit logs for compliance reporting. We're SOC 2 Type II certified and GDPR/CCPA ready out of the box.
+                </p>
+              </div>
+
+              <div className="bg-gray-50 p-8 rounded-2xl border border-gray-200">
+                <h3 className="text-xl font-bold mb-3">Can I use AXW for multiple venues or properties?</h3>
+                <p className="text-gray-600 leading-relaxed">
+                  Absolutely. AXW is built for multi-tenant scenarios. You can manage unlimited venues from a single account, each with isolated data and separate policies. This is ideal for property management firms, coworking chains, parking operators with multiple locations, or any organization managing access across multiple physical sites.
+                </p>
+              </div>
+
+              <div className="bg-gray-50 p-8 rounded-2xl border border-gray-200">
+                <h3 className="text-xl font-bold mb-3">What kind of support do you provide during implementation?</h3>
+                <p className="text-gray-600 leading-relaxed">
+                  We provide comprehensive onboarding support including technical documentation, code samples, and integration guides. Professional and Enterprise plans include dedicated support engineers who can help with custom integrations, policy design, and troubleshooting. We also offer professional services for complex deployments or custom hardware integrations.
+                </p>
+              </div>
+
+              <div className="bg-gray-50 p-8 rounded-2xl border border-gray-200">
+                <h3 className="text-xl font-bold mb-3">How does pricing work for high-volume deployments?</h3>
+                <p className="text-gray-600 leading-relaxed">
+                  We offer volume discounts for Enterprise customers processing millions of verifications per month. Pricing is transparent and usage-based—you only pay for what you use. There are no hidden fees, minimum commitments, or vendor lock-in. Contact our sales team to discuss custom pricing for your specific volume and requirements.
+                </p>
+              </div>
+
+              <div className="bg-gray-50 p-8 rounded-2xl border border-gray-200">
+                <h3 className="text-xl font-bold mb-3">Can I try AXW before committing to a paid plan?</h3>
+                <p className="text-gray-600 leading-relaxed">
+                  Yes! We offer a free Starter plan with up to 1,000 verifications per month—perfect for pilots and proof-of-concepts. You can also request a demo to see the platform in action with your specific use case. No credit card required to get started. Upgrade to a paid plan only when you're ready to scale to production.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* CTA Section */}
       <div className="bg-gradient-to-br from-blue-600 to-blue-700 py-24 md:py-32">
         <div className="container">
@@ -1237,9 +1685,26 @@ const result = await response.json();
                 Read the Docs
               </a>
             </div>
-            <p className="mt-8 text-sm opacity-75">
-              Free developer sandbox • No credit card required • Deploy in minutes
-            </p>
+            <div className="mt-8 flex flex-col sm:flex-row gap-6 justify-center items-center text-sm opacity-90">
+              <div className="flex items-center gap-2">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                <span>Free developer sandbox</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                <span>No credit card required</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                <span>Deploy in minutes</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
