@@ -2228,3 +2228,93 @@
 +- preserve and improve venture direction
 +- do not stop after tiny edits
 +- make the venture more complete and useful
+
+# 2026-04-09 20:45:57.507077
++VENTURE: access-layer
++LANE: release
++
++PRIMARY OBJECTIVE:
++Strengthen the access-layer venture by making the landing page and product narrative feel more complete, credible, and conversion-oriented while preserving the current Next.js/Tailwind structure.
++
++CURRENT SLICE GOAL:
++Finish and harden the homepage content from the partially cut-off capabilities section, then expand the page into a more complete product story with clearer trust signals, use cases, technical differentiators, and conversion paths.
++
++ACCEPTANCE CHECKS:
++- Homepage no longer ends mid-element; JSX compiles cleanly.
++- Landing page includes at least one additional section beyond the current core capabilities block.
++- Page communicates both business value and technical depth.
++- Primary and secondary CTAs are visible in the hero and repeated later on the page.
++- Content feels tailored to physical access infrastructure rather than generic access control.
++- Design remains consistent with existing Tailwind utility styling and responsive layout.
++
++FOLLOW-ON EXPANSION PROMPTS:
++- Complete the truncated fourth capability card and ensure the core capabilities section ends cleanly with balanced grid content.
++- Add a dedicated use-cases section for venue operators, property managers, enterprise admins, and platform developers.
++- Introduce trust/credibility elements such as compliance, security, uptime, auditability, and hardware compatibility.
++
++RULES:
++- make real code changes
++- deepen website and product
++- avoid decorative-only churn
++- keep build stability
++- preserve and improve venture direction
++- do not stop after tiny edits
++- make the venture more complete and useful
+
+# 2026-04-09 21:03:27.355407
++VENTURE: access-layer
++LANE: release
++
++PRIMARY OBJECTIVE:
++Improve access-layer with real product + site depth
++
++CURRENT SLICE GOAL:
++Strengthen homepage + product UX
++
++ACCEPTANCE CHECKS:
++- Build passes
++
++FOLLOW-ON EXPANSION PROMPTS:
++- Expand product features
++- Improve UX structure
++- Add real functionality
++
++RULES:
++- make real code changes
++- deepen website and product
++- avoid decorative-only churn
++- keep build stability
++- preserve and improve venture direction
++- do not stop after tiny edits
++- make the venture more complete and useful
+
+# 2026-04-09 21:04:17.342512
++VENTURE: access-layer
++LANE: release
++
++PRIMARY OBJECTIVE:
++Strengthen the access-layer venture by making the landing experience more complete, credible, and conversion-oriented while preserving the existing product positioning around policy-driven physical access infrastructure.
++
++CURRENT SLICE GOAL:
++Finish and refine the homepage content architecture so it communicates the platform end-to-end: hero, capabilities, proof, use cases, integrations, security/compliance, and clear calls to action.
++
++ACCEPTANCE CHECKS:
++- Homepage renders without syntax errors and the truncated card content is fully restored.
++- The page includes a coherent sequence of sections that cover value proposition, capabilities, trust, and next steps.
++- At least one section clearly explains how the system works in practice from issuance to audit.
++- Calls to action are visible and differentiated for business and developer audiences.
++- The content feels more complete and credible than a generic template, with specific physical-access domain language.
++
++FOLLOW-ON EXPANSION PROMPTS:
++- Complete the truncated homepage section and ensure all capability cards are consistent in tone, depth, and visual hierarchy.
++- Add stronger trust signals such as security, compliance, reliability, and operational benefits relevant to physical access buyers.
++- Introduce one or more sections that explain the end-to-end workflow: issue access, verify at the edge, enforce policy, log events, revoke instantly.
++
++RULES:
++- make real code changes
++- deepen website and product
++- avoid decorative-only churn
++- keep build stability
++- preserve and improve venture direction
++- do not stop after tiny edits
++- make the venture more complete and useful
