@@ -133,7 +133,43 @@ export default function HomePage() {
                   No Audit Trail
                 </div>
                 <p className="text-gray-700 text-sm">
-                  Limited logging, no cryptographic verification, and compliance reporting requires manual work. Forensics after an incident is nearly impossible.
+                  Limited logging, no cryptographic verification, and compliance reporting requires manual work. Forensics after an incident is nearly impossible. When something goes wrong, you have no reliable way to reconstruct what happened.
+                </p>
+              </div>
+
+              <div className="bg-red-50 p-6 rounded-xl border border-red-200">
+                <div className="text-red-600 font-semibold mb-3 flex items-center gap-2">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                  </svg>
+                  Fragmented Administration
+                </div>
+                <p className="text-gray-700 text-sm">
+                  Managing access across multiple buildings or locations means juggling separate systems, duplicate user databases, and inconsistent policies. No unified view or control.
+                </p>
+              </div>
+
+              <div className="bg-red-50 p-6 rounded-xl border border-red-200">
+                <div className="text-red-600 font-semibold mb-3 flex items-center gap-2">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                  </svg>
+                  No Developer Access
+                </div>
+                <p className="text-gray-700 text-sm">
+                  Want to integrate with your booking system, CRM, or mobile app? Good luck. Legacy systems have no APIs, forcing expensive custom hardware integrations that take months.
+                </p>
+              </div>
+
+              <div className="bg-red-50 p-6 rounded-xl border border-red-200">
+                <div className="text-red-600 font-semibold mb-3 flex items-center gap-2">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                  </svg>
+                  Poor Emergency Controls
+                </div>
+                <p className="text-gray-700 text-sm">
+                  During emergencies, you need instant lockdown or mass evacuation. Legacy systems can't respond fast enough, and there's no way to override policies in real-time across all entry points.
                 </p>
               </div>
             </div>
@@ -482,7 +518,7 @@ export default function HomePage() {
                 <div className="flex-1">
                   <h3 className="text-2xl font-bold mb-4">Define Access Policies</h3>
                   <p className="text-lg text-gray-600 leading-relaxed mb-4">
-                    Create fine-grained policies that specify who can access what, when, and under what conditions. Policies support time windows, resource scoping, user attributes, and custom context evaluation. Define rules once and enforce them consistently across all entry points.
+                    Create fine-grained policies that specify who can access what, when, and under what conditions. Policies support time windows, resource scoping, user attributes, and custom context evaluation. Define rules once and enforce them consistently across all entry points. Policies are evaluated server-side in real-time, ensuring consistent enforcement even as rules change.
                   </p>
                   <div className="bg-white p-6 rounded-xl border border-gray-200 font-mono text-sm overflow-x-auto">
                     <pre className="text-gray-800">{`{
@@ -498,7 +534,16 @@ export default function HomePage() {
 }`}</pre>
                   </div>
                   <div className="mt-4 text-sm text-gray-600">
-                    <span className="font-semibold">Real-world example:</span> A coworking space member can access the building Monday–Friday, 9am–5pm, with a maximum of 2 entries per day.
+                    <span className="font-semibold">Real-world example:</span> A coworking space member can access the building Monday–Friday, 9am–5pm, with a maximum of 2 entries per day. If they upgrade to a premium membership, the policy automatically grants 24/7 access and removes entry limits—no manual configuration needed.
+                  </div>
+                  <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                    <div className="text-sm font-semibold text-blue-900 mb-2">Policy Engine Features:</div>
+                    <ul className="text-sm text-gray-700 space-y-1">
+                      <li>• <strong>Attribute-based access control (ABAC)</strong> with user, resource, and environmental attributes</li>
+                      <li>• <strong>Policy versioning</strong> with rollback capability for safe updates</li>
+                      <li>• <strong>Dry-run mode</strong> to test policy changes before deployment</li>
+                      <li>• <strong>Conflict detection</strong> to prevent overlapping or contradictory rules</li>
+                    </ul>
                   </div>
                 </div>
               </div>
@@ -624,6 +669,145 @@ export default function HomePage() {
                     <span className="font-semibold">Real-world example:</span> A property manager generates a monthly compliance report showing all after-hours access attempts, policy violations, and revocation events for their portfolio of buildings.
                   </div>
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Buyer Personas Section */}
+      <div className="bg-gray-50 py-24 md:py-32 border-t border-gray-200">
+        <div className="container">
+          <div className="text-center mb-16">
+            <div className="inline-block px-4 py-2 bg-blue-50 text-blue-700 rounded-full text-sm font-semibold mb-6">
+              Built For Your Role
+            </div>
+            <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-6">
+              Outcomes That Matter to Your Team
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Whether you're managing operations, building products, or ensuring security—AXW delivers measurable value for your specific goals.
+            </p>
+          </div>
+
+          <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+            <div className="bg-white p-8 rounded-2xl border-2 border-gray-200 hover:border-blue-300 transition-colors">
+              <div className="w-16 h-16 bg-blue-100 rounded-xl flex items-center justify-center mb-6">
+                <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+              </div>
+              <h3 className="text-2xl font-bold mb-4">Operations Leaders</h3>
+              <p className="text-gray-600 mb-6 leading-relaxed">
+                Reduce operational overhead, eliminate vendor lock-in, and gain unified visibility across all your properties.
+              </p>
+              <div className="space-y-3 mb-6">
+                <div className="flex items-start gap-3">
+                  <span className="text-blue-600 text-lg flex-shrink-0">✓</span>
+                  <div>
+                    <div className="font-semibold text-sm">40% Cost Reduction</div>
+                    <div className="text-sm text-gray-600">Cut hardware maintenance, integration costs, and admin time</div>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <span className="text-blue-600 text-lg flex-shrink-0">✓</span>
+                  <div>
+                    <div className="font-semibold text-sm">Unified Dashboard</div>
+                    <div className="text-sm text-gray-600">Manage all venues from a single control plane</div>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <span className="text-blue-600 text-lg flex-shrink-0">✓</span>
+                  <div>
+                    <div className="font-semibold text-sm">Instant Policy Updates</div>
+                    <div className="text-sm text-gray-600">Deploy changes across all locations in seconds</div>
+                  </div>
+                </div>
+              </div>
+              <div className="pt-4 border-t border-gray-200">
+                <div className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Key Metrics</div>
+                <div className="text-sm text-gray-700">20 hours/week saved on admin tasks • 90% faster incident response • Zero vendor lock-in</div>
+              </div>
+            </div>
+
+            <div className="bg-white p-8 rounded-2xl border-2 border-blue-300 hover:border-blue-400 transition-colors relative">
+              <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 px-4 py-1 bg-blue-600 text-white text-xs font-semibold rounded-full">
+                MOST POPULAR
+              </div>
+              <div className="w-16 h-16 bg-blue-100 rounded-xl flex items-center justify-center mb-6">
+                <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                </svg>
+              </div>
+              <h3 className="text-2xl font-bold mb-4">Product & Engineering</h3>
+              <p className="text-gray-600 mb-6 leading-relaxed">
+                Ship access features faster with RESTful APIs, comprehensive SDKs, and developer-friendly documentation.
+              </p>
+              <div className="space-y-3 mb-6">
+                <div className="flex items-start gap-3">
+                  <span className="text-blue-600 text-lg flex-shrink-0">✓</span>
+                  <div>
+                    <div className="font-semibold text-sm">2-Day Integration</div>
+                    <div className="text-sm text-gray-600">Deploy from sandbox to production in hours, not months</div>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <span className="text-blue-600 text-lg flex-shrink-0">✓</span>
+                  <div>
+                    <div className="font-semibold text-sm">Complete API Coverage</div>
+                    <div className="text-sm text-gray-600">Issue, verify, revoke, audit—everything via REST</div>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <span className="text-blue-600 text-lg flex-shrink-0">✓</span>
+                  <div>
+                    <div className="font-semibold text-sm">Webhook Events</div>
+                    <div className="text-sm text-gray-600">Real-time notifications for access events and violations</div>
+                  </div>
+                </div>
+              </div>
+              <div className="pt-4 border-t border-gray-200">
+                <div className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Developer Experience</div>
+                <div className="text-sm text-gray-700">OpenAPI 3.0 spec • TypeScript/Python SDKs • Code samples • Sandbox environment</div>
+              </div>
+            </div>
+
+            <div className="bg-white p-8 rounded-2xl border-2 border-gray-200 hover:border-blue-300 transition-colors">
+              <div className="w-16 h-16 bg-blue-100 rounded-xl flex items-center justify-center mb-6">
+                <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+              </div>
+              <h3 className="text-2xl font-bold mb-4">Security & Compliance</h3>
+              <p className="text-gray-600 mb-6 leading-relaxed">
+                Meet audit requirements, respond to incidents faster, and prove compliance with immutable logs.
+              </p>
+              <div className="space-y-3 mb-6">
+                <div className="flex items-start gap-3">
+                  <span className="text-blue-600 text-lg flex-shrink-0">✓</span>
+                  <div>
+                    <div className="font-semibold text-sm">Instant Revocation</div>
+                    <div className="text-sm text-gray-600">Global blacklist propagation in under 1 second</div>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <span className="text-blue-600 text-lg flex-shrink-0">✓</span>
+                  <div>
+                    <div className="font-semibold text-sm">Immutable Audit Logs</div>
+                    <div className="text-sm text-gray-600">Cryptographically verifiable event history for forensics</div>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <span className="text-blue-600 text-lg flex-shrink-0">✓</span>
+                  <div>
+                    <div className="font-semibold text-sm">SOC 2 Type II</div>
+                    <div className="text-sm text-gray-600">Pre-certified infrastructure for compliance reporting</div>
+                  </div>
+                </div>
+              </div>
+              <div className="pt-4 border-t border-gray-200">
+                <div className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Compliance Ready</div>
+                <div className="text-sm text-gray-700">GDPR & CCPA compliant • HIPAA-ready audit trails • Zero-knowledge architecture</div>
               </div>
             </div>
           </div>
@@ -1099,6 +1283,15 @@ export default function HomePage() {
               </div>
 
               <div className="space-y-6">
+                <div className="mb-6 p-4 bg-blue-50 rounded-xl border border-blue-200">
+                  <h4 className="font-semibold text-blue-900 mb-2">Integration Patterns</h4>
+                  <div className="text-sm text-gray-700 space-y-2">
+                    <p><strong>Server-to-Server:</strong> Your backend calls our API to issue tokens when users book, purchase, or check in.</p>
+                    <p><strong>Client-Side:</strong> Mobile apps can verify tokens locally using our SDK, with periodic sync for revocations.</p>
+                    <p><strong>Hardware Integration:</strong> Edge devices call the verification endpoint or use cached public keys for offline mode.</p>
+                  </div>
+                </div>
+
                 <div className="bg-gray-900 text-gray-100 p-6 rounded-xl font-mono text-sm overflow-x-auto">
                   <div className="text-gray-500 mb-2">// Issue an access token</div>
                   <pre className="text-gray-100">{`const response = await fetch(
@@ -1185,7 +1378,83 @@ const result = await response.json();
             </p>
           </div>
 
-          <div className="max-w-5xl mx-auto">
+          <div className="max-w-5xl mx-auto mb-12">
+            <div className="bg-white p-8 md:p-12 rounded-2xl border border-gray-200 mb-8">
+              <h3 className="text-2xl font-bold mb-6 text-center">System Components</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="space-y-6">
+                  <div className="flex gap-4">
+                    <div className="flex-shrink-0 w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600 font-bold">
+                      API
+                    </div>
+                    <div>
+                      <h4 className="font-semibold mb-2">Control Plane</h4>
+                      <p className="text-sm text-gray-600">
+                        RESTful API layer for issuing tokens, managing policies, and querying audit logs. Handles authentication, rate limiting, and request validation.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex gap-4">
+                    <div className="flex-shrink-0 w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600 font-bold">
+                      PE
+                    </div>
+                    <div>
+                      <h4 className="font-semibold mb-2">Policy Engine</h4>
+                      <p className="text-sm text-gray-600">
+                        Evaluates access requests against defined policies in real-time. Supports ABAC, time-based rules, and conditional logic with sub-10ms evaluation.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex gap-4">
+                    <div className="flex-shrink-0 w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600 font-bold">
+                      TS
+                    </div>
+                    <div>
+                      <h4 className="font-semibold mb-2">Token Service</h4>
+                      <p className="text-sm text-gray-600">
+                        Generates cryptographically-signed JWTs with embedded permissions, expiration, and metadata. Manages key rotation and signing operations.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div className="space-y-6">
+                  <div className="flex gap-4">
+                    <div className="flex-shrink-0 w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600 font-bold">
+                      RL
+                    </div>
+                    <div>
+                      <h4 className="font-semibold mb-2">Revocation List</h4>
+                      <p className="text-sm text-gray-600">
+                        Distributed blacklist with edge caching for instant global propagation. Tokens are checked against this list during verification.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex gap-4">
+                    <div className="flex-shrink-0 w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600 font-bold">
+                      AL
+                    </div>
+                    <div>
+                      <h4 className="font-semibold mb-2">Audit Logger</h4>
+                      <p className="text-sm text-gray-600">
+                        Append-only event store with cryptographic integrity checks. Every access attempt, policy evaluation, and admin action is logged immutably.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex gap-4">
+                    <div className="flex-shrink-0 w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600 font-bold">
+                      ED
+                    </div>
+                    <div>
+                      <h4 className="font-semibold mb-2">Edge Devices</h4>
+                      <p className="text-sm text-gray-600">
+                        Hardware readers and controllers that verify tokens locally using cached public keys. Sync periodically for revocation updates.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div className="bg-white p-8 md:p-12 rounded-2xl border border-gray-200">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
                 <div className="text-center">
@@ -1315,6 +1584,28 @@ const result = await response.json();
           <div className="max-w-5xl mx-auto mb-16">
             <div className="bg-gradient-to-br from-gray-50 to-white p-8 md:p-12 rounded-2xl border border-gray-200">
               <h3 className="text-2xl font-bold mb-8 text-center">Security Architecture</h3>
+              <div className="mb-8 p-6 bg-blue-50 rounded-xl border border-blue-200">
+                <div className="text-center mb-4">
+                  <div className="text-sm font-semibold text-blue-900 mb-2">Cryptographic Foundation</div>
+                  <p className="text-sm text-gray-700">
+                    Every access token is a JWT signed with RSA-256 using your private key. Verification happens locally at edge devices using the public key, enabling offline operation and preventing token forgery. Even if an attacker intercepts a token, they cannot modify it or create new ones without your private key.
+                  </p>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                  <div className="bg-white p-3 rounded-lg">
+                    <div className="font-semibold mb-1">Token Structure</div>
+                    <div className="text-gray-600">Header + Payload + Signature</div>
+                  </div>
+                  <div className="bg-white p-3 rounded-lg">
+                    <div className="font-semibold mb-1">Signing Algorithm</div>
+                    <div className="text-gray-600">RSA-256 (2048-bit keys)</div>
+                  </div>
+                  <div className="bg-white p-3 rounded-lg">
+                    <div className="font-semibold mb-1">Verification</div>
+                    <div className="text-gray-600">Local, offline-capable</div>
+                  </div>
+                </div>
+              </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div>
                   <div className="flex items-start gap-4 mb-6">
@@ -2121,9 +2412,25 @@ const result = await response.json();
             <p className="text-xl md:text-2xl mb-4 opacity-90">
               Join venue operators and developers building the future of physical access infrastructure.
             </p>
-            <p className="text-lg mb-12 opacity-80">
+            <p className="text-lg mb-8 opacity-80">
               Start with a free pilot. Deploy in days. Scale to millions of access events per month.
             </p>
+            <div className="mb-12 p-6 bg-blue-800/50 backdrop-blur-sm rounded-2xl border border-blue-400/30 max-w-3xl mx-auto">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm">
+                <div>
+                  <div className="text-2xl font-bold mb-2">2 Days</div>
+                  <div className="opacity-90">Average integration time from sandbox to production</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-bold mb-2">40%</div>
+                  <div className="opacity-90">Typical operational cost reduction vs legacy systems</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-bold mb-2">&lt;1s</div>
+                  <div className="opacity-90">Global revocation propagation time for instant security</div>
+                </div>
+              </div>
+            </div>
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
               <a
                 href="/demo"
