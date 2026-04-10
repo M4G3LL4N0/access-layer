@@ -2164,3 +2164,35 @@
 +- preserve and improve venture direction
 +- do not stop after tiny edits
 +- make the venture more complete and useful
+
+# 2026-04-09 20:36:06.876874
++VENTURE: access-layer
++LANE: release
++
++PRIMARY OBJECTIVE:
++Strengthen the access-layer venture by deepening the homepage narrative, expanding product completeness, and making the offering feel more credible, differentiated, and enterprise-ready.
++
++CURRENT SLICE GOAL:
++Audit the current landing page and identify the highest-impact additions needed to make the venture feel like a real access infrastructure platform: sharper positioning, more concrete use cases, stronger trust signals, clearer developer story, and a fuller product/architecture surface area.
++
++ACCEPTANCE CHECKS:
++- The homepage clearly communicates what access-layer does in one sentence within the first screen.
++- The page includes more than one industry-specific use case for physical access control.
++- The product story includes operational depth such as issuance, enforcement, revocation, audit, and integrations.
++- There is at least one section aimed specifically at developers or platform integrators.
++- There is at least one trust-building section addressing security, auditability, or reliability.
++- The overall page reads like a real venture with a coherent product architecture, not just a generic SaaS landing page.
++
++FOLLOW-ON EXPANSION PROMPTS:
++- Add a concise above-the-fold positioning line that clarifies who the product is for and why it is different from generic IAM or door-control systems.
++- Introduce concrete physical-world use cases such as venues, coworking, parking, campuses, multifamily, and events.
++- Expand the feature set beyond the current three cards to include revocation, device integration, webhooks, roles/tenancy, offline verification, and admin workflows.
++
++RULES:
++- make real code changes
++- deepen website and product
++- avoid decorative-only churn
++- keep build stability
++- preserve and improve venture direction
++- do not stop after tiny edits
++- make the venture more complete and useful
