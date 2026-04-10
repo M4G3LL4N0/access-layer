@@ -2132,3 +2132,35 @@
 +- preserve and improve venture direction
 +- do not stop after tiny edits
 +- make the venture more complete and useful
+
+# 2026-04-09 20:32:56.018611
++VENTURE: access-layer
++LANE: release
++
++PRIMARY OBJECTIVE:
++Strengthen the access-layer venture by turning the current landing page into a more complete product narrative with clearer positioning, stronger proof points, and better conversion paths while preserving the existing Next.js structure.
++
++CURRENT SLICE GOAL:
++Expand the homepage from a simple hero into a more convincing business and product landing page: clarify the audience and value proposition, add trust-building sections, explain core capabilities and use cases, and improve calls to action for demo and developer docs.
++
++ACCEPTANCE CHECKS:
++- Homepage includes at least 3 distinct informational sections beyond the hero.
++- Value proposition clearly states what access-layer does, for whom, and why it matters.
++- Primary CTA and secondary CTA remain visible and more targeted than before.
++- Page communicates product depth through capabilities, workflow, and use cases rather than only marketing copy.
++- Design reads as polished and credible for an enterprise/developer audience.
++- Implementation remains compatible with the existing Next.js app router page and current export constraints.
++
++FOLLOW-ON EXPANSION PROMPTS:
++- Add a concise above-the-fold subhead that distinguishes physical-world access infrastructure from generic SaaS or security tools.
++- Introduce 3–5 core capability cards that cover policy management, identity/access issuance, monitoring/audit logs, integrations, and operational coordination.
++- Add a 'How it works' section describing the flow from policy definition to access granting to monitoring and revocation.
++
++RULES:
++- make real code changes
++- deepen website and product
++- avoid decorative-only churn
++- keep build stability
++- preserve and improve venture direction
++- do not stop after tiny edits
++- make the venture more complete and useful
