@@ -10,27 +10,40 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://accessxworld.com"),
-  title: "AXW — Access × World",
-  description: "Programmable access infrastructure and policy-driven coordination systems.",
-  applicationName: "AXW",
+  title: "AXW Access Layer — Policy-Driven Physical Access Infrastructure",
+  description: "The first access control platform that brings IAM-grade policy enforcement, cryptographic verification, and real-time audit to physical spaces. Issue signed passes, enforce fine-grained policies, revoke instantly, and integrate with existing hardware through developer-friendly APIs.",
+  applicationName: "AXW Access Layer",
   icons: {
     icon: [{ url: "/icon.png", type: "image/png" }],
     apple: [{ url: "/apple-icon.png", type: "image/png" }],
     shortcut: [{ url: "/favicon.ico" }],
   },
   openGraph: {
-    title: "AXW — Access × World",
-    description: "Programmable access infrastructure and policy-driven coordination systems.",
+    title: "AXW Access Layer — Policy-Driven Physical Access Infrastructure",
+    description: "The first access control platform that brings IAM-grade policy enforcement, cryptographic verification, and real-time audit to physical spaces.",
     url: "https://accessxworld.com",
-    siteName: "AXW",
+    siteName: "AXW Access Layer",
     images: [{ url: "/opengraph-image.png" }],
+    type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "AXW — Access × World",
-    description: "Programmable access infrastructure and policy-driven coordination systems.",
+    title: "AXW Access Layer — Policy-Driven Physical Access Infrastructure",
+    description: "Issue signed passes, enforce fine-grained policies, revoke instantly, and integrate with existing hardware through developer-friendly APIs.",
     images: ["/opengraph-image.png"],
   },
+  keywords: [
+    "access control",
+    "physical access",
+    "policy engine",
+    "access management",
+    "parking access",
+    "building access",
+    "venue access",
+    "cryptographic verification",
+    "access infrastructure",
+    "IAM for physical spaces"
+  ],
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
