@@ -2100,3 +2100,35 @@
 +- do not make cosmetic-only changes
 +- make the project buildable
 +
+
+# 2026-04-09 20:29:50.540967
++VENTURE: access-layer
++LANE: release
++
++PRIMARY OBJECTIVE:
++Strengthen the access-layer venture landing experience by turning the current hero-only homepage into a more complete, credible, and conversion-oriented product narrative while preserving the existing Next.js app structure.
++
++CURRENT SLICE GOAL:
++Upgrade the homepage content and structure to communicate clearer value, trust, differentiation, and next-step conversion paths for venue operators, developers, and platform buyers.
++
++ACCEPTANCE CHECKS:
++- Homepage contains more than a hero section and clearly communicates product depth.
++- Primary audience and value proposition are explicit within the first viewport.
++- At least two CTAs are present with clear intent differentiation.
++- The page includes at least one section that explains capabilities or workflow in concrete terms.
++- The overall presentation feels more complete, credible, and conversion-ready than the current version.
++- Implementation remains compatible with the existing Next.js app router page structure and preserves current export conventions unless intentionally improved.
++
++FOLLOW-ON EXPANSION PROMPTS:
++- Add supporting sections below the hero: problem framing, core capabilities, use cases, integration flow, security/compliance, and customer proof/trust markers.
++- Refine the hero copy to be more specific about the access-layer value proposition and target users, reducing generic phrasing.
++- Introduce stronger CTA hierarchy with one primary conversion action and one secondary technical exploration path.
++
++RULES:
++- make real code changes
++- deepen website and product
++- avoid decorative-only churn
++- keep build stability
++- preserve and improve venture direction
++- do not stop after tiny edits
++- make the venture more complete and useful
