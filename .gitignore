@@ -55,3 +55,4 @@ test-results
 .vercel/cache
 .env*.local
 .aider*
+.aider*
