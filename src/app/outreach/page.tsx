@@ -1,3 +1,4 @@
+import { SubpageVisual } from "@/components/SubpageVisual";
 export default function OutreachPage() {
   const Section = ({
     title,
@@ -22,6 +23,7 @@ export default function OutreachPage() {
 
   return (
     <main style={{ padding: 24, fontFamily: "system-ui", maxWidth: 980, margin: "0 auto" }}>
+      <SubpageVisual variant="default" />
       <h1 style={{ margin: "0 0 8px", fontSize: 32, fontWeight: 1000 }}>
         Outreach Playbook (SF Pilot)
       </h1>

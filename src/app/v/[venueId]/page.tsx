@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { SubpageVisual } from "@/components/SubpageVisual";
 import { supabaseServer } from "@/lib/supabaseServer";
 
 export const dynamic = "force-dynamic";
@@ -18,6 +19,7 @@ export default async function VenuePage({
   if (!venueId || !isUuid(venueId)) {
     return (
       <main style={{ padding: 24, fontFamily: "system-ui" }}>
+      <SubpageVisual variant="default" />
         <h1 style={{ fontSize: 22, fontWeight: 900 }}>Venue error</h1>
         <p style={{ opacity: 0.8 }}>Invalid venue id.</p>
         <div style={{ marginTop: 12 }}>

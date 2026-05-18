@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { SubpageVisual } from "@/components/SubpageVisual";
 import { supabaseServer } from "@/lib/supabaseServer";
 
 export const dynamic = "force-dynamic";
@@ -17,6 +18,7 @@ export default async function ManageVenue({ params }: any) {
   if (!venue || error) {
     return (
       <main style={{ padding: 40 }}>
+      <SubpageVisual variant="default" />
         <h1>Manage error</h1>
         <p>Invalid venue id.</p>
         <Link href="/venues">Back to directory</Link>

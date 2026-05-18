@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { SubpageVisual } from "@/components/SubpageVisual";
 import { supabaseServer } from "@/lib/supabaseServer";
 
 export const dynamic = "force-dynamic";
@@ -14,6 +15,7 @@ export default async function AdminMetricsPage() {
 
   return (
     <main style={{ background: "#fff", color: "#111", minHeight: "100vh", fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif" }}>
+      <SubpageVisual variant="default" />
       <div style={{ maxWidth: 1100, margin: "0 auto", padding: "28px 18px 64px" }}>
         <div style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "center", flexWrap: "wrap" }}>
           <div>

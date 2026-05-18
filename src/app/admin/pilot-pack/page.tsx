@@ -1,6 +1,7 @@
 export const dynamic = "force-dynamic";
 
 import Link from "next/link";
+import { SubpageVisual } from "@/components/SubpageVisual";
 import { supabaseServer } from "@/lib/supabaseServer";
 
 type Lead = {
@@ -65,6 +66,7 @@ export default async function PilotPackPage({
 
   return (
     <main style={{ padding: 28, fontFamily: "system-ui", background: "#0b0f17", minHeight: "100vh", color: "white" }}>
+      <SubpageVisual variant="default" />
       <div style={{ maxWidth: 980, margin: "0 auto" }}>
         <h1 style={{ fontSize: 34, fontWeight: 900 }}>Pilot Pack (Admin)</h1>
         <p style={{ opacity: 0.85 }}>

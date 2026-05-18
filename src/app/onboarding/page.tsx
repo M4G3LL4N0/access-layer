@@ -1,6 +1,8 @@
+import { SubpageVisual } from "@/components/SubpageVisual";
 export default function OnboardingPage() {
   return (
     <main style={{ padding: 40, fontFamily: "system-ui", maxWidth: 900 }}>
+      <SubpageVisual variant="default" />
       <h1 style={{ fontSize: 42, fontWeight: 900 }}>
         Venue Onboarding — Free Pilot
       </h1>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { SubpageVisual } from "@/components/SubpageVisual";
 
 export default function ParkingOperator({ params }: any) {
   const { venueId } = params;
@@ -28,6 +29,7 @@ export default function ParkingOperator({ params }: any) {
 
   return (
     <main style={{ padding: 40, fontFamily: "system-ui" }}>
+      <SubpageVisual variant="default" />
       <h1>Parking Validation Panel</h1>
 
       <div style={{ display: "flex", gap: 10, marginBottom: 20 }}>

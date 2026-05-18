@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { SubpageVisual } from "@/components/SubpageVisual";
 import { supabaseServerService } from "@/lib/supabaseServer";
 
 export const dynamic = "force-dynamic";
@@ -25,6 +26,7 @@ export default async function SeedPage() {
 
   return (
     <main style={{ padding: 24, fontFamily: "ui-sans-serif, system-ui" }}>
+      <SubpageVisual variant="default" />
       <header style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12 }}>
         <div>
           <h1 style={{ margin: 0 }}>Seed</h1>

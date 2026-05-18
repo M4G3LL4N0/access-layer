@@ -1,10 +1,12 @@
 import MarketingShell from "@/components/MarketingShell";
+import { SubpageVisual } from "@/components/SubpageVisual";
 
 export default function Investors(){
 
-return(
-
-<MarketingShell>
+return (
+<>
+<SubpageVisual variant="default" />
+      <MarketingShell>
 
 <h1 style={{fontSize:56,fontWeight:900,letterSpacing:-2}}>
 Access infrastructure for the physical world
@@ -39,6 +41,8 @@ body="Each venue added increases the value of the system for every participant."
 </section>
 
 </MarketingShell>
+
+</>
 
 )
 

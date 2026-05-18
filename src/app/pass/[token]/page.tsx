@@ -1,4 +1,5 @@
 import React from "react";
+import { SubpageVisual } from "@/components/SubpageVisual";
 import QRCode from "react-qr-code";
 import MarketingShell from "@/components/MarketingShell";
 
@@ -7,8 +8,9 @@ export default function PassPage({ params }: { params: { token: string } }) {
 const token = params.token
 
 return (
-
-<MarketingShell>
+<>
+<SubpageVisual variant="default" />
+      <MarketingShell>
 
 <div style={{textAlign:"center",paddingTop:40}}>
 
@@ -51,6 +53,8 @@ marginRight:"auto"
 </div>
 
 </MarketingShell>
+
+</>
 
 )
 

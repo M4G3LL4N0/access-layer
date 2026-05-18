@@ -1,3 +1,5 @@
+import { TrustStrip } from "@/components/TrustStrip";
+import { MarketingGraphicsStack } from "@/components/MarketingGraphicsStack";
 export default function Home() {
   return (
     <main
@@ -9,6 +11,10 @@ export default function Home() {
         minHeight: "100vh",
       }}
     >
+        <div className="mx-auto max-w-6xl px-4 py-4 sm:px-6">
+          <TrustStrip />
+        </div>
+
       <style>{`
         html, body { margin: 0; padding: 0; }
         *, *::before, *::after { box-sizing: border-box; }
@@ -360,6 +366,7 @@ export default function Home() {
           © {new Date().getFullYear()} AXW — Access × World
         </footer>
       </div>
+    <MarketingGraphicsStack />
     </main>
   );
 }

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { SubpageVisual } from "@/components/SubpageVisual";
 
 export const dynamic = "force-dynamic";
 
@@ -84,6 +85,7 @@ function Pill({ href, label }: { href: string; label: string }) {
 export default function V2Home() {
   return (
     <main style={styles.page}>
+      <SubpageVisual variant="default" />
       <div style={styles.wrap}>
         <div style={styles.top}>
           <div style={styles.badge}>

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { SubpageVisual } from "@/components/SubpageVisual";
 import { supabaseServer } from "@/lib/supabaseServer";
 
 export const dynamic = "force-dynamic";
@@ -15,6 +16,7 @@ export default async function VenuesPage() {
 
     return (
       <main style={{ padding: 24, fontFamily: "ui-sans-serif, system-ui" }}>
+      <SubpageVisual variant="default" />
         <header style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div>
             <h1 style={{ margin: 0 }}>Venues</h1>

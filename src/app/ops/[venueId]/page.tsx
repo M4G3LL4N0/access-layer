@@ -1,4 +1,5 @@
 import MarketingShell from "@/components/MarketingShell";
+import { SubpageVisual } from "@/components/SubpageVisual";
 import LiveEvents from "@/components/LiveEvents";
 import DeviceControls from "@/components/DeviceControls";
 
@@ -6,9 +7,10 @@ export default async function Page({params}:{params:{venueId:string}}){
 
 const venueId=params.venueId
 
-return(
-
-<MarketingShell>
+return (
+<>
+<SubpageVisual variant="default" />
+      <MarketingShell>
 
 <h1 style={{fontSize:42,fontWeight:900}}>Venue Operator Console</h1>
 
@@ -21,6 +23,8 @@ return(
 </div>
 
 </MarketingShell>
+
+</>
 
 )
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { SubpageVisual } from "@/components/SubpageVisual";
 import { useRouter, useParams } from "next/navigation";
 
 export default function KioskPage() {
@@ -39,6 +40,7 @@ export default function KioskPage() {
 
   return (
     <main style={{ padding: 24, fontFamily: "system-ui, sans-serif" }}>
+      <SubpageVisual variant="default" />
       <h1 style={{ fontSize: 28, fontWeight: 900 }}>Kiosk Mode</h1>
 
       <div style={{ marginBottom: 14 }}>

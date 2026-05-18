@@ -1,10 +1,14 @@
 import { Suspense } from "react";
+import { SubpageVisual } from "@/components/SubpageVisual";
 import AuthCallbackClient from "@/components/AuthCallbackClient";
 
 export default function AuthCallbackPage() {
   return (
-    <Suspense fallback={<div style={{ padding: 24, fontFamily: "system-ui" }}>Loading…</div>}>
+    <>
+    <SubpageVisual variant="default" />
+      <Suspense fallback={<div style={{ padding: 24, fontFamily: "system-ui" }}>Loading…</div>}>
       <AuthCallbackClient />
     </Suspense>
-  );
+  </>
+  )
 }

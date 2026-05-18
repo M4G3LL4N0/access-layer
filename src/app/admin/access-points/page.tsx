@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { SubpageVisual } from "@/components/SubpageVisual";
 import { supabaseServer } from "@/lib/supabaseServer";
 
 export const dynamic = "force-dynamic";
@@ -14,7 +15,9 @@ export default async function AdminAccessPointsIndexPage() {
     .limit(200);
 
   return (
-    <div style={{ padding: 16 }}>
+    <>
+    <SubpageVisual variant="default" />
+      <div style={{ padding: 16 }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 12 }}>
         <div>
           <h1 style={{ fontSize: 22, fontWeight: 800, margin: 0 }}>Admin • Access Points</h1>
@@ -66,5 +69,6 @@ export default async function AdminAccessPointsIndexPage() {
         </div>
       )}
     </div>
-  );
+  </>
+  )
 }

@@ -1,6 +1,8 @@
+import { SubpageVisual } from "@/components/SubpageVisual";
 export default function ApiDocsPage() {
   return (
     <main style={{ padding: 40, fontFamily: "system-ui", maxWidth: 1000 }}>
+      <SubpageVisual variant="default" />
       <h1 style={{ fontSize: 40, fontWeight: 900 }}>
         AccessXWorld API
       </h1>

@@ -1,3 +1,4 @@
+import { SubpageVisual } from "@/components/SubpageVisual";
 export const dynamic = "force-dynamic";
 
 export default function CrmTemplatesPage() {
@@ -33,6 +34,7 @@ export default function CrmTemplatesPage() {
 
   return (
     <main style={{ fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif" }}>
+      <SubpageVisual variant="default" />
       <style>{`
         :root{
           --bg:#ffffff; --fg:#0b0f19; --muted:rgba(11,15,25,.70);

@@ -1,3 +1,4 @@
+import { SubpageVisual } from "@/components/SubpageVisual";
 export default function VcChecklistPage() {
   const venueId = "0fc330aa-5c3d-4f7f-a74f-7de10c2b56b6"; // safe sample from your existing venues list
 
@@ -29,6 +30,7 @@ export default function VcChecklistPage() {
         minHeight: "100vh",
       }}
     >
+      <SubpageVisual variant="default" />
       <style>{`
         :root{
           --bg:#ffffff;

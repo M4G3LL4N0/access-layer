@@ -1,4 +1,5 @@
 import MarketingShell from "@/components/MarketingShell";
+import { SubpageVisual } from "@/components/SubpageVisual";
 import StatsStrip from "@/components/StatsStrip";
 import EventFeed, { EventFeedProps } from "@/components/EventFeed";
 import { getVenueStats, getVenuesList, getRecentEvents } from "@/lib/axw/data";
@@ -33,7 +34,9 @@ export default async function VenuesPage() {
   const events: RecentEventsResult = await getRecentEvents().catch(() => ({ events: [] }));
 
   return (
-    <MarketingShell>
+    <>
+    <SubpageVisual variant="default" />
+      <MarketingShell>
       <div style={{ fontSize: 12, color: "#777", fontWeight: 900, letterSpacing: 0.4 }}>VENUES</div>
 
       <h1 style={{ marginTop: 10, marginBottom: 10, fontSize: 52, letterSpacing: -1.4, fontWeight: 950 }}>
@@ -122,5 +125,6 @@ export default async function VenuesPage() {
         <EventFeed events={events.events} title="Recent venue activity" />
       </div>
     </MarketingShell>
-  );
+  </>
+  )
 }

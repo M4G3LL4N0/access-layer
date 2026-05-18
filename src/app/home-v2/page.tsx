@@ -1,6 +1,7 @@
 "use client";
 
 import MarketingHeader from "@/components/MarketingHeader";
+import { SubpageVisual } from "@/components/SubpageVisual";
 import React from "react";
 
 export const dynamic = "force-dynamic";
@@ -8,6 +9,7 @@ export const dynamic = "force-dynamic";
 export default function HomeV2() {
   return (
     <main style={{ background: "#fff" }}>
+      <SubpageVisual variant="default" />
       <MarketingHeader />
 
       <div style={{ maxWidth: 1120, margin: "0 auto", padding: "22px 16px 70px" }}>

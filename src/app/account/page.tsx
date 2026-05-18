@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
+import { SubpageVisual } from "@/components/SubpageVisual";
 import MarketingShell from "@/components/MarketingShell";
 import { supabaseBrowser } from "@/lib/supabase/client";
 import { hasSupabasePublicEnv } from "@/lib/supabase/env";
@@ -30,7 +31,9 @@ export default function AccountPage() {
   }, [supabase]);
 
   return (
-    <MarketingShell>
+    <>
+    <SubpageVisual variant="default" />
+      <MarketingShell>
       <div style={{ maxWidth: 860 }}>
         <div style={{ fontSize: 12, color: "#666", fontWeight: 900, letterSpacing: 1 }}>ACCOUNT</div>
         <h1 style={{ margin: "8px 0 0", fontSize: 44, letterSpacing: -0.9 }}>Account</h1>
@@ -95,5 +98,6 @@ export default function AccountPage() {
         </div>
       </div>
     </MarketingShell>
-  );
+  </>
+  )
 }

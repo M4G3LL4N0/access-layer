@@ -1,41 +1,34 @@
-"use client";
+import SimpleNetworkGraph from "./SimpleNetworkGraph";
 
-import dynamic from "next/dynamic";
-import React from "react";
+type GraphNode = {
+  id: string;
+  label?: string;
+  type?: string;
+  [key: string]: unknown;
+};
 
-const ForceGraph2D: any = dynamic(
-  () => import("react-force-graph-2d"),
-  { ssr: false }
-);
+type GraphEdge = {
+  id?: string;
+  source: string;
+  target: string;
+  type?: string;
+};
 
-export default function NetworkGraph({ data }: { data: any }) {
-  return (
-    <div
-      style={{
-        height: 520,
-        border: "1px solid #eee",
-        borderRadius: 18,
-        background: "white",
-        overflow: "hidden",
-      }}
-    >
-      <ForceGraph2D
-        graphData={data}
-        nodeAutoColorBy="group"
-        nodeCanvasObject={(node: any, ctx: CanvasRenderingContext2D) => {
-          const label = String(node.id || "");
-          ctx.beginPath();
-          ctx.arc(node.x, node.y, 6, 0, 2 * Math.PI, false);
-          ctx.fillStyle = "#000";
-          ctx.fill();
+export default function NetworkGraph({
+  data,
+}: {
+  data: { nodes?: GraphNode[]; edges?: GraphEdge[]; links?: GraphEdge[] };
+}) {
+  const nodes = (data.nodes ?? []).map((node) => ({
+    ...node,
+    label: node.label ?? node.id,
+    type: node.type ?? "entrypoint",
+  }));
 
-          ctx.font = "10px sans-serif";
-          ctx.fillStyle = "#111";
-          ctx.fillText(label, node.x + 10, node.y + 3);
-        }}
-        linkColor={() => "#ddd"}
-        backgroundColor="#ffffff"
-      />
-    </div>
-  );
+  const edges = (data.edges ?? data.links ?? []).map((edge, index) => ({
+    ...edge,
+    id: edge.id ?? `${edge.source}-${edge.target}-${index}`,
+  }));
+
+  return <SimpleNetworkGraph nodes={nodes} edges={edges} />;
 }

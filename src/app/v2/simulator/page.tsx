@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { SubpageVisual } from "@/components/SubpageVisual";
 import { useMemo, useState } from "react";
 
 export const dynamic = "force-dynamic";
@@ -54,6 +55,7 @@ export default function V2Simulator() {
 
   return (
     <main style={S.page}>
+      <SubpageVisual variant="default" />
       <div style={S.wrap}>
         <div style={S.top}>
           <div>

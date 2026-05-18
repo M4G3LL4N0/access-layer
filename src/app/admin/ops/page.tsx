@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { SubpageVisual } from "@/components/SubpageVisual";
 import { supabaseServer } from "@/lib/supabaseServer";
 
 export const dynamic = "force-dynamic";
@@ -28,6 +29,7 @@ export default async function AdminOpsPage() {
 
   return (
     <main style={{ padding: 24, fontFamily: "system-ui" }}>
+      <SubpageVisual variant="default" />
       <h1 style={{ fontSize: 26, fontWeight: 900 }}>Admin — Ops Console</h1>
       <p style={{ opacity: 0.75 }}>Enterprise-style multi-site view: venues, devices, and security events.</p>
 

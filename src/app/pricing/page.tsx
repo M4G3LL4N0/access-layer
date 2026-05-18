@@ -1,11 +1,14 @@
 import MarketingShell from "@/components/MarketingShell";
+import { SubpageVisual } from "@/components/SubpageVisual";
 import React from "react";
 
 export const dynamic = "force-static";
 
 export default function PricingPage() {
   return (
-    <MarketingShell>
+    <>
+    <SubpageVisual variant="pricing" />
+      <MarketingShell>
       <h1 style={{fontSize:48,fontWeight:950,letterSpacing:-1.2}}>Pricing</h1>
 
       <p style={{color:"#444",maxWidth:780}}>
@@ -87,6 +90,7 @@ export default function PricingPage() {
       </div>
 
     </MarketingShell>
+  </>
   )
 }
 

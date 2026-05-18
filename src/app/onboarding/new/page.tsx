@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { SubpageVisual } from "@/components/SubpageVisual";
 
 type LeadForm = {
   name: string;
@@ -83,6 +84,7 @@ export default function NewOnboardingPage() {
         minHeight: "100vh",
       }}
     >
+      <SubpageVisual variant="default" />
       <div style={{ maxWidth: 880, margin: "0 auto", padding: "44px 20px" }}>
         <a
           href="/"

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useMemo, useState } from "react";
+import { SubpageVisual } from "@/components/SubpageVisual";
 
 export const dynamic = "force-dynamic";
 
@@ -39,6 +40,7 @@ export default function SeedPage() {
 
   return (
     <main style={{ maxWidth: 980, margin: "0 auto", padding: 24, fontFamily: "ui-sans-serif, system-ui" }}>
+      <SubpageVisual variant="default" />
       <h1 style={{ fontSize: 24, marginBottom: 10 }}>Seed</h1>
       <p style={{ opacity: 0.85, marginBottom: 18 }}>
         Creates (idempotent) a demo venue + spaces + access points in Supabase.

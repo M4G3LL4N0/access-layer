@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { SubpageVisual } from "@/components/SubpageVisual";
 import { supabaseServer } from "@/lib/supabaseServer";
 
 export const dynamic = "force-dynamic";
@@ -26,6 +27,7 @@ export default async function SignagePage({
   if (error) {
     return (
       <main style={{ padding: 24, fontFamily: "system-ui", background: "#fff", color: "#0b0b0b" }}>
+      <SubpageVisual variant="default" />
         <h1 style={{ margin: 0, fontSize: 26, fontWeight: 1000 }}>Signage</h1>
         <p style={{ marginTop: 10, fontWeight: 800 }}>Venue not found.</p>
         <div style={{ marginTop: 10, opacity: 0.8 }}>

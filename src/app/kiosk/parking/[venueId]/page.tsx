@@ -1,4 +1,5 @@
 import { supabaseServer } from "@/lib/supabaseServer";
+import { SubpageVisual } from "@/components/SubpageVisual";
 
 export const dynamic = "force-dynamic";
 
@@ -12,6 +13,7 @@ export default async function ParkingKioskPage({
   if (!venueId) {
     return (
       <main style={{ padding: 40 }}>
+      <SubpageVisual variant="default" />
         <h1>Missing venueId (route param).</h1>
       </main>
     );

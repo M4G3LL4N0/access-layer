@@ -1,4 +1,5 @@
 import MarketingHeader from "@/components/MarketingHeader";
+import { SubpageVisual } from "@/components/SubpageVisual";
 import React from "react";
 
 export const dynamic = "force-static";
@@ -6,6 +7,7 @@ export const dynamic = "force-static";
 export default function OperatorsPage() {
   return (
     <main style={{ background: "#fff" }}>
+      <SubpageVisual variant="default" />
       <MarketingHeader />
       <div style={{ maxWidth: 1120, margin: "0 auto", padding: "22px 16px 70px" }}>
         <div style={{ fontSize: 12, color: "#777", fontWeight: 800, letterSpacing: 0.4 }}>AXW CONSOLE</div>

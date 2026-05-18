@@ -1,4 +1,5 @@
 import MarketingShell from "@/components/MarketingShell";
+import { SubpageVisual } from "@/components/SubpageVisual";
 import StatsStrip from "@/components/StatsStrip";
 import EventFeed from "@/components/EventFeed";
 import { getVenueStats, getRecentEvents } from "@/lib/axw/data";
@@ -12,7 +13,9 @@ export default async function OpsPage() {
   const events = await getRecentEvents(20);
 
   return (
-    <MarketingShell>
+    <>
+    <SubpageVisual variant="default" />
+      <MarketingShell>
       <div style={{ fontSize: 12, color: "#777", fontWeight: 900, letterSpacing: 0.4 }}>OPS CONSOLE</div>
 
       <h1 style={{ marginTop: 10, marginBottom: 10, fontSize: 52, letterSpacing: -1.4, fontWeight: 950 }}>
@@ -38,5 +41,6 @@ export default async function OpsPage() {
         <EventFeed events={events.events} title="Recent operational events" />
       </div>
     </MarketingShell>
-  );
+  </>
+  )
 }

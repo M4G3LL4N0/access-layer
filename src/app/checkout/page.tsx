@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { SubpageVisual } from "@/components/SubpageVisual";
 
 export const dynamic = "force-dynamic";
 
@@ -15,6 +16,7 @@ export default async function CheckoutPage({
 
   return (
     <main style={{ padding: 28, fontFamily: "system-ui", minHeight: "100vh" }}>
+      <SubpageVisual variant="default" />
       <h1 style={{ margin: 0, fontSize: 34, fontWeight: 999 }}>Checkout</h1>
 
       {success ? (

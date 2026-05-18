@@ -1,10 +1,12 @@
 import Link from "next/link";
+import { SubpageVisual } from "@/components/SubpageVisual";
 
 export const dynamic = "force-dynamic";
 
 export default function V3Home() {
   return (
     <main style={{ maxWidth: 980, margin: "0 auto", padding: 24, fontFamily: "ui-sans-serif, system-ui" }}>
+      <SubpageVisual variant="default" />
       <h1 style={{ fontSize: 28, marginBottom: 10 }}>AXW 3.0</h1>
       <p style={{ opacity: 0.85, marginBottom: 18 }}>
         Tokenized permissions + policy evaluation + audit logs.

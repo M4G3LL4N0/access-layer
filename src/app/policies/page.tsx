@@ -1,6 +1,7 @@
 "use client";
 
 import MarketingShell from "@/components/MarketingShell";
+import { SubpageVisual } from "@/components/SubpageVisual";
 import React, { useState } from "react";
 
 export default function PoliciesPage() {
@@ -25,7 +26,9 @@ export default function PoliciesPage() {
   }
 
   return (
-    <MarketingShell maxWidth={920}>
+    <>
+    <SubpageVisual variant="default" />
+      <MarketingShell maxWidth={920}>
       <div style={{ fontSize: 12, color: "#777", fontWeight: 900, letterSpacing: 0.4 }}>POLICIES</div>
 
       <h1 style={{ marginTop: 10, marginBottom: 10, fontSize: 44, letterSpacing: -1.2, fontWeight: 950 }}>
@@ -72,6 +75,7 @@ export default function PoliciesPage() {
         </pre>
       </div>
     </MarketingShell>
+  </>
   );
 }
 

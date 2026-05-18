@@ -1,11 +1,14 @@
 import MarketingShell from "@/components/MarketingShell";
+import { SubpageVisual } from "@/components/SubpageVisual";
 import React from "react";
 
 export const dynamic = "force-static";
 
 export default function LoginPage() {
   return (
-    <MarketingShell maxWidth={760}>
+    <>
+    <SubpageVisual variant="default" />
+      <MarketingShell maxWidth={760}>
       <div style={{ fontSize: 12, color: "#777", fontWeight: 900, letterSpacing: 0.4 }}>LOGIN</div>
 
       <h1 style={{ marginTop: 10, marginBottom: 10, fontSize: 44, letterSpacing: -1.2, fontWeight: 950 }}>
@@ -62,5 +65,6 @@ export default function LoginPage() {
         </div>
       </div>
     </MarketingShell>
-  );
+  </>
+  )
 }

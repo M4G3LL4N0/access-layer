@@ -1,11 +1,14 @@
 import MarketingShell from "@/components/MarketingShell";
+import { SubpageVisual } from "@/components/SubpageVisual";
 import React from "react";
 
 export const dynamic = "force-static";
 
 export default function DevelopersPage() {
   return (
-    <MarketingShell>
+    <>
+    <SubpageVisual variant="default" />
+      <MarketingShell>
       <div style={{ fontSize: 12, color: "#777", fontWeight: 900, letterSpacing: 0.4 }}>DEVELOPERS</div>
 
       <h1 style={{ marginTop: 10, marginBottom: 10, fontSize: 52, letterSpacing: -1.4, fontWeight: 950 }}>
@@ -42,5 +45,6 @@ function Card({ title, body, code }: { title: string; body: string; code: string
         {code}
       </div>
     </div>
-  );
+  </>
+  )
 }

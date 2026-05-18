@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { SubpageVisual } from "@/components/SubpageVisual";
 import { supabaseServer } from "@/lib/supabaseServer";
 
 export const dynamic = "force-dynamic";
@@ -23,6 +24,8 @@ export default async function AdminAccessPointsVenuePage({
 
   if (vErr) {
     return (
+      <>
+      <SubpageVisual variant="default" />
       <div style={{ padding: 16 }}>
         <h1 style={{ fontSize: 22, fontWeight: 700 }}>Access Points</h1>
         <p style={{ marginTop: 10 }}>Error loading venue.</p>
@@ -103,5 +106,6 @@ export default async function AdminAccessPointsVenuePage({
         </div>
       )}
     </div>
-  );
+  </>
+  )
 }

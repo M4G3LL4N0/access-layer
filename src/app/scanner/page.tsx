@@ -1,6 +1,7 @@
 "use client";
 
 import MarketingShell from "@/components/MarketingShell";
+import { SubpageVisual } from "@/components/SubpageVisual";
 import React, { useEffect, useRef, useState } from "react";
 
 export default function ScannerPage() {
@@ -56,7 +57,8 @@ export default function ScannerPage() {
 
     start();
 
-    return () => {
+    return (<SubpageVisual variant="default" />
+      ) => {
       mounted = false;
       const scanner = scannerRef.current;
       if (scanner) {

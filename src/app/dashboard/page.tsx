@@ -1,6 +1,9 @@
+import { SubpageVisual } from "@/components/SubpageVisual";
 export default function DashboardPage() {
   return (
-    <div className="container py-8">
+    <>
+    <SubpageVisual variant="dashboard" />
+      <div className="container py-8">
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-2">Access Control Dashboard</h1>
         <p className="text-gray-600">Monitor access activity, manage policies, and configure integrations across your venues.</p>
@@ -166,5 +169,6 @@ export default function DashboardPage() {
         </div>
       </div>
     </div>
-  );
+  </>
+  )
 }

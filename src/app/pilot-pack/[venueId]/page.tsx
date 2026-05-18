@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { SubpageVisual } from "@/components/SubpageVisual";
 import { supabaseServer } from "@/lib/supabaseServer";
 
 export const dynamic = "force-dynamic";
@@ -60,6 +61,7 @@ export default async function PilotPackPage({
   if (vErr || !venue) {
     return (
       <main style={{ padding: 22, fontFamily: "system-ui", background: "#fff", color: "#0b0b0b" }}>
+      <SubpageVisual variant="default" />
         <div style={{ maxWidth: 980, margin: "0 auto" }}>
           <h1 style={{ margin: 0, fontSize: 26, fontWeight: 1000 }}>Pilot Pack</h1>
           <div style={{ marginTop: 10, ...box() }}>

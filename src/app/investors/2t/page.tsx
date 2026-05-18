@@ -1,8 +1,10 @@
 import Link from "next/link";
+import { SubpageVisual } from "@/components/SubpageVisual";
 
 export default function TwoTPage() {
   return (
     <main style={{ padding: 40, maxWidth: 1100 }}>
+      <SubpageVisual variant="default" />
       <h1 style={{ fontSize: 32, fontWeight: 800 }}>
         The $2 Trillion Path
       </h1>

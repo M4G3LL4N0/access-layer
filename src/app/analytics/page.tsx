@@ -1,10 +1,12 @@
 import MarketingShell from "@/components/MarketingShell";
+import { SubpageVisual } from "@/components/SubpageVisual";
 
 export default function Analytics(){
 
-return(
-
-<MarketingShell>
+return (
+<>
+<SubpageVisual variant="default" />
+      <MarketingShell>
 
 <h1 style={{fontSize:48,fontWeight:900}}>
 Network Analytics
@@ -23,6 +25,8 @@ Network Analytics
 </div>
 
 </MarketingShell>
+
+</>
 
 )
 

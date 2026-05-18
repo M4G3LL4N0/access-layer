@@ -1,13 +1,15 @@
 import MarketingShell from "@/components/MarketingShell";
+import { SubpageVisual } from "@/components/SubpageVisual";
 import React from "react";
 
 export const dynamic = "force-static";
 
 export default function ContactPage(){
 
-return(
-
-<MarketingShell>
+return (
+<>
+<SubpageVisual variant="contact" />
+      <MarketingShell>
 
 <h1 style={{fontSize:52,fontWeight:950}}>
 Talk to the AXW team
@@ -35,6 +37,8 @@ Submit →
 </form>
 
 </MarketingShell>
+
+</>
 
 )
 

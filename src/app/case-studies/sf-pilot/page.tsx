@@ -1,11 +1,14 @@
 import MarketingShell from "@/components/MarketingShell";
+import { SubpageVisual } from "@/components/SubpageVisual";
 import React from "react";
 
 export const dynamic = "force-static";
 
 export default function SfPilotCaseStudyPage() {
   return (
-    <MarketingShell>
+    <>
+    <SubpageVisual variant="default" />
+      <MarketingShell>
       <div style={{ fontSize: 12, color: "#777", fontWeight: 900, letterSpacing: 0.4 }}>
         CASE STUDY
       </div>
@@ -68,5 +71,6 @@ function Card({title,body}:{title:string,body:string}) {
         {body}
       </div>
     </div>
+  </>
   )
 }

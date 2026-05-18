@@ -1,4 +1,5 @@
 import LiveMetrics from "@/components/LiveMetrics";
+import { SubpageVisual } from "@/components/SubpageVisual";
 
 export default function Home() {
   return (
@@ -11,6 +12,7 @@ export default function Home() {
         minHeight: "100vh",
       }}
     >
+      <SubpageVisual variant="default" />
       <div
         style={{
           maxWidth: 1100,

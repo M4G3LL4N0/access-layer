@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { SubpageVisual } from "@/components/SubpageVisual";
 import Link from "next/link";
 
 type Venue = {
@@ -41,6 +42,7 @@ export default function KioskIndex() {
 
   return (
     <main style={{ padding: 24, fontFamily: "system-ui" }}>
+      <SubpageVisual variant="default" />
       <h1 style={{ fontSize: 28, fontWeight: 900 }}>
         Kiosk Mode — Select Venue
       </h1>

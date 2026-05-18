@@ -1,10 +1,12 @@
 import Link from "next/link";
+import { SubpageVisual } from "@/components/SubpageVisual";
 
 export const dynamic = "force-dynamic";
 
 export default function V2Entrypoints() {
   return (
     <main style={{ fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif", background: "#fff", color: "#111", minHeight: "100vh" }}>
+      <SubpageVisual variant="default" />
       <div style={{ maxWidth: 1000, margin: "0 auto", padding: "42px 18px 80px" }}>
         <Top />
         <h1 style={{ fontSize: 36, letterSpacing: -0.8, margin: "18px 0 8px" }}>Entrypoints</h1>

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { SubpageVisual } from "@/components/SubpageVisual";
 
 export default async function ClaimPage({
   params,
@@ -13,6 +14,7 @@ export default async function ClaimPage({
 
   return (
     <main style={{ padding: 24, fontFamily: "system-ui" }}>
+      <SubpageVisual variant="default" />
       <Link href={`/v/${venueId}`} style={{ opacity: 0.8 }}>
         ← Back to venue
       </Link>

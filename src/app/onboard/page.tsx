@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { SubpageVisual } from "@/components/SubpageVisual";
 import MarketingShell from "@/components/MarketingShell";
 
 export default function Onboard(){
@@ -29,9 +30,10 @@ setStatus("Error")
 
 }
 
-return(
-
-<MarketingShell>
+return (
+<>
+<SubpageVisual variant="default" />
+      <MarketingShell>
 
 <h1 style={{fontSize:46,fontWeight:900}}>Create Venue</h1>
 
@@ -66,6 +68,8 @@ Create Venue
 <p style={{marginTop:12}}>{status}</p>
 
 </MarketingShell>
+
+</>
 
 )
 

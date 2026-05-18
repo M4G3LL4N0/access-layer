@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { SubpageVisual } from "@/components/SubpageVisual";
 import MarketingShell from "@/components/MarketingShell";
 
 export default function Verify(){
@@ -22,9 +23,10 @@ setResult(JSON.stringify(json,null,2))
 
 }
 
-return(
-
-<MarketingShell>
+return (
+<>
+<SubpageVisual variant="default" />
+      <MarketingShell>
 
 <h1 style={{fontSize:44,fontWeight:900}}>
 Verify Access Token
@@ -58,6 +60,8 @@ Verify
 </pre>
 
 </MarketingShell>
+
+</>
 
 )
 

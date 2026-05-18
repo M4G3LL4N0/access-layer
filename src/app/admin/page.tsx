@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { SubpageVisual } from "@/components/SubpageVisual";
 
 export const dynamic = "force-dynamic";
 
@@ -22,6 +23,7 @@ const Card = ({ href, title, desc }: { href: string; title: string; desc: string
 export default function AdminHome() {
   return (
     <main style={{ padding: 24, fontFamily: "ui-sans-serif, system-ui" }}>
+      <SubpageVisual variant="default" />
       <header style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12 }}>
         <div>
           <h1 style={{ margin: 0 }}>Admin</h1>

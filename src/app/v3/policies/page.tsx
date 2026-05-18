@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { SubpageVisual } from "@/components/SubpageVisual";
 import { getLatestVenue, listPolicies } from "@/lib/axw3/queries";
 
 export const dynamic = "force-dynamic";
@@ -8,6 +9,7 @@ export default async function PoliciesPage() {
 
   return (
     <main style={{ maxWidth: 1100, margin: "0 auto", padding: 24, fontFamily: "ui-sans-serif, system-ui" }}>
+      <SubpageVisual variant="default" />
       <h1 style={{ fontSize: 24, marginBottom: 8 }}>Policies</h1>
       <p style={{ opacity: 0.85, marginBottom: 14 }}>
         Venue: <b>{venue?.name ?? "none"}</b> {venue?.id ? <code style={code()}>{venue.id}</code> : null}

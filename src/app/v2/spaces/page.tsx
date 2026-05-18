@@ -1,10 +1,12 @@
 import Link from "next/link";
+import { SubpageVisual } from "@/components/SubpageVisual";
 
 export const dynamic = "force-dynamic";
 
 export default function V2Spaces() {
   return (
     <main style={{ fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif", background: "#fff", color: "#111", minHeight: "100vh" }}>
+      <SubpageVisual variant="default" />
       <div style={{ maxWidth: 1000, margin: "0 auto", padding: "42px 18px 80px" }}>
         <div style={{ display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
           <div>

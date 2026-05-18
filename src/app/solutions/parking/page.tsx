@@ -1,10 +1,12 @@
 import Link from "next/link";
+import { SubpageVisual } from "@/components/SubpageVisual";
 
 export const dynamic = "force-dynamic";
 
 export default function ParkingSolutionPage() {
   return (
     <main style={{ padding: 24, fontFamily: "system-ui" }}>
+      <SubpageVisual variant="default" />
       <div style={{ maxWidth: 980, margin: "0 auto" }}>
         <Link href="/" style={{ opacity: 0.8 }}>
           ← Home

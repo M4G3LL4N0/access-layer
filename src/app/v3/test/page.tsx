@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { SubpageVisual } from "@/components/SubpageVisual";
 import Link from "next/link";
 
 export default function V3TestPage() {
@@ -58,6 +59,7 @@ export default function V3TestPage() {
 
   return (
     <main style={{ maxWidth: 980, margin: "0 auto", padding: 24, fontFamily: "ui-sans-serif, system-ui" }}>
+      <SubpageVisual variant="default" />
       <h1 style={{ fontSize: 24, marginBottom: 10 }}>AXW 3.0 Test</h1>
 
       <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 14 }}>

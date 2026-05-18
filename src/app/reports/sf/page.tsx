@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { SubpageVisual } from "@/components/SubpageVisual";
 import { supabaseServer } from "@/lib/supabaseServer";
 
 export const dynamic = "force-dynamic";
@@ -40,6 +41,7 @@ export default async function SfReportPage() {
 
   return (
     <main className="mx-auto max-w-5xl p-6">
+      <SubpageVisual variant="default" />
       <div className="flex items-start justify-between gap-4">
         <div>
           <h1 className="text-3xl font-black">SF Reliability Report</h1>

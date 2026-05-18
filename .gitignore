@@ -9,7 +9,12 @@ node_modules
 # =========================
 .next
 **/.next
+.turbo
 out
+dist
+build
+.cache
+.parcel-cache
 
 # =========================
 # Environment variables
@@ -27,7 +32,9 @@ Thumbs.db
 # =========================
 # Logs
 # =========================
+*.log
 npm-debug.log*
+pnpm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
@@ -42,6 +49,9 @@ temp-*
 # Misc
 # =========================
 coverage
+playwright-report
+test-results
 .vercel
+.vercel/cache
 .env*.local
 .aider*

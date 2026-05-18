@@ -1,3 +1,4 @@
+import { SubpageVisual } from "@/components/SubpageVisual";
 export default function VcTourPage() {
   const venueId = "0fc330aa-5c3d-4f7f-a74f-7de10c2b56b6"; // Mission Workspace sample venue (exists in your Supabase list)
 
@@ -31,6 +32,7 @@ export default function VcTourPage() {
         minHeight: "100vh",
       }}
     >
+      <SubpageVisual variant="default" />
       <style>{`
         :root{
           --bg:#ffffff;
