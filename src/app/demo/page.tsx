@@ -1,10 +1,13 @@
 import Link from "next/link";
+import { SubpageVisual } from "@/components/SubpageVisual";
 import MarketingShell from "@/components/MarketingShell";
 import { AccessLayerDemoWorkspace } from "@/components/AccessLayerDemoWorkspace";
 
 export default function DemoPage() {
   return (
-    <MarketingShell>
+      <>
+      <SubpageVisual variant="demo" />
+      <MarketingShell>
       <h1>AXW live demo path</h1>
       <p className="muted" style={{ maxWidth: 720, lineHeight: 1.6 }}>
         Interactive pilot: issue a demo credential and verify at a lane. Not production security
@@ -17,5 +20,6 @@ export default function DemoPage() {
         <Link href="/ops">ops</Link> · <Link href="/network">network</Link>
       </p>
     </MarketingShell>
-  );
+  </>
+  )
 }

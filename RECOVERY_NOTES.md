@@ -1,0 +1,22 @@
+# Recovery Notes: Access Layer
+
+- Startup name: Access Layer
+- Folder: /Users/joshuadavis/startups/access-layer
+- One-line description: First run the development server: bash npm run dev # or yarn dev # or pnpm dev # or bun dev Open http://localhost:3000 http://localhost:3000 with your browser to see the result.
+- Target user: Founders, operators, and investors evaluating or launching new ventures.
+- Problem: Teams struggle to turn messy data and operating context into decisions they can trust.
+- Solution: An AI-assisted workflow that packages expertise, context, and decisions into a more usable product experience.
+- MVP goal: Make the core access layer experience clear, navigable, buildable with pnpm, and ready for manual Vercel deployment.
+- Main pages/routes: /
+- Current state: Buildable pnpm web project with preserved routes and deployment hygiene.
+- Useful work preserved: Existing source, route structure, public assets, docs, package metadata, pnpm lockfile, and env examples were preserved.
+- Broken/drifted areas: pnpm lint failed:   ELIFECYCLE  Command failed with exit code 1.
+- Improvements made: Cleaned generated local artifacts after validation (11M -> 11M).
+- Build/deploy status: Ready for manual Vercel deployment after fresh pnpm install/build.
+- Large files flagged: None over 25 MB after excluding generated/cache directories.
+- Return-later commands:
+  - pnpm install
+  - pnpm lint
+  - pnpm typecheck (no typecheck script present)
+  - pnpm build
+  - vercel --prod
