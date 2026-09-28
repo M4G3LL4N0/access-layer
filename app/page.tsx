@@ -495,8 +495,8 @@ export default function Page() {
           .navInner, .sectionInner, .heroInner, .footerInner {
             width: min(100% - 28px, 1180px);
           }
-          .navInner { height: 66px; }
-          .brand span { display: none; }
+          .navInner { height: auto; min-height: 66px; padding: 10px 0; flex-wrap: wrap; gap: 10px; }
+          .brand span { display: inline; white-space: nowrap; }
           .button { width: 100%; }
           .navLinks .button { width: auto; min-height: 40px; padding: 0 14px; }
           .heroInner { padding: 58px 0 48px; }

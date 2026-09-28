@@ -1,35 +1,39 @@
-"use client";
 export function ProcessFlowSection() {
   const steps = [
-  {
-    "title": "Issue",
-    "body": "Stage 1 — demo flow."
-  },
-  {
-    "title": "Pass",
-    "body": "Stage 2 — demo flow."
-  },
-  {
-    "title": "Verify",
-    "body": "Stage 3 — demo flow."
-  },
-  {
-    "title": "Ops",
-    "body": "Stage 4 — demo flow."
-  }
-];
+    {
+      title: "Define the policy",
+      body: "Who may enter, which gate, which window, and what ends the grant.",
+    },
+    {
+      title: "Issue a signed pass",
+      body: "A credential for a person or vehicle. Not a code the whole line can share.",
+    },
+    {
+      title: "Check it at the edge",
+      body: "The door, lot, or kiosk accepts or refuses from the policy, then records the scan.",
+    },
+    {
+      title: "Keep the proof",
+      body: "The grant, denial, and revocation stay as an event trail the operator can show.",
+    },
+  ]
   return (
-    <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
-      <h2 className="text-2xl font-semibold text-white">How it works</h2>
+    <section id="access-flow" aria-label="Access decision flow" className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
+      <p className="font-mono text-xs uppercase tracking-[0.16em] text-[#0d5f46]">The decision, not a demo label</p>
+      <h2 className="mt-3 max-w-2xl text-3xl font-semibold tracking-tight text-[#07110f]">
+        A pass moves through four checks.
+      </h2>
       <ol className="mt-8 grid gap-4 md:grid-cols-4">
-        {steps.map((s, i) => (
-          <li key={s.title} className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
-            <span className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/15 text-sm font-semibold text-white">{i + 1}</span>
-            <h3 className="mt-4 font-medium text-white">{s.title}</h3>
-            <p className="mt-2 text-sm text-slate-400">{s.body}</p>
+        {steps.map((step, index) => (
+          <li key={step.title} className="rounded-2xl border border-[#07110f]/10 bg-[#f6f4ef] p-5">
+            <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[#1f7a5b] text-sm font-semibold text-white">
+              {index + 1}
+            </span>
+            <h3 className="mt-4 font-medium text-[#07110f]">{step.title}</h3>
+            <p className="mt-2 text-sm leading-6 text-[#52615d]">{step.body}</p>
           </li>
         ))}
       </ol>
     </section>
-  );
+  )
 }
