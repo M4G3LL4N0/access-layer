@@ -1,6 +1,3 @@
-import { HeroProductPanel } from "@/components/HeroProductPanel";
-import { MarketingGraphicsStack } from "@/components/MarketingGraphicsStack";
-import { ProcessFlowSection } from "@/components/ProcessFlowSection";
 const sectors = [
   "Venues",
   "Parking operators",
@@ -16,11 +13,11 @@ const proofPoints = [
   },
   {
     value: "Proof",
-    label: "Every grant, denial, scan, and revocation is verifiable.",
+    label: "Every grant, denial, scan, and revocation is recorded as an event.",
   },
   {
     value: "Throughput",
-    label: "Operators move people and vehicles faster without sharing codes.",
+    label: "Operators move people and vehicles without sharing a static code.",
   },
 ];
 
@@ -39,7 +36,7 @@ const steps = [
   },
   {
     title: "Audit the outcome",
-    body: "Keep a neutral event trail for liability, compliance, billing, and operations.",
+    body: "Keep an event trail for liability, compliance, billing, and operations.",
   },
 ];
 
@@ -47,12 +44,12 @@ const useCases = [
   "Parking passes that expire automatically after a reservation window.",
   "Venue credentials for contractors, staff, talent, security, and VIP zones.",
   "Property access workflows that prove who entered without exposing lock codes.",
-  "Enterprise site access with revocation, audit, and policy consistency across locations.",
+  "Enterprise site access with revocation and policy consistency across locations.",
 ];
 
 export default function Page() {
   return (
-    <main>
+    <>
       <style>{`
         :root {
           color-scheme: light;
@@ -72,6 +69,7 @@ export default function Page() {
 
         .shell {
           min-height: 100vh;
+          overflow-x: hidden;
           font-family: var(--font-sans), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
           background:
             linear-gradient(180deg, rgba(251,250,247,0.88), #fbfaf7 28rem),
@@ -106,7 +104,6 @@ export default function Page() {
           align-items: center;
           gap: 11px;
           font-weight: 760;
-          letter-spacing: 0;
         }
 
         .brand img {
@@ -148,7 +145,6 @@ export default function Page() {
         }
 
         .hero {
-          min-height: calc(100vh - 72px);
           display: flex;
           align-items: center;
           border-bottom: 1px solid rgba(7, 17, 15, 0.08);
@@ -156,7 +152,7 @@ export default function Page() {
 
         .heroInner {
           display: grid;
-          grid-template-columns: minmax(0, 1.06fr) minmax(340px, 0.72fr);
+          grid-template-columns: minmax(0, 1.06fr) minmax(280px, 0.72fr);
           gap: 56px;
           align-items: center;
           padding: 80px 0 74px;
@@ -184,9 +180,8 @@ export default function Page() {
         h1 {
           max-width: 780px;
           margin: 18px 0 0;
-          font-size: clamp(54px, 7.2vw, 98px);
-          line-height: 0.94;
-          letter-spacing: 0;
+          font-size: clamp(40px, 7.2vw, 88px);
+          line-height: 0.96;
           font-weight: 820;
         }
 
@@ -316,13 +311,8 @@ export default function Page() {
           font-size: 13px;
         }
 
-        section {
-          border-bottom: 1px solid rgba(7, 17, 15, 0.08);
-        }
-
-        .sectionInner {
-          padding: 86px 0;
-        }
+        section { border-bottom: 1px solid rgba(7, 17, 15, 0.08); }
+        .sectionInner { padding: 86px 0; }
 
         .split {
           display: grid;
@@ -341,10 +331,9 @@ export default function Page() {
 
         h2 {
           margin: 12px 0 0;
-          font-size: clamp(34px, 4.3vw, 58px);
-          line-height: 1.02;
+          font-size: clamp(28px, 4.3vw, 52px);
+          line-height: 1.05;
           font-weight: 800;
-          letter-spacing: 0;
         }
 
         .sectionCopy {
@@ -414,18 +403,11 @@ export default function Page() {
           gap: 14px;
         }
 
-        .benefitBand {
-          background: #07110f;
-          color: white;
-        }
-
+        .benefitBand { background: #07110f; color: white; }
         .benefitBand .kicker { color: #a5f3d2; }
         .benefitBand .sectionCopy { color: rgba(255,255,255,0.68); }
 
-        .benefitList {
-          display: grid;
-          gap: 14px;
-        }
+        .benefitList { display: grid; gap: 14px; }
 
         .benefit {
           display: grid;
@@ -448,26 +430,11 @@ export default function Page() {
           font-weight: 900;
         }
 
-        .cta {
-          text-align: center;
-        }
+        .cta { text-align: center; }
+        .cta h2 { margin-left: auto; margin-right: auto; max-width: 760px; }
+        .cta .sectionCopy { max-width: 680px; margin-left: auto; margin-right: auto; }
 
-        .cta h2 {
-          margin-left: auto;
-          margin-right: auto;
-          max-width: 760px;
-        }
-
-        .cta .sectionCopy {
-          max-width: 680px;
-          margin-left: auto;
-          margin-right: auto;
-        }
-
-        footer {
-          color: #62706c;
-          font-size: 14px;
-        }
+        footer { color: #62706c; font-size: 14px; }
 
         .footerInner {
           width: min(1180px, calc(100% - 40px));
@@ -481,14 +448,8 @@ export default function Page() {
 
         @media (max-width: 920px) {
           .navLinks a:not(.button) { display: none; }
-          .hero { min-height: auto; }
-          .heroInner, .split {
-            grid-template-columns: 1fr;
-            gap: 34px;
-          }
-          .proofGrid, .stepGrid {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-          }
+          .heroInner, .split { grid-template-columns: 1fr; gap: 34px; }
+          .proofGrid, .stepGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
         }
 
         @media (max-width: 620px) {
@@ -496,18 +457,16 @@ export default function Page() {
             width: min(100% - 28px, 1180px);
           }
           .navInner { height: 66px; }
-          .brand span { display: none; }
           .button { width: 100%; }
           .navLinks .button { width: auto; min-height: 40px; padding: 0 14px; }
-          .heroInner { padding: 58px 0 48px; }
-          h1 { font-size: 52px; }
-          .lede { font-size: 18px; }
+          .heroInner { padding: 48px 0 40px; }
+          h1 { font-size: 40px; }
+          .lede { font-size: 17px; }
           .heroActions { flex-direction: column; }
           .consoleBody { padding: 14px; }
-          .accessMeta, .proofGrid, .stepGrid, .useCaseGrid {
-            grid-template-columns: 1fr;
-          }
-          .sectionInner { padding: 64px 0; }
+          .accessTitle { font-size: 22px; }
+          .accessMeta, .proofGrid, .stepGrid, .useCaseGrid { grid-template-columns: 1fr; }
+          .sectionInner { padding: 56px 0; }
         }
       `}</style>
 
@@ -516,13 +475,13 @@ export default function Page() {
           <div className="navInner">
             <a className="brand" href="/">
               <img src="/axw-icon.png" alt="" />
-              <span>AXW Access Layer</span>
+              <span>AccessXWorld</span>
             </a>
             <div className="navLinks">
               <a href="#how">How it works</a>
               <a href="#use-cases">Use cases</a>
               <a href="#benefits">Benefits</a>
-              <a className="button primary" href="mailto:founders@accessxworld.com?subject=AXW%20pilot">
+              <a className="button primary" href="mailto:founders@accessxworld.com?subject=AccessXWorld%20pilot">
                 Request pilot
               </a>
             </div>
@@ -532,15 +491,17 @@ export default function Page() {
         <section className="hero">
           <div className="heroInner">
             <div>
-              <div className="eyebrow">Access x World</div>
-              <h1>Programmable access infrastructure for real-world spaces.</h1>
+              <div className="eyebrow">Early Access · physical access layer</div>
+              <h1>Signed access for real doors, gates, and lots.</h1>
               <p className="lede">
-                AXW is a neutral coordination layer for physical access: policy-defined credentials,
-                edge verification, and auditable proof across venues, parking, property, enterprise,
-                and civic infrastructure.
+                AccessXWorld (AXW) is a coordination layer for physical access:
+                policy-defined credentials, edge verification, and an audit trail
+                for venues, parking, property, campuses, and infrastructure.
+                This site is the public brief for a pilot-ready MVP — not a claim
+                that every gate in the world already runs on it.
               </p>
               <div className="heroActions">
-                <a className="button primary" href="mailto:founders@accessxworld.com?subject=AXW%20pilot">
+                <a className="button primary" href="mailto:founders@accessxworld.com?subject=AccessXWorld%20pilot">
                   Start a pilot
                 </a>
                 <a className="button" href="#how">
@@ -552,45 +513,52 @@ export default function Page() {
                   <span className="pill" key={sector}>{sector}</span>
                 ))}
               </div>
+              <p className="sectionCopy" style={{ marginTop: 22, fontSize: 15 }}>
+                On this site: the access flow below,{" "}
+                <a href="/product" style={{ textDecoration: "underline" }}>product notes</a>,{" "}
+                <a href="/how-it-works" style={{ textDecoration: "underline" }}>how it works</a>, and{" "}
+                <a href="/use-cases" style={{ textDecoration: "underline" }}>use cases</a>.
+                No live gate counts. No shared lock codes.
+              </p>
             </div>
 
-            <aside className="console" aria-label="AXW access decision preview">
+            <aside className="console" aria-label="Illustrated access decision">
               <div className="consoleTop">
                 <span>AXW POLICY DECISION</span>
-                <span>VERIFIED</span>
+                <span>ILLUSTRATION</span>
               </div>
               <div className="consoleBody">
                 <div className="accessCard">
                   <div className="accessStatus">
                     <span>Access granted</span>
-                    <span>Token axw_live_8274</span>
+                    <span>Preview card</span>
                   </div>
                   <div className="accessTitle">
-                    Gate B parking entry approved for a 42-minute arrival window.
+                    Gate B parking entry inside a reserved arrival window.
                   </div>
                   <div className="accessMeta">
                     <div className="metaBox">
                       <div className="metaLabel">Policy</div>
-                      <div className="metaValue">Reservation + operator override</div>
+                      <div className="metaValue">Reservation + expiry</div>
                     </div>
                     <div className="metaBox">
-                      <div className="metaLabel">Risk</div>
-                      <div className="metaValue">Low liability exposure</div>
+                      <div className="metaLabel">Credential</div>
+                      <div className="metaValue">Signed, time-bounded</div>
                     </div>
                     <div className="metaBox">
                       <div className="metaLabel">Proof</div>
-                      <div className="metaValue">Signed event trail</div>
+                      <div className="metaValue">Event trail</div>
                     </div>
                     <div className="metaBox">
-                      <div className="metaLabel">Throughput</div>
-                      <div className="metaValue">No shared gate code</div>
+                      <div className="metaLabel">Shared code</div>
+                      <div className="metaValue">Not required</div>
                     </div>
                   </div>
                 </div>
                 <div className="eventList">
-                  <div className="event"><span>Credential issued</span><strong>09:14</strong></div>
-                  <div className="event"><span>Edge scan accepted</span><strong>09:21</strong></div>
-                  <div className="event"><span>Audit record sealed</span><strong>09:21</strong></div>
+                  <div className="event"><span>Credential issued</span><strong>t+0</strong></div>
+                  <div className="event"><span>Edge scan accepted</span><strong>t+7m</strong></div>
+                  <div className="event"><span>Audit record written</span><strong>t+7m</strong></div>
                 </div>
               </div>
             </aside>
@@ -600,12 +568,12 @@ export default function Page() {
         <section>
           <div className="sectionInner split">
             <div>
-              <div className="kicker">Why it matters</div>
-              <h2>Physical access still runs on brittle handoffs.</h2>
+              <div className="kicker">Why it exists</div>
+              <h2>Physical access still runs on copied codes.</h2>
               <p className="sectionCopy">
-                Codes get copied. Staff improvise. Vendors arrive outside windows. Parking, venues,
-                buildings, campuses, and public facilities need coordination without forcing every
-                operator into one closed hardware stack.
+                Staff improvise. Vendors arrive outside windows. Parking, venues,
+                buildings, and campuses need coordination without forcing every
+                operator onto one closed hardware stack.
               </p>
             </div>
             <div className="proofGrid">
@@ -624,8 +592,9 @@ export default function Page() {
             <div className="kicker">How it works</div>
             <h2>One policy layer from request to proof.</h2>
             <p className="sectionCopy">
-              AXW keeps the core workflow simple enough to pilot, while leaving room for hardware,
-              operator, and enterprise integrations as deployments scale.
+              The MVP is a demo-ready access flow for pilots: policy, credential,
+              verify, audit. Hardware and enterprise integrations come with a
+              real deployment, not as a homepage claim.
             </p>
             <div className="stepGrid">
               {steps.map((step, index) => (
@@ -636,6 +605,14 @@ export default function Page() {
                 </div>
               ))}
             </div>
+            <div className="useCase" style={{ marginTop: 28 }}>
+              <strong style={{ color: "var(--ink)" }}>Worked example on the console (illustration).</strong>
+              {" "}
+              A parking reservation opens Gate B for a signed window. The credential
+              expires when the window ends. The edge scan writes an event. Nobody
+              texts a static lot code. Hardware integration is a pilot conversation,
+              not a homepage inventory.
+            </div>
           </div>
         </section>
 
@@ -645,8 +622,8 @@ export default function Page() {
               <div className="kicker">Use cases</div>
               <h2>Built for operators who need trust and throughput.</h2>
               <p className="sectionCopy">
-                The first MVP is a demo-ready access flow for pilots, not a bloated dashboard.
-                It shows how policies, credentials, verification, and audit connect across places.
+                First deployments are scoped: one location or one workflow, then
+                expand after the access events are actually useful.
               </p>
             </div>
             <div className="useCaseGrid">
@@ -660,36 +637,36 @@ export default function Page() {
         <section className="benefitBand" id="benefits">
           <div className="sectionInner split">
             <div>
-              <div className="kicker">Benefits</div>
-              <h2>Less liability. Faster lines. Clearer accountability.</h2>
+              <div className="kicker">What a pilot is for</div>
+              <h2>Fewer shared codes. Clearer accountability.</h2>
               <p className="sectionCopy">
-                AXW wins by staying neutral: it coordinates access across existing operations
-                instead of pretending the world will replace every gate, scanner, badge, and lock.
+                AccessXWorld stays neutral: it coordinates access across existing
+                operations instead of asking the world to replace every lock.
               </p>
             </div>
             <div className="benefitList">
-              <div className="benefit"><span className="check">✓</span><span>Lower exposure from copied codes, manual approvals, and unverifiable entry events.</span></div>
-              <div className="benefit"><span className="check">✓</span><span>Higher throughput for arrivals, vendors, tenants, staff, and visitors.</span></div>
-              <div className="benefit"><span className="check">✓</span><span>Verifiable proof of access decisions for disputes, audits, compliance, and billing.</span></div>
-              <div className="benefit"><span className="check">✓</span><span>Scalable rollout across locations without locking operators into one hardware vendor.</span></div>
+              <div className="benefit"><span className="check">✓</span><span>Lower exposure from copied codes and unverifiable entry events.</span></div>
+              <div className="benefit"><span className="check">✓</span><span>Faster arrivals for vendors, tenants, staff, and visitors.</span></div>
+              <div className="benefit"><span className="check">✓</span><span>A written trail of access decisions for disputes and billing.</span></div>
+              <div className="benefit"><span className="check">✓</span><span>Room to add locations without one hardware vendor lock-in.</span></div>
             </div>
           </div>
         </section>
 
         <section className="cta">
           <div className="sectionInner">
-            <div className="kicker">Pilot-ready MVP</div>
-            <h2>Coordinate access before the next operational bottleneck becomes a liability event.</h2>
+            <div className="kicker">Early Access</div>
+            <h2>Model one real access flow before the next bottleneck becomes a liability event.</h2>
             <p className="sectionCopy">
-              Use AXW to model a real access flow, issue signed credentials, verify at the edge,
-              and prove exactly what happened.
+              Use AccessXWorld to define a policy, issue a credential, verify at
+              the edge, and show what happened. No invented deployment counts.
             </p>
             <div className="heroActions" style={{ justifyContent: "center" }}>
-              <a className="button primary" href="mailto:founders@accessxworld.com?subject=AXW%20pilot">
+              <a className="button primary" href="mailto:founders@accessxworld.com?subject=AccessXWorld%20pilot">
                 Request pilot access
               </a>
-              <a className="button" href="mailto:founders@accessxworld.com?subject=AXW%20investor%20brief">
-                Request investor brief
+              <a className="button" href="/product">
+                Product notes
               </a>
             </div>
           </div>
@@ -697,14 +674,11 @@ export default function Page() {
 
         <footer>
           <div className="footerInner">
-            <span>AXW Access Layer</span>
-            <span>Policy-driven coordination for physical access infrastructure.</span>
+            <span>AccessXWorld</span>
+            <span>Public product name for the Access Layer venture.</span>
           </div>
         </footer>
       </div>
-      <section className="mx-auto max-w-6xl px-4 pb-16 pt-8 sm:px-6"><HeroProductPanel /></section>
-      <ProcessFlowSection />
-    <MarketingGraphicsStack />
-    </main>
+    </>
   );
 }
