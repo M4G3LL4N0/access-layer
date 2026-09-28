@@ -34,6 +34,31 @@ export function ProcessFlowSection() {
           </li>
         ))}
       </ol>
+      <aside className="mt-8 rounded-2xl border border-dashed border-[#07110f]/20 bg-white p-5 sm:p-6">
+        <p className="font-mono text-xs uppercase tracking-[0.16em] text-[#52615d]">Illustration · not a live credential</p>
+        <h3 className="mt-2 text-lg font-semibold text-[#07110f]">What a pass would carry</h3>
+        <dl className="mt-4 grid gap-3 text-sm sm:grid-cols-2">
+          <div>
+            <dt className="font-medium text-[#07110f]">Holder</dt>
+            <dd className="mt-1 text-[#52615d]">A person or a vehicle. Not a code the whole line can share.</dd>
+          </div>
+          <div>
+            <dt className="font-medium text-[#07110f]">Gate</dt>
+            <dd className="mt-1 text-[#52615d]">One door, lot, or kiosk named by the policy.</dd>
+          </div>
+          <div>
+            <dt className="font-medium text-[#07110f]">Window</dt>
+            <dd className="mt-1 text-[#52615d]">When the grant starts and when it ends.</dd>
+          </div>
+          <div>
+            <dt className="font-medium text-[#07110f]">Decision</dt>
+            <dd className="mt-1 text-[#52615d]">Accept, refuse, or revoke, kept as an event.</dd>
+          </div>
+        </dl>
+        <p className="mt-4 text-sm leading-6 text-[#52615d]">
+          This page does not sign, issue, or check a credential. There is no published customer roster and no operating metric behind the sequence.
+        </p>
+      </aside>
     </section>
   )
 }
